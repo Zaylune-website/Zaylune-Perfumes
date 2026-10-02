@@ -61,6 +61,7 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
   };
 
   return (
+    <>
     <header className={`sticky top-0 z-40 border-b border-gold-400/10 transition-all duration-300 ${mobileOpen ? "bg-[#0b0a0a]" : "bg-[#0a0908] backdrop-blur-2xl"}`}>
       <AnnouncementBar message={announcement} />
 
@@ -184,16 +185,14 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
             <Search className="h-[18px] w-[18px]" />
           </button>
 
-          {/* Account (Mobile, logged in) */}
-          {isLoggedIn && (
-            <Link
-              href="/account"
-              aria-label="My Account"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-105 sm:hidden"
-            >
-              <User className="h-[18px] w-[18px]" />
-            </Link>
-          )}
+          {/* Account (Mobile) */}
+          <Link
+            href="/account"
+            aria-label="My Account"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-105 sm:hidden"
+          >
+            <User className="h-[18px] w-[18px]" />
+          </Link>
 
           {/* Account (Desktop) */}
           {isLoggedIn ? (
@@ -279,8 +278,10 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
         </div>
       )}
 
-      {/* Mobile Drawer Overlay */}
-      <div className={`fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-[#0f0d0b] via-[#0b0a0a] to-[#080707] md:hidden transition-[transform,opacity] duration-300 ease-out ${mobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 pointer-events-none"}`}>
+      </header>
+
+      {/* Mobile Drawer Overlay — outside <header> so backdrop-blur doesn't trap fixed positioning */}
+      <div className={`fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-[#0f0d0b] via-[#0b0a0a] to-[#080707] md:hidden transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"}`}>
           {/* Ambient glow */}
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-gold-400/5 blur-[80px]" />
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-400/20 to-transparent" />
@@ -398,6 +399,6 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
           </div>
         </div>
 
-    </header>
+    </>
   );
 }

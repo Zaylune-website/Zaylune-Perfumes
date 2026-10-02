@@ -80,17 +80,17 @@ export default async function Footer() {
         </div>
 
         <div className="relative mt-12 flex flex-col gap-4 border-t border-gold-400/10 pt-6 text-base text-ivory/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} Zaylune. All rights reserved. &nbsp;·&nbsp;{" "}
+          <div className="flex flex-col gap-1">
+            <p>&copy; {new Date().getFullYear()} Zaylune. All rights reserved.</p>
             <a
               href="https://nexa-solutions.in/"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-gold-300"
             >
-              Developed by Nexa Solutions
+              Developed by <span className="text-gold-400">Nexa Solutions</span>
             </a>
-          </p>
+          </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a href={`mailto:${brandInfo.email}`} className="flex items-center gap-1.5 transition-colors hover:text-gold-300">
               <Mail className="h-3.5 w-3.5" /> {brandInfo.email}

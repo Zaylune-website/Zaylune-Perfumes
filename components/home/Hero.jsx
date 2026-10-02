@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
@@ -66,6 +66,26 @@ export default function Hero({
 
   const goToSlide = (idx) => {
     setCurrentIndex(idx);
+  };
+
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) handleNext();
+      else handlePrev();
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
   };
 
   // Text overlaid on the background image — sized down aggressively on mobile so it fits over a 16:9 crop
@@ -149,7 +169,11 @@ export default function Hero({
   );
 
   return (
-    <section className="relative overflow-hidden bg-[#0b0a0a] aspect-[4/5] sm:aspect-auto sm:min-h-[90vh] flex items-center pt-6 sm:pt-20 pb-6 sm:pb-20 select-none">
+    <section
+      className="relative overflow-hidden bg-[#0b0a0a] aspect-[4/5] sm:aspect-auto sm:min-h-[90vh] flex items-center pt-6 sm:pt-20 pb-6 sm:pb-20 select-none"
+      onTouchStart={activeSlides.length > 1 ? handleTouchStart : undefined}
+      onTouchEnd={activeSlides.length > 1 ? handleTouchEnd : undefined}
+    >
 
       {/* Background Image/Fallback with Dark Overlays for Readability */}
       <div className="absolute inset-0 z-0">
