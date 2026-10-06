@@ -44,6 +44,25 @@ export async function POST(req) {
 
     const supabaseAdmin = createAdminClient();
 
+    // Find the order. Prefer Shiprocket's id, then our reference: a UUID is orders.id,
+    // anything else is treated as orders.order_number. Never error on a miss, so
+    // Shiprocket's test call gets a clean 200.
+    const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    let order = null;
+    if (shiprocketOrderId) {
+      const { data } = await supabaseAdmin.from("orders").select("id").eq("shiprocket_order_id", shiprocketOrderId).maybeSingle();
+      order = data;
+    }
+    if (!order && channelOrderId) {
+      const column = UUID.test(channelOrderId) ? "id" : "order_number";
+      const { data } = await supabaseAdmin.from("orders").select("id").eq(column, channelOrderId).maybeSingle();
+      order = data;
+    }
+    if (!order) {
+      console.warn("[Shiprocket Webhook]: No matching order found.", { channelOrderId, shiprocketOrderId });
+      return NextResponse.json({ success: true, ignored: true });
+    }
+
     const updateData = { shiprocket_status: currentStatus || null };
     if (awbCode) updateData.awb_code = awbCode;
     if (courierName) updateData.courier_name = courierName;
@@ -56,11 +75,7 @@ export async function POST(req) {
       if (mappedStatus === "cancelled") updateData.cancelled_at = new Date().toISOString();
     }
 
-    const query = supabaseAdmin.from("orders").update(updateData);
-    const { error } = channelOrderId
-      ? await query.eq("id", channelOrderId)
-      : await query.eq("shiprocket_order_id", shiprocketOrderId);
-
+    const { error } = await supabaseAdmin.from("orders").update(updateData).eq("id", order.id);
     if (error) {
       console.error("[Shiprocket Webhook Error]: DB update failed:", error.message);
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
