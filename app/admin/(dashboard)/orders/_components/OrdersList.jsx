@@ -13,6 +13,26 @@ const STATUS_STYLES = {
   cancelled: "bg-rose-50 text-rose-900 border-rose-500/30",
 };
 
+const PAYMENT_STYLES = {
+  paid: "bg-emerald-50 text-emerald-800 border-emerald-500/30",
+  pending: "bg-amber-50 text-amber-800 border-amber-500/30",
+  failed: "bg-rose-50 text-rose-800 border-rose-500/30",
+};
+
+function PaymentBadges({ method, status }) {
+  const key = String(status || "pending").toLowerCase();
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <span className="rounded-full border border-[#1c1109]/15 bg-[#1c1109]/5 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#2b1d12]/80">
+        {method === "COD" ? "COD" : "Online"}
+      </span>
+      <span className={`rounded-full border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider ${PAYMENT_STYLES[key] || PAYMENT_STYLES.pending}`}>
+        {key}
+      </span>
+    </span>
+  );
+}
+
 const STATUS_TABS = [
   { key: "all", label: "All" },
   { key: "pending", label: "Pending" },
@@ -149,7 +169,7 @@ export default function OrdersList({ orders }) {
                     {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                   <td className="py-4 pr-4 text-sm capitalize text-[#2b1d12]/75">
-                    {o.payment_method === "COD" ? "COD" : "Online"} · {o.payment_status}
+                    <PaymentBadges method={o.payment_method} status={o.payment_status} />
                   </td>
                   <td className="py-4 pr-4 text-sm font-semibold text-[#1c1109]">₹{Number(o.total_amount).toLocaleString("en-IN")}</td>
                   <td className="py-4 pr-4">
@@ -195,7 +215,7 @@ export default function OrdersList({ orders }) {
                       {o.order_status}
                     </span>
                     <span className="rounded-full border border-[#1c1109]/10 bg-[#1c1109]/5 px-2.5 py-1 text-xs font-semibold capitalize text-[#2b1d12]/72">
-                      {o.payment_method === "COD" ? "COD" : "Online"} · {o.payment_status}
+                      <PaymentBadges method={o.payment_method} status={o.payment_status} />
                     </span>
                     <span className="ml-auto text-sm text-[#2b1d12]/67">
                       {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
