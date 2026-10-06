@@ -1,404 +1,660 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, ShoppingBag, User, Sparkles, ChevronDown, ChevronRight, LayoutDashboard, LogOut, LogIn, Search, ChevronUp, Home, Store, Gift, Info, Phone, Package } from "lucide-react";
+import {
+  Menu,
+  X,
+  ShoppingBag,
+  User,
+  Sparkles,
+  ChevronDown,
+  ChevronRight,
+  LayoutDashboard,
+  LogOut,
+  LogIn,
+  Search,
+  Home,
+  Store,
+  Gift,
+  Info,
+  Phone,
+  Package,
+  ArrowRight,
+  Compass,
+} from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { logout } from "@/actions/auth";
+import AnnouncementTicker from "@/components/AnnouncementTicker";
 
 const STATIC_LINKS = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Shop", href: "/shop", icon: Store },
+  { label: "Shop", href: "/shop", icon: Store, hasMegaMenu: true },
   { label: "About", href: "/about", icon: Info },
   { label: "Contact", href: "/contact", icon: Phone },
 ];
 
-function AnnouncementBar({ message }) {
-  if (!message) return null;
+function AnnouncementBar({ messages }) {
+  if (!messages.length) return null;
 
   return (
-    <div className="relative overflow-hidden border-b border-gold-400/15 bg-gradient-to-r from-[#120f0d] via-[#1c1611] to-[#120f0d]">
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/[0.08] blur-[60px]" />
-      <div className="relative mx-auto flex max-w-wrap items-center justify-center gap-2 px-8 py-1.5 sm:px-12">
-        <Sparkles className="h-3 w-3 shrink-0 text-gold-300 animate-pulse" />
-        <p className="text-center text-[10px] font-semibold uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400 sm:text-xs sm:tracking-[0.18em]">
-          {message}
-        </p>
-        <Sparkles className="h-3 w-3 shrink-0 text-gold-300 animate-pulse" />
-      </div>
+    <div className="border-b border-[#5c1d0b]/40">
+      <AnnouncementTicker messages={messages} />
     </div>
   );
 }
 
-export default function Header({ categories = [], announcement, isLoggedIn = false, bundleEnabled = false }) {
+export default function Header({
+  categories = [],
+  announcements = [],
+  isLoggedIn = false,
+  bundleEnabled = false,
+  showcase,
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
+  const [mobileCatOpen, setMobileCatOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+
   const { cartCount, setDrawerOpen } = useCart();
   const pathname = usePathname();
   const router = useRouter();
+  const searchInputRef = useRef(null);
 
+  // Track window scroll for dynamic glassmorphic shrinking navbar
   useEffect(() => {
-    document.body.classList.toggle("mobile-menu-open", mobileOpen);
-    return () => document.body.classList.remove("mobile-menu-open");
-  }, [mobileOpen]);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock body scroll when mobile drawer or search spotlight is open
+  useEffect(() => {
+    if (mobileOpen || searchOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen, searchOpen]);
+
+  // Focus search input on open
+  useEffect(() => {
+    if (searchOpen) {
+      const timer = setTimeout(() => searchInputRef.current?.focus(), 80);
+      return () => clearTimeout(timer);
+    }
+  }, [searchOpen]);
+
+  // Global hotkey support (Cmd+K / Ctrl+K or ESC)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      } else if (e.key === "Escape") {
+        if (searchOpen) setSearchOpen(false);
+        if (mobileOpen) setMobileOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [searchOpen, mobileOpen]);
 
   const navLinks = bundleEnabled
-    ? [...STATIC_LINKS.slice(0, 2), { label: "Gift Set", href: "/bundle", icon: Gift }, ...STATIC_LINKS.slice(2)]
+    ? [
+        ...STATIC_LINKS.slice(0, 2),
+        { label: "Gift Sets", href: "/bundle", icon: Gift },
+        ...STATIC_LINKS.slice(2),
+      ]
     : STATIC_LINKS;
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const q = searchQuery.trim();
+  const executeSearch = (query) => {
+    const q = (query || searchQuery).trim();
     if (q) {
       router.push(`/shop?search=${encodeURIComponent(q)}`);
       setSearchOpen(false);
+      setSearchQuery("");
+      if (mobileOpen) setMobileOpen(false);
     }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    executeSearch();
   };
 
   return (
     <>
-    <header className={`sticky top-0 z-40 border-b border-gold-400/10 transition-all duration-300 ${mobileOpen ? "bg-[#0b0a0a]" : "bg-[#0a0908] backdrop-blur-2xl"}`}>
-      <AnnouncementBar message={announcement} />
+      <header
+        className={`sticky top-0 z-40 transition-all duration-500 ease-out bg-[#fde3cf] ${
+          scrolled
+            ? "border-b border-[#a8451a]/20 shadow-[0_12px_36px_-10px_rgba(43,29,18,0.15)]"
+            : "border-b border-[#a8451a]/15"
+        }`}
+      >
+        {pathname === "/" && <AnnouncementBar messages={announcements} />}
 
-      {/* Ambient top glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
-      {/* Shimmering bottom hairline */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer" />
-      {/* Subtle center glow behind navbar content */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-16 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/[0.04] blur-2xl" />
+        {/* Ambient top light sheen */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
+        {/* Subtle luminous center glow */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c04a1c]/[0.04] blur-3xl" />
 
-      {/* Main Navbar Row */}
-      <div className="mx-auto flex max-w-wrap items-center justify-between gap-4 px-4 py-2.5 sm:px-6 sm:py-3.5 md:py-4 md:px-12">
+        {/* Main Navbar Row */}
+        <div
+          className={`mx-auto flex max-w-wrap items-center justify-between gap-4 px-4 transition-all duration-500 sm:px-6 md:px-10 lg:px-12 ${
+            scrolled ? "py-1 sm:py-1.5" : "py-2 sm:py-2.5"
+          }`}
+        >
+          {/* Brand Logo */}
+          <Link
+            href="/"
+            className="group relative flex h-11 w-[130px] shrink-0 items-center sm:h-14 sm:w-[185px] lg:w-[210px] transition-transform duration-300 hover:scale-[1.02]"
+          >
+            {/* Soft luminous aura behind logo */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#a8451a]/15 blur-xl transition-all duration-500 group-hover:bg-[#a8451a]/25 group-hover:scale-125" />
+            <div className="relative aspect-[3/2] h-[82px] sm:h-32 lg:h-[135px] drop-shadow-[0_2px_12px_rgba(168,69,26,0.18)] transition-all duration-500 group-hover:drop-shadow-[0_4px_22px_rgba(168,69,26,0.35)]">
+              <Image
+                src="/navbar-logo.png"
+                alt="Zaylune"
+                fill
+                priority
+                sizes="(max-width: 640px) 140px, (max-width: 1024px) 200px, 225px"
+                className="object-contain object-left"
+              />
+              {/* Subtle diagonal shine sweep on hover */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:translate-x-full group-hover:opacity-100" />
+              </div>
+            </div>
+          </Link>
 
-        {/* Brand Logo */}
-        <Link href="/" className="relative flex h-10 w-[130px] items-center shrink-0 group sm:h-12 sm:w-[185px] lg:w-[210px]">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/10 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <div className="absolute left-0 top-1/2 aspect-[3/2] h-20 -translate-y-1/2 transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(212,163,89,0.35)] sm:h-28 lg:h-32">
-            <Image
-              src="/navbar-logo.png"
-              alt="Zaylune"
-              fill
-              priority
-              className="object-contain object-left"
-            />
-          </div>
-        </Link>
+          {/* Center Navigation Dock (Desktop Luxury Capsule) */}
+          <nav className="hidden md:flex items-center gap-1 rounded-full border border-gold-400/20 bg-[#fff9f3]/70 p-1.5 shadow-[0_4px_20px_-4px_rgba(43,29,18,0.06)] backdrop-blur-md">
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
 
-        {/* Center Links (Desktop) */}
-        <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+              if (link.hasMegaMenu) {
+                return (
+                  <div key={link.href} className="group relative">
+                    <Link
+                      href={link.href}
+                      className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
+                        isActive
+                          ? "border border-gold-400/30 bg-white text-[#a8451a] shadow-[0_2px_10px_rgba(168,69,26,0.12)]"
+                          : "text-ivory/78 hover:bg-white/60 hover:text-[#a8451a]"
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className="h-3.5 w-3.5 text-[#a8451a]/80 transition-transform duration-300 group-hover:rotate-180" />
+                    </Link>
 
-            if (link.label === "Shop") {
-              return (
-                <div key={link.href} className="group relative">
-                  <Link
-                    href={link.href}
-                    className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[15px] font-medium tracking-wide transition-all duration-300 ${pathname?.startsWith("/shop") ? "bg-gold-400/10 text-gold-200" : "text-ivory/65 hover:bg-white/5 hover:text-gold-300"}`}
-                  >
-                    {link.label}
-                    <ChevronDown className="w-3.5 h-3.5 text-gold-400/70 group-hover:rotate-180 transition-transform duration-300" />
-                  </Link>
+                    {/* Luxury Mega-Menu Dropdown Panel */}
+                    <div className="invisible absolute left-1/2 top-full z-50 w-[580px] -translate-x-1/2 pt-3 opacity-0 transition-all duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                      <div className="relative overflow-hidden rounded-3xl border-2 border-[#a8451a]/25 bg-[#fffaf5] p-5 shadow-[0_25px_70px_rgba(43,29,18,0.35),0_0_0_1px_rgba(168,69,26,0.1)]">
+                        {/* Decorative background subtle glow */}
+                        <div className="pointer-events-none absolute -top-12 left-1/2 h-36 w-60 -translate-x-1/2 rounded-full bg-[#fde3cf] blur-2xl" />
 
-                  {/* Dropdown Menu (Glassmorphic panel) */}
-                  {categories.length > 0 && (
-                    <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 translate-y-3 scale-95 rounded-[1.75rem] border border-gold-400/15 bg-gradient-to-b from-[#181310] via-[#120f0d] to-[#0b0a0a] p-3 opacity-0 shadow-[0_25px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(212,163,89,0.08)] transition-all duration-300 group-hover:visible group-hover:translate-y-2 group-hover:scale-100 group-hover:opacity-100">
-                      {/* Caret pointer */}
-                      <div className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 rounded-[2px] border-l border-t border-gold-400/15 bg-[#181310]" />
-                      {/* Decorative glow */}
-                      <div className="pointer-events-none absolute -top-8 left-1/2 h-24 w-44 -translate-x-1/2 rounded-full bg-gold-400/10 blur-2xl" />
-                      <div className="pointer-events-none absolute -bottom-6 right-2 h-16 w-16 rounded-full bg-gold-300/10 blur-2xl" />
-
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between px-4 pb-3 pt-2">
-                          <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold-300/60">
-                            <Sparkles className="h-3 w-3 text-gold-400/60" />
-                            Browse Categories
+                        {/* Top row header */}
+                        <div className="relative z-10 flex items-center justify-between border-b border-[#a8451a]/15 pb-3">
+                          <p className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#a8451a]">
+                            <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                            Collections &amp; Notes
                           </p>
                           <Link
                             href="/shop"
-                            className="flex shrink-0 items-center gap-1 rounded-full border border-gold-400/25 bg-gold-400/8 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-300 whitespace-nowrap transition-all duration-200 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-[#a8451a]/30 bg-[#fde3cf] px-4 py-1 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] transition-all duration-200 hover:bg-[#a8451a] hover:text-white shadow-sm"
                           >
-                            See All
-                            <ChevronRight className="h-3 w-3" />
+                            Explore All
                           </Link>
                         </div>
-                        <div className="mx-4 mb-2 h-px bg-gradient-to-r from-gold-400/30 via-gold-400/10 to-transparent" />
-                        <div className="max-h-[min(60vh,320px)] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gold-400/20 hover:scrollbar-thumb-gold-400/40">
-                          <div className="space-y-0.5">
-                            {categories.map((cat) => (
+
+                        {/* Main Grid: Categories on Left + Editorial Showcase on Right */}
+                        <div className={`relative z-10 mt-4 grid gap-4 ${bundleEnabled ? "grid-cols-5" : "grid-cols-1"}`}>
+                          {/* Categories List */}
+                          <div className={`${bundleEnabled ? "col-span-3" : "col-span-full"} max-h-[280px] space-y-2 overflow-y-auto pr-1`}>
+                            {categories.length > 0 ? (
+                              categories.map((cat) => (
+                                <Link
+                                  key={cat.id}
+                                  href={`/shop?category=${cat.id}`}
+                                  className="group/item flex items-center justify-between rounded-xl border border-[#a8451a]/15 bg-white px-4 py-2.5 text-sm font-semibold text-[#2b1d12] shadow-sm transition-all duration-200 hover:border-[#a8451a] hover:bg-[#a8451a] hover:text-white hover:translate-x-1 hover:shadow-md"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <span className="h-2 w-2 rounded-full bg-[#a8451a] transition-colors group-hover/item:bg-white shrink-0" />
+                                    <span className="tracking-wide">{cat.name}</span>
+                                  </div>
+                                </Link>
+                              ))
+                            ) : (
                               <Link
-                                key={cat.id}
-                                href={`/shop?category=${cat.id}`}
-                                className="group/item relative flex items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-sm text-ivory/65 transition-all duration-300 hover:bg-gold-400/10 hover:text-gold-200"
+                                href="/shop"
+                                className="block rounded-xl border border-[#a8451a]/15 bg-white p-3 text-sm font-semibold text-[#2b1d12] hover:bg-[#a8451a] hover:text-white"
                               >
-                                <span className="relative z-10 flex items-center gap-3">
-                                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold-400/30 transition-all duration-300 group-hover/item:bg-gold-300 group-hover/item:shadow-[0_0_10px_rgba(212,163,89,0.6)]" />
-                                  {cat.name}
-                                </span>
-                                <ChevronRight className="relative z-10 h-3.5 w-3.5 text-gold-300 opacity-0 -translate-x-1 transition-all duration-300 group-hover/item:opacity-100 group-hover/item:translate-x-0" />
-                                <span className="absolute inset-y-0 left-0 w-0.5 bg-gold-400/50 scale-y-0 transition-transform duration-300 group-hover/item:scale-y-100" />
+                                View full fragrance catalog
                               </Link>
-                            ))}
+                            )}
                           </div>
+
+                          {/* Editorial Showcase Card — only while the Gift Set page is enabled */}
+                          {bundleEnabled && showcase && (
+                            <div className="col-span-2 flex flex-col justify-between rounded-2xl border-2 border-[#a8451a]/20 bg-gradient-to-br from-[#fae5d2] to-[#f4d1b5] p-4 shadow-sm">
+                              <div>
+                                {showcase.badge && (
+                                  <div className="mb-2 inline-flex w-fit items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#a8451a] shadow-xs">
+                                    <Sparkles className="h-3 w-3 text-[#c04a1c]" />
+                                    {showcase.badge}
+                                  </div>
+                                )}
+                                <h4 className="font-display text-base sm:text-lg font-bold text-[#1c1109] leading-snug">
+                                  {showcase.heading}
+                                </h4>
+                                {showcase.description && (
+                                  <p className="mt-1.5 text-xs sm:text-sm font-medium leading-relaxed text-[#431a06]">
+                                    {showcase.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              <Link
+                                href="/bundle"
+                                className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-accent-gradient px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-md transition-transform duration-200 hover:scale-[1.03]"
+                              >
+                                <Sparkles className="h-3.5 w-3.5" />
+                                <span>Gift Sets</span>
+                              </Link>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center gap-1 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
+                    isActive
+                      ? "border border-gold-400/30 bg-white text-[#a8451a] shadow-[0_2px_10px_rgba(168,69,26,0.12)]"
+                      : "text-ivory/78 hover:bg-white/60 hover:text-[#a8451a]"
+                  }`}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#a8451a] shadow-[0_0_6px_rgba(168,69,26,0.8)]" />
                   )}
-                </div>
+                </Link>
               );
-            }
+            })}
+          </nav>
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative rounded-full px-4 py-2 text-[15px] font-medium tracking-wide transition-all duration-300 ${isActive ? "bg-gold-400/10 text-gold-200" : "text-ivory/65 hover:bg-white/5 hover:text-gold-300"}`}
-              >
-                {link.label}
-                {isActive && (
-                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold-300 shadow-[0_0_6px_rgba(212,163,89,0.8)]" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Search Trigger */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search Fragrances"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-white/50 text-ivory/80 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-gold-400/50 hover:bg-white hover:text-[#a8451a] hover:scale-105 active:scale-95"
+            >
+              <Search className="h-[18px] w-[18px] text-[#a8451a]" />
+            </button>
 
-        {/* Right Side Icons */}
-        <div className="flex items-center gap-2">
-
-          {/* Search Toggle */}
-          <button
-            onClick={() => setSearchOpen((o) => !o)}
-            aria-label="Search"
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 hover:scale-105 ${
-              searchOpen
-                ? "border-gold-400/50 bg-gold-400/15 text-gold-300 shadow-[0_0_16px_rgba(202,161,75,0.2)]"
-                : "border-gold-400/25 bg-gold-400/8 text-gold-300/80 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200"
-            }`}
-          >
-            <Search className="h-[18px] w-[18px]" />
-          </button>
-
-          {/* Account (Mobile) */}
-          <Link
-            href="/account"
-            aria-label="My Account"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-105 sm:hidden"
-          >
-            <User className="h-[18px] w-[18px]" />
-          </Link>
-
-          {/* Account (Desktop) */}
-          {isLoggedIn ? (
-            <div className="hidden items-center gap-2 sm:flex">
+            {/* Account (Desktop Pill / Button) */}
+            {isLoggedIn ? (
+              <div className="hidden sm:flex items-center gap-1.5">
+                <Link
+                  href="/account"
+                  className="flex items-center gap-2 rounded-full border border-gold-400/25 bg-white/50 px-3.5 py-2 text-[12px] font-semibold uppercase tracking-wider text-[#a8451a] shadow-sm backdrop-blur-md transition-all duration-300 hover:border-gold-400/50 hover:bg-white hover:shadow-[0_4px_16px_rgba(168,69,26,0.12)]"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5 text-[#c04a1c]" />
+                  <span>Account</span>
+                </Link>
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    aria-label="Log out"
+                    title="Log out"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-white/40 text-ivory/70 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-red-400/40 hover:bg-red-50 hover:text-red-700 hover:scale-105"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
+                </form>
+              </div>
+            ) : (
               <Link
                 href="/account"
-                className="flex h-10 items-center gap-2 rounded-full border border-gold-400/25 bg-gold-400/8 px-4 text-[13px] font-semibold uppercase tracking-widest text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-[1.03] hover:shadow-[0_0_16px_rgba(202,161,75,0.15)]"
+                aria-label="Account"
+                className="hidden sm:flex h-10 items-center gap-1.5 rounded-full border border-gold-400/25 bg-white/45 px-3.5 text-[12px] font-semibold uppercase tracking-wider text-[#a8451a] shadow-sm backdrop-blur-md transition-all duration-300 hover:border-gold-400/50 hover:bg-white hover:scale-105 active:scale-95"
               >
-                <LayoutDashboard className="h-4 w-4" />
-                Account
+                <User className="h-3.5 w-3.5 text-[#c04a1c]" />
+                <span className="hidden xl:inline">Sign In</span>
               </Link>
-              <form action={logout}>
-                <button
-                  type="submit"
-                  aria-label="Log out"
-                  title="Log out"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-red-400/30 hover:bg-red-500/8 hover:text-red-300 hover:scale-105"
-                >
-                  <LogOut className="h-[18px] w-[18px]" />
-                </button>
-              </form>
-            </div>
-          ) : (
-            <Link
-              href="/account"
-              aria-label="Account"
-              className="hidden h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-105 sm:flex"
-            >
-              <User className="h-[18px] w-[18px]" />
-            </Link>
-          )}
-
-          {/* Cart Icon */}
-          <button
-            onClick={() => setDrawerOpen(true)}
-            aria-label="Open cart"
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(202,161,75,0.15)]"
-          >
-            <ShoppingBag className="h-[18px] w-[18px]" />
-            {cartCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold-gradient text-[8px] font-bold text-ink shadow-gold">
-                {cartCount}
-              </span>
             )}
-          </button>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileOpen(true)}
-            aria-label="Open menu"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/25 bg-gold-400/8 text-gold-300/80 hover:border-gold-400/50 hover:bg-gold-400/15 hover:text-gold-200 md:hidden transition-all duration-300"
-          >
-            <Menu className="h-[18px] w-[18px]" />
-          </button>
-        </div>
-      </div>
-
-      {/* Search Panel */}
-      {searchOpen && (
-        <div className="absolute inset-x-0 top-full z-30 border-b border-gold-400/10 bg-[#0b0a0a]/95 backdrop-blur-lg animate-fadeUp">
-          <form onSubmit={handleSearch} className="mx-auto flex max-w-wrap items-center gap-3 px-4 py-4 sm:px-6 md:px-12">
-            <Search className="h-4.5 w-4.5 shrink-0 text-gold-300/70" />
-            <input
-              autoFocus
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search fragrances..."
-              className="flex-1 bg-transparent text-base text-ivory placeholder:text-ivory/30 focus:outline-none"
-            />
-            <button type="submit" className="btn-gold px-5 py-2 text-xs font-semibold uppercase tracking-wide shrink-0">
-              Search
-            </button>
+            {/* Shopping Cart Button */}
             <button
-              type="button"
-              onClick={() => setSearchOpen(false)}
-              aria-label="Close search"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-ink-line text-ivory/60 transition-all hover:border-gold-300/30 hover:text-gold-300"
+              id="site-cart-button"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Open Cart"
+              className="relative flex h-10 w-10 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/25 bg-white/50 text-ivory shadow-sm backdrop-blur-md transition-all duration-300 hover:border-gold-400/50 hover:bg-white hover:text-[#a8451a] hover:scale-105 hover:shadow-[0_4px_18px_rgba(168,69,26,0.15)] active:scale-95"
             >
-              <X className="h-4 w-4" />
+              <ShoppingBag className="h-[18px] w-[18px] text-[#a8451a]" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-accent-gradient px-1 text-[10px] font-bold text-white shadow-[0_2px_8px_rgba(192,73,28,0.5)] ring-2 ring-[#fde3cf] animate-scaleUp">
+                  {cartCount}
+                </span>
+              )}
             </button>
-          </form>
-        </div>
-      )}
 
-      </header>
-
-      {/* Mobile Drawer Overlay — outside <header> so backdrop-blur doesn't trap fixed positioning */}
-      <div className={`fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-[#0f0d0b] via-[#0b0a0a] to-[#080707] md:hidden transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"}`}>
-          {/* Ambient glow */}
-          <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-gold-400/5 blur-[80px]" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-400/20 to-transparent" />
-
-          {/* Header row */}
-          <div className="flex shrink-0 items-center justify-between border-b border-gold-400/10 px-5 py-3">
-            <Link href="/" onClick={() => setMobileOpen(false)} className="relative h-10 w-32">
-              <Image src="/navbar-logo.png" alt="Zaylune" fill className="object-contain object-left" />
-            </Link>
+            {/* Mobile Menu Hamburger */}
             <button
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close menu"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gold-400/15 bg-ink-soft/60 text-ivory/70 transition-all hover:border-gold-300/40 hover:text-gold-300"
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open Navigation Menu"
+              className="flex h-10 w-10 md:hidden items-center justify-center rounded-full border border-gold-400/25 bg-white/50 text-ivory/80 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-gold-400/50 hover:bg-white hover:text-[#a8451a] active:scale-95"
             >
-              <X className="h-4.5 w-4.5" />
+              <Menu className="h-5 w-5 text-[#a8451a]" />
             </button>
           </div>
+        </div>
+      </header>
 
-          {/* Scrollable nav body */}
-          <nav className="flex flex-1 flex-col overflow-y-auto px-4 py-5">
+      {/* Spotlight Search Modal */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 md:p-12 animate-fadeIn">
+          {/* Backdrop overlay */}
+          <div
+            className="fixed inset-0 bg-ivory/40 backdrop-blur-md transition-opacity"
+            onClick={() => setSearchOpen(false)}
+          />
 
-            {/* Main links */}
-            <div className="space-y-1">
-              {navLinks.map((link) => {
-                const active = pathname === link.href;
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`flex items-center gap-3.5 rounded-2xl px-5 py-3.5 font-display text-base tracking-wide transition-all duration-200 ${
-                      active
-                        ? "bg-gold-400/12 text-gold-200 border border-gold-400/20"
-                        : "text-ivory/75 hover:bg-ink-soft/60 hover:text-gold-200 border border-transparent"
-                    }`}
-                  >
-                    {Icon && (
-                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${active ? "border-gold-400/30 bg-gold-400/15 text-gold-300" : "border-gold-400/15 bg-gold-400/8 text-gold-400/60"}`}>
-                        <Icon className="h-4 w-4" />
-                      </span>
-                    )}
-                    <span className="flex-1">{link.label}</span>
-                    {active && <span className="h-1.5 w-1.5 rounded-full bg-gold-300 shadow-[0_0_8px_rgba(212,163,89,0.8)]" />}
-                  </Link>
-                );
-              })}
+          {/* Modal Container */}
+          <div className="relative z-10 mx-auto w-full min-w-0 max-w-2xl overflow-hidden rounded-[1.75rem] sm:rounded-[2rem] border border-[#a8451a]/25 bg-[#fffbf7] p-4 sm:p-7 shadow-[0_30px_90px_rgba(43,29,18,0.35)] animate-scaleUp">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-300/70 to-transparent"
+            />
+
+            <div className="mb-4 flex items-center justify-between">
+              <p className="eyebrow">
+                <span className="gold-line" /> Search
+              </p>
+              <button
+                type="button"
+                aria-label="Close search"
+                onClick={() => setSearchOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#a8451a]/20 bg-white text-ivory/60 transition-all hover:border-[#a8451a] hover:text-[#a8451a] hover:rotate-90 duration-300"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
-            {/* Categories */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex flex-col gap-2 rounded-2xl border border-[#a8451a]/25 bg-white p-2 shadow-2xs transition-all focus-within:border-[#a8451a] focus-within:ring-2 focus-within:ring-[#a8451a]/15 sm:flex-row sm:items-center sm:gap-3 sm:py-2.5 sm:pl-4 sm:pr-2.5"
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-2.5 px-2 sm:px-0">
+                <Search className="h-5 w-5 shrink-0 text-[#a8451a]" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search fragrances…"
+                  className="min-w-0 flex-1 bg-transparent py-2 text-base font-medium text-ivory placeholder:text-ivory/45 focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    aria-label="Clear search"
+                    onClick={() => setSearchQuery("")}
+                    className="shrink-0 rounded-full p-1 text-ivory/50 transition-colors hover:text-ivory"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="btn-gold w-full shrink-0 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider sm:w-auto sm:py-2"
+              >
+                Search
+              </button>
+            </form>
+
             {categories.length > 0 && (
-              <div className="mt-5 border-t border-gold-400/10 pt-5">
-                <p className="mb-2 px-5 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold-300/50">
-                  Shop by Category
+              <div className="mt-6">
+                <p className="eyebrow mb-3 text-[11px]">
+                  <Compass className="h-3.5 w-3.5" /> Browse categories
                 </p>
-                <div className="space-y-0.5">
+                <div className="flex flex-wrap gap-2">
                   {categories.map((cat) => (
                     <Link
                       key={cat.id}
                       href={`/shop?category=${cat.id}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-3 rounded-xl px-5 py-3 text-sm text-ivory/65 transition-all hover:bg-ink-soft/50 hover:text-gold-200"
+                      onClick={() => setSearchOpen(false)}
+                      className="rounded-full border border-[#a8451a]/25 bg-white px-3 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-xs font-semibold text-[#2b1d12] shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-[#a8451a] hover:bg-accent-gradient hover:text-[#fef2e6] hover:shadow-md"
                     >
-                      <span className="h-1 w-1 shrink-0 rounded-full bg-gold-400/40" />
                       {cat.name}
                     </Link>
                   ))}
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Drawer (Luxury Editorial Slide-over) */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ${
+          mobileOpen ? "visible" : "invisible pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className={`fixed inset-0 bg-ivory/50 backdrop-blur-sm transition-opacity duration-500 ${
+            mobileOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() => setMobileOpen(false)}
+        />
+
+        {/* Sliding Panel */}
+        <div
+          className={`fixed inset-y-0 right-0 w-[88%] max-w-[380px] flex flex-col border-l border-gold-400/25 bg-gradient-to-b from-[#fffaf3] via-[#fdefdf] to-[#fde5ce] shadow-[0_0_50px_rgba(43,29,18,0.25)] backdrop-blur-2xl transition-transform duration-500 ease-out ${
+            mobileOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Header Row */}
+          <div className="flex shrink-0 items-center justify-between border-b border-gold-400/15 px-6 py-4">
+            <Link
+              href="/"
+              onClick={() => setMobileOpen(false)}
+              className="relative h-10 w-32 drop-shadow-sm"
+            >
+              <Image
+                src="/navbar-logo.png"
+                alt="Zaylune"
+                fill
+                className="object-contain object-left"
+              />
+            </Link>
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/20 bg-white/70 text-ivory/70 transition-all hover:border-[#a8451a] hover:text-[#a8451a] hover:rotate-90 duration-300"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Search bar inside mobile drawer */}
+          <div className="px-5 pt-4">
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search fragrances..."
+                className="w-full rounded-full border border-gold-400/25 bg-white/70 py-2.5 pl-10 pr-4 text-sm font-medium text-ivory placeholder:text-ivory/50 focus:border-[#a8451a] focus:bg-white focus:outline-none"
+              />
+              <Search className="pointer-events-none absolute left-3.5 h-4 w-4 text-[#a8451a]" />
+            </form>
+          </div>
+
+          {/* Navigation Links Body */}
+          <nav className="flex-1 overflow-y-auto px-5 py-5 space-y-1.5 scrollbar-thin">
+            {navLinks.map((link) => {
+              const active =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
+              const Icon = link.icon;
+
+              if (link.label === "Shop" && categories.length > 0) {
+                return (
+                  <div key={link.href} className="space-y-1">
+                    <div
+                      className={`flex items-center justify-between rounded-2xl px-4 py-3 text-base font-semibold tracking-wide transition-all ${
+                        active
+                          ? "bg-white text-[#a8451a] shadow-sm border border-gold-400/25"
+                          : "text-ivory/80 hover:bg-white/50"
+                      }`}
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-3 flex-1"
+                      >
+                        {Icon && (
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-gold-400/20 bg-white/70 text-[#a8451a]">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                        )}
+                        <span>{link.label}</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setMobileCatOpen((o) => !o)}
+                        className="p-1 rounded-lg text-ivory/60 hover:text-[#a8451a]"
+                        aria-label="Toggle categories"
+                      >
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-300 ${
+                            mobileCatOpen ? "rotate-180 text-[#a8451a]" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Accordion Categories */}
+                    {mobileCatOpen && (
+                      <div className="relative ml-6 mt-1 space-y-1.5 border-l-2 border-[#a8451a]/15 py-1 pl-4 animate-fadeIn">
+                        {categories.map((cat, i) => (
+                          <Link
+                            key={cat.id}
+                            href={`/shop?category=${cat.id}`}
+                            onClick={() => setMobileOpen(false)}
+                            style={{ animation: `fadeIn 0.35s ease-out ${i * 60}ms both` }}
+                            className="group flex items-center justify-between rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-[#2b1d12]/85 transition-all duration-300 hover:border-[#a8451a]/20 hover:bg-white hover:text-[#a8451a] hover:shadow-2xs"
+                          >
+                            <span className="flex items-center gap-2.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-[#c04a1c]/60 transition-all duration-300 group-hover:scale-150 group-hover:bg-[#c04a1c]" />
+                              {cat.name}
+                            </span>
+                            <ChevronRight className="h-4 w-4 text-[#a8451a]/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[#a8451a]" />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-base font-semibold tracking-wide transition-all ${
+                    active
+                      ? "bg-white text-[#a8451a] shadow-sm border border-gold-400/25"
+                      : "text-ivory/80 hover:bg-white/50"
+                  }`}
+                >
+                  {Icon && (
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-gold-400/20 bg-white/70 text-[#a8451a]">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  )}
+                  <span className="flex-1">{link.label}</span>
+                  {active && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#a8451a] shadow-[0_0_8px_rgba(168,69,26,0.8)]" />
+                  )}
+                </Link>
+              );
+            })}
+
           </nav>
 
-          {/* Account section — always visible at bottom */}
-          <div className="shrink-0 border-t border-gold-400/10 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          {/* Account / Auth pinned at bottom */}
+          <div className="shrink-0 border-t border-gold-400/15 p-5 bg-[#fff8f0]/80">
             {isLoggedIn ? (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-2">
                 <div className="flex gap-2">
                   <Link
                     href="/account"
                     onClick={() => setMobileOpen(false)}
-                    className="flex flex-1 items-center gap-2.5 rounded-2xl border border-gold-400/20 bg-gold-400/5 px-5 py-3.5 text-sm font-semibold tracking-wide text-gold-200 transition-all hover:bg-gold-400/10"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gold-400/25 bg-white py-3 text-sm font-bold uppercase tracking-wider text-[#a8451a] shadow-sm hover:shadow"
                   >
-                    <LayoutDashboard className="h-4 w-4 shrink-0" />
-                    My Account
+                    <LayoutDashboard className="h-4 w-4 text-[#c04a1c]" />
+                    Dashboard
                   </Link>
                   <form action={logout}>
                     <button
                       type="submit"
                       aria-label="Log out"
-                      className="flex h-12 w-12 items-center justify-center rounded-2xl border border-ink-line text-ivory/50 transition-all hover:border-red-400/30 hover:bg-red-500/5 hover:text-red-300"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-gold-400/25 bg-white text-ivory/60 hover:border-red-400/30 hover:bg-red-50 hover:text-red-700"
                     >
                       <LogOut className="h-4 w-4" />
                     </button>
                   </form>
                 </div>
                 <Link
-                  href="/account/orders"
+                  href="/account"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2.5 rounded-2xl border border-gold-400/10 bg-ink-soft/40 px-5 py-3 text-sm font-medium text-ivory/70 transition-all hover:border-gold-400/20 hover:bg-gold-400/5 hover:text-gold-200"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-gold-400/15 bg-white/40 py-2.5 text-sm font-medium text-ivory/85 hover:bg-white"
                 >
-                  <Package className="h-4 w-4 shrink-0 text-gold-400/60" />
-                  My Orders
+                  <Package className="h-4 w-4 text-[#a8451a]" />
+                  View Orders
                 </Link>
               </div>
             ) : (
               <Link
-                href="/login"
+                href="/account"
                 onClick={() => setMobileOpen(false)}
-                className="btn-gold flex w-full items-center justify-center gap-2 py-3.5 text-xs font-semibold tracking-widest uppercase"
+                className="btn-gold flex w-full items-center justify-center gap-2 py-3.5 text-sm font-bold uppercase tracking-wider shadow-md"
               >
                 <LogIn className="h-4 w-4" />
-                Login / Register
+                Sign In / Register
               </Link>
             )}
           </div>
         </div>
-
+      </div>
     </>
   );
 }

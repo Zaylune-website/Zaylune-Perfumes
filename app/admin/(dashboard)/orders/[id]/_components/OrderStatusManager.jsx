@@ -8,19 +8,19 @@ const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancel
 const PAYMENT_STATUSES = ["pending", "paid", "failed", "refunded"];
 
 const STATUS_STYLES = {
-  pending: "text-ivory/70",
-  processing: "text-gold-300",
-  shipped: "text-blue-300",
-  delivered: "text-green-300",
-  cancelled: "text-red-300",
-  paid: "text-green-300",
-  failed: "text-red-300",
-  refunded: "text-blue-300",
+  pending: "text-[#2b1d12]/78",
+  processing: "text-[#a8451a]",
+  shipped: "text-blue-700",
+  delivered: "text-green-800",
+  cancelled: "text-red-700",
+  paid: "text-green-800",
+  failed: "text-red-700",
+  refunded: "text-blue-700",
 };
 
 const selectClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-sm capitalize text-ivory transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20 disabled:opacity-50";
-const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-ivory/40";
+  "w-full rounded-xl border border-[#a8451a]/10 bg-white/40 px-4 py-2.5 text-base capitalize text-[#1c1109] transition-colors duration-300 focus:border-[#a8451a]/40 focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/20 disabled:opacity-50";
+const labelClass = "mb-1.5 block text-base font-semibold uppercase tracking-wide text-[#2b1d12]/70";
 
 export default function OrderStatusManager({ order }) {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function OrderStatusManager({ order }) {
           className={`${selectClass} ${STATUS_STYLES[order.order_status] || ""}`}
         >
           {ORDER_STATUSES.map((s) => (
-            <option key={s} value={s} className="bg-ink capitalize text-ivory">{s}</option>
+            <option key={s} value={s} className="bg-white capitalize text-[#1c1109]">{s}</option>
           ))}
         </select>
       </div>
@@ -64,11 +64,11 @@ export default function OrderStatusManager({ order }) {
           className={`${selectClass} ${STATUS_STYLES[order.payment_status] || ""}`}
         >
           {PAYMENT_STATUSES.map((s) => (
-            <option key={s} value={s} className="bg-ink capitalize text-ivory">{s}</option>
+            <option key={s} value={s} className="bg-white capitalize text-[#1c1109]">{s}</option>
           ))}
         </select>
       </div>
-      {pending && <p className="text-sm text-gold-300/70">Updating…</p>}
+      {pending && <p className="text-base text-[#a8451a]/90">Updating…</p>}
     </div>
   );
 }

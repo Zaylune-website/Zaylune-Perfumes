@@ -30,33 +30,39 @@ export default function CategoryRow({ category }) {
         pending={pending}
         label={category.name}
       />
-      <tr className="group/row transition-colors duration-300 hover:bg-white/[0.01]">
+      <tr className="group/row transition-colors duration-300 hover:bg-[#fde3cf]/30">
         <td className="py-4 pr-4 pl-2">
-          <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-gold-400/10 bg-ink-soft group-hover/row:border-gold-400/30 transition-colors duration-300">
-              {category.image_url && <Image src={category.image_url} alt="" fill sizes="44px" className="object-cover transition-transform duration-500 group-hover/row:scale-[1.05]" />}
+          <div className="flex items-center gap-3.5">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/40 shadow-2xs transition-all duration-300 group-hover/row:border-[#a8451a]/40 group-hover/row:shadow-md">
+              {category.image_url && <Image src={category.image_url} alt="" fill sizes="48px" className="object-cover transition-transform duration-500 group-hover/row:scale-[1.08]" />}
             </div>
-            <span className="text-sm font-medium text-ivory group-hover/row:text-gold-200 transition-colors duration-300">{category.name}</span>
+            <span className="text-sm font-bold text-[#1c1109] transition-colors duration-300 group-hover/row:text-[#a8451a]">{category.name}</span>
           </div>
         </td>
-        <td className="py-4 pr-4 text-sm font-mono text-ivory/40">{category.slug}</td>
+        <td className="py-4 pr-4">
+          <span className="inline-block rounded-lg border border-[#a8451a]/15 bg-white px-2.5 py-1 font-mono text-xs text-[#2b1d12]/75">{category.slug}</span>
+        </td>
         <td className="py-4 pr-4">
           <span
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold border ${
+            className={`inline-flex min-w-[2rem] items-center justify-center rounded-full border px-2.5 py-1 text-xs font-bold ${
               category.product_count === 0
-                ? "bg-red-500/10 text-red-300 border-red-500/20"
-                : "bg-ivory/5 text-ivory/60 border-ivory/10"
+                ? "border-rose-500/30 bg-rose-50 text-rose-700"
+                : "border-[#a8451a]/25 bg-[#fde3cf]/50 text-[#a8451a]"
             }`}
           >
             {category.product_count}
           </span>
         </td>
         <td className="py-4 pr-4">
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold tracking-wider uppercase border ${
+          <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
             category.is_active
-              ? "bg-green-500/10 text-green-300 border-green-500/20"
-              : "bg-ivory/5 text-ivory/40 border-ivory/10"
+              ? "border-emerald-500/30 bg-emerald-50 text-emerald-800"
+              : "border-[#a8451a]/20 bg-white text-[#2b1d12]/70"
           }`}>
+            <span className="relative flex h-1.5 w-1.5">
+              {category.is_active && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />}
+              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${category.is_active ? "bg-emerald-500" : "bg-[#a8451a]/40"}`} />
+            </span>
             {category.is_active ? "Active" : "Hidden"}
           </span>
         </td>
@@ -64,7 +70,7 @@ export default function CategoryRow({ category }) {
           <div className="flex items-center justify-end gap-1.5">
             <Link
               href={`/admin/categories/${category.id}/edit`}
-              className="rounded-xl p-2.5 text-ivory/40 hover:text-gold-300 hover:bg-gold-400/10 border border-transparent hover:border-gold-400/10 transition-all duration-300"
+              className="rounded-xl border border-transparent p-2.5 text-[#a8451a]/70 transition-all duration-300 hover:border-[#a8451a]/25 hover:bg-[#fde3cf]/60 hover:text-[#a8451a]"
               title="Edit"
             >
               <Pencil className="h-4 w-4" />
@@ -72,7 +78,7 @@ export default function CategoryRow({ category }) {
             <button
               onClick={() => setModalOpen(true)}
               disabled={pending}
-              className="rounded-xl p-2.5 border border-transparent text-ivory/40 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 disabled:opacity-40"
+              className="rounded-xl border border-transparent p-2.5 text-[#a8451a]/70 transition-all duration-300 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"
               title="Delete"
             >
               <Trash2 className="h-4 w-4" />

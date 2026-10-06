@@ -23,7 +23,7 @@ export default function DeleteOrderButton({ orderId, orderNumber }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/8 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-200 hover:border-red-500/40 hover:bg-red-500/15 hover:text-red-300"
+        className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/8 px-4 py-2.5 text-sm font-medium text-red-600 transition-all duration-200 hover:border-red-500/40 hover:bg-red-500/15 hover:text-red-700"
       >
         <Trash2 className="h-4 w-4" />
         Delete Order
@@ -38,33 +38,33 @@ export default function DeleteOrderButton({ orderId, orderNumber }) {
           />
 
           {/* Modal */}
-          <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-red-500/20 bg-gradient-to-b from-[#1a0f0f] via-[#120a0a] to-[#0b0808] p-8 shadow-2xl">
+          <div className="relative z-10 w-full max-w-md rounded-3xl border border-red-500/20 bg-gradient-to-b from-[#fdf0ee] via-[#fbe3df] to-[#f6d2cb] p-8 shadow-sm">
             {/* Glow */}
-            <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(239,68,68,0.06),transparent_65%)]" />
+            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_top,rgba(239,68,68,0.06),transparent_65%)]" />
 
             <button
               onClick={() => setOpen(false)}
               disabled={pending}
-              className="absolute right-5 top-5 rounded-full p-1.5 text-ivory/40 transition-colors hover:text-ivory disabled:opacity-40"
+              className="absolute right-5 top-5 rounded-full p-1.5 text-[#2b1d12]/70 transition-colors hover:text-[#1c1109] disabled:opacity-40"
             >
               <X className="h-4 w-4" />
             </button>
 
             <div className="relative flex flex-col items-center text-center">
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-red-500/25 bg-red-500/10">
-                <AlertTriangle className="h-7 w-7 text-red-400" />
+                <AlertTriangle className="h-7 w-7 text-red-600" />
               </div>
 
-              <h2 className="font-display text-2xl font-light text-ivory">Delete Order?</h2>
-              <p className="mt-2 text-sm text-ivory/50">
-                Order <span className="font-semibold text-ivory/80">{orderNumber}</span> will be permanently deleted. This cannot be undone.
+              <h2 className="font-display text-2xl font-medium text-[#1c1109]">Delete Order?</h2>
+              <p className="mt-2 text-sm text-[#2b1d12]/72">
+                Order <span className="font-semibold text-[#2b1d12]/82">{orderNumber}</span> will be permanently deleted. This cannot be undone.
               </p>
 
               <div className="mt-7 flex w-full gap-3">
                 <button
                   onClick={() => setOpen(false)}
                   disabled={pending}
-                  className="flex-1 rounded-2xl border border-gold-400/15 bg-ink-soft/40 py-3 text-sm font-medium text-ivory/60 transition-colors hover:text-ivory disabled:opacity-40"
+                  className="flex-1 rounded-2xl border border-[#a8451a]/15 bg-[#fde3cf]/40 py-3 text-sm font-medium text-[#2b1d12]/75 transition-colors hover:text-[#1c1109] disabled:opacity-40"
                 >
                   Cancel
                 </button>

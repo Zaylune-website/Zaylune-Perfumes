@@ -1,18 +1,18 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
-import { Banknote, CreditCard, CheckCircle2, Check, Minus, Plus } from "lucide-react";
+import { Banknote, CreditCard, CheckCircle2, Check, Minus, Plus, ShoppingBag, Sparkles, ShieldCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
 import { processCheckout, verifyRazorpayPayment, validateCoupon } from "@/actions/checkout";
 import { calculateQuantityDiscount, calculateBundleDiscount, nonBundleCartQuantity } from "@/lib/constants";
 
 const inputClass =
-  "w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-5 py-4 text-base text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-300/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-2 block text-xs font-semibold uppercase tracking-widest text-gold-300/85";
+  "w-full rounded-2xl border border-[#a8451a]/25 bg-white px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 shadow-2xs hover:border-[#a8451a]/45";
+const labelClass = "mb-2 block text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]";
 
 export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, quantityDiscount, bundleSettings, couponHints = [] }) {
   const { cart, cartSubtotal, cartCount, clearCart, updateQuantity } = useCart();
@@ -57,13 +57,56 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
     showToast("Coupon applied!");
   };
 
+  const handlePhoneChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length === 12 && val.startsWith("91")) {
+      val = val.slice(2);
+    } else if (val.length === 11 && val.startsWith("0")) {
+      val = val.slice(1);
+    }
+    val = val.slice(0, 10);
+    setForm((f) => ({ ...f, phone: val }));
+
+    if (errors.phone) {
+      if (val.length === 10 && /^[6-9][0-9]{9}$/.test(val)) {
+        setErrors((err) => ({ ...err, phone: "" }));
+      }
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const val = (form.phone || "").replace(/\D/g, "");
+    if (!val) {
+      setErrors((err) => ({ ...err, phone: "Phone number is required." }));
+    } else if (val.length < 10) {
+      setErrors((err) => ({ ...err, phone: `Phone number must be exactly 10 digits (${val.length}/10 entered).` }));
+    } else if (!/^[6-9][0-9]{9}$/.test(val)) {
+      setErrors((err) => ({ ...err, phone: "Enter a valid 10-digit mobile number starting with 6-9." }));
+    } else {
+      setErrors((err) => ({ ...err, phone: "" }));
+    }
+  };
+
+  const handlePostalCodeChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+    setForm((f) => ({ ...f, postalCode: val }));
+    if (errors.postalCode && val.length === 6) {
+      setErrors((err) => ({ ...err, postalCode: "" }));
+    }
+  };
+
   const validateForm = () => {
     let tempErrors = {};
     if (!form.fullName || form.fullName.trim().length < 3 || !/^[a-zA-Z\s]*$/.test(form.fullName)) {
       tempErrors.fullName = "Name must only contain letters and spaces (min. 3 characters).";
     }
-    if (!form.phone || !/^[6-9][0-9]{9}$/.test(form.phone)) {
-      tempErrors.phone = "Enter a valid 10-digit Indian phone number.";
+    const cleanPhone = (form.phone || "").replace(/\D/g, "");
+    if (!cleanPhone) {
+      tempErrors.phone = "Phone number is required.";
+    } else if (cleanPhone.length !== 10) {
+      tempErrors.phone = `Phone number must be exactly 10 digits (${cleanPhone.length}/10 entered).`;
+    } else if (!/^[6-9][0-9]{9}$/.test(cleanPhone)) {
+      tempErrors.phone = "Enter a valid 10-digit mobile number starting with 6-9.";
     }
     if (!form.addressLine1 || form.addressLine1.trim() === "") {
       tempErrors.addressLine1 = "Address is required.";
@@ -150,8 +193,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
           response.razorpay_payment_id,
           response.razorpay_order_id,
           response.razorpay_signature,
-          result.orderId,
-          cartForServer()
+          result.orderId
         );
         if (verify.success) {
           clearCart();
@@ -160,44 +202,148 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
           showToast(verify.error || "Payment verification failed.", "error");
         }
       },
-      theme: { color: "#caa14b" },
+      theme: { color: "#c04a1c" },
     });
     rzp.open();
   };
 
   if (confirmedOrder) {
-    return (
-      <div className="relative overflow-hidden rounded-[2.5rem] border border-gold-400/15 bg-gradient-to-b from-[#120f0d]/95 via-[#0b0a0a]/95 to-[#080707]/98 px-10 sm:px-16 pt-6 sm:pt-8 pb-10 sm:pb-16 text-center shadow-2xl backdrop-blur-xl">
-        {/* Decorative glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(202,161,75,0.1),transparent_65%)] pointer-events-none" />
-        <div className="absolute -left-20 -top-20 w-72 h-72 rounded-full bg-gold-400/10 blur-[100px] pointer-events-none" />
-        <div className="absolute -right-16 -bottom-16 w-72 h-72 rounded-full bg-gold-300/10 blur-[100px] pointer-events-none" />
+    const burstDots = [
+      { x: -96, y: -64, d: 0, c: "#d4a359" },
+      { x: 96, y: -64, d: 80, c: "#c04a1c" },
+      { x: -128, y: 8, d: 160, c: "#d4a359" },
+      { x: 128, y: 8, d: 120, c: "#c04a1c" },
+      { x: -64, y: -112, d: 200, c: "#e69854" },
+      { x: 64, y: -112, d: 40, c: "#d4a359" },
+      { x: 0, y: -128, d: 240, c: "#c04a1c" },
+      { x: -104, y: 56, d: 280, c: "#e69854" },
+      { x: 104, y: 56, d: 320, c: "#d4a359" },
+    ];
 
-        <div className="relative">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-gold-400/30 bg-gold-400/10 shadow-[0_0_40px_rgba(212,163,89,0.2)]">
-            <CheckCircle2 className="h-8 w-8 text-gold-300" strokeWidth={1.5} />
+    return (
+      <div className="order-success-anim relative overflow-hidden rounded-[2.5rem] border border-[#a8451a]/25 bg-white/90 px-8 sm:px-16 pt-10 sm:pt-14 pb-12 sm:pb-18 text-center shadow-xl backdrop-blur-xl animate-fadeUp">
+        <style>{`
+          @keyframes osPopIn { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+          @keyframes osHalo { 0% { transform: scale(0.9); opacity: 0.6; } 100% { transform: scale(2); opacity: 0; } }
+          @keyframes osBurst { 0% { transform: translate(0, 0) scale(0.2); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; } }
+          @keyframes osLetter { 0% { opacity: 0; transform: translateY(0.7em) scale(0.85); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+          @keyframes osRise { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: translateY(0); } }
+          @keyframes osShine { 0% { transform: translateX(-120%); } 100% { transform: translateX(220%); } }
+          @keyframes osBar { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+          @media (prefers-reduced-motion: reduce) {
+            .order-success-anim, .order-success-anim * { animation: none !important; }
+          }
+        `}</style>
+
+        <div className="pointer-events-none absolute -left-20 -top-20 w-72 h-72 rounded-full bg-[#c04a1c]/[0.08] blur-[100px]" />
+        <div className="pointer-events-none absolute -right-16 -bottom-16 w-72 h-72 rounded-full bg-[#d4a359]/[0.10] blur-[100px]" />
+
+        <div className="relative z-10">
+          <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center">
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-full border-2 border-emerald-500/50"
+              style={{ animation: "osHalo 1.8s ease-out 0.5s infinite" }}
+            />
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-full border-2 border-emerald-500/40"
+              style={{ animation: "osHalo 1.8s ease-out 1.4s infinite" }}
+            />
+            {burstDots.map((dot, i) => (
+              <span
+                key={i}
+                aria-hidden
+                className="absolute left-1/2 top-1/2 h-2 w-2 -ml-1 -mt-1 rounded-full"
+                style={{
+                  background: dot.c,
+                  "--x": `${dot.x}px`,
+                  "--y": `${dot.y}px`,
+                  animation: `osBurst 1.1s cubic-bezier(.22,1,.36,1) ${300 + dot.d}ms both`,
+                }}
+              />
+            ))}
+            <div
+              className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-50 text-emerald-600 shadow-md"
+              style={{ animation: "osPopIn 0.7s cubic-bezier(.34,1.56,.64,1) 0.15s both" }}
+            >
+              <CheckCircle2 className="h-10 w-10 text-emerald-600 stroke-[2.5]" />
+            </div>
           </div>
 
-          <p className="eyebrow justify-center text-sm">
-            <span className="gold-line" /> Order Confirmed
-          </p>
-          <h2 className="font-display mt-4 text-4xl sm:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">
-            Thank You!
+          <div
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-50/80 px-4 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800 mb-4 shadow-2xs"
+            style={{ animation: "osRise 0.6s cubic-bezier(.22,1,.36,1) 0.45s both" }}
+          >
+            <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+            <span>Order Confirmed</span>
+          </div>
+
+          <h2 className="font-display text-4xl sm:text-6xl font-extrabold text-[#1c1109]">
+            {"Thank".split("").map((ch, i) => (
+              <span
+                key={`a${i}`}
+                className="inline-block"
+                style={{ animation: `osLetter 0.6s cubic-bezier(.22,1,.36,1) ${600 + i * 70}ms both` }}
+              >
+                {ch}
+              </span>
+            ))}
+            <span className="inline-block" style={{ width: "0.3em" }} />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+              {"You!".split("").map((ch, i) => (
+                <span
+                  key={`b${i}`}
+                  className="inline-block"
+                  style={{ animation: `osLetter 0.6s cubic-bezier(.22,1,.36,1) ${1000 + i * 70}ms both` }}
+                >
+                  {ch}
+                </span>
+              ))}
+            </span>
           </h2>
-          <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
-          <p className="mt-8 text-base sm:text-xl text-ivory/60 font-light max-w-xl mx-auto leading-relaxed">
-            Your order <span className="font-semibold text-gold-300">{confirmedOrder.orderNumber}</span> has been placed successfully.
+          <div
+            className="mx-auto mt-4 h-1.5 w-24 origin-center rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-transparent"
+            style={{ animation: "osBar 0.8s cubic-bezier(.22,1,.36,1) 1.3s both" }}
+          />
+
+          <p
+            className="mt-6 text-base sm:text-xl text-[#2b1d12]/90 font-normal max-w-xl mx-auto leading-relaxed"
+            style={{ animation: "osRise 0.7s cubic-bezier(.22,1,.36,1) 1.4s both" }}
+          >
+            Your order{" "}
+            <span className="relative inline-block overflow-hidden align-baseline">
+              <span className="font-bold text-[#c04a1c] select-all">{confirmedOrder.orderNumber}</span>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/80 to-transparent"
+                style={{ animation: "osShine 1.4s ease-in-out 1.9s both" }}
+              />
+            </span>{" "}
+            has been placed successfully.
           </p>
           {confirmedOrder.paymentId && (
-            <p className="mt-3 text-sm text-ivory/40">
-              Payment ID: <span className="font-mono text-ivory/60 select-all">{confirmedOrder.paymentId}</span>
+            <p
+              className="mt-2 text-sm text-[#2b1d12]/70 font-medium"
+              style={{ animation: "osRise 0.7s cubic-bezier(.22,1,.36,1) 1.6s both" }}
+            >
+              Payment ID: <span className="font-mono font-bold text-[#1c1109] select-all">{confirmedOrder.paymentId}</span>
             </p>
           )}
+
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/shop" className="btn-gold inline-flex w-full sm:w-fit px-10 py-4 text-sm font-semibold tracking-wide hover:scale-[1.02] transition-transform">
+            <Link
+              href="/shop"
+              style={{ animation: "osRise 0.6s cubic-bezier(.22,1,.36,1) 1.8s both" }}
+              className="w-full sm:w-auto rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] px-9 py-4 text-sm sm:text-base font-bold uppercase tracking-wider text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all text-center"
+            >
               Continue Shopping
             </Link>
-            <Link href="/account" className="btn-outline inline-flex w-full sm:w-fit px-10 py-4 text-sm font-semibold tracking-wide hover:scale-[1.02] transition-transform">
+            <Link
+              href="/account"
+              style={{ animation: "osRise 0.6s cubic-bezier(.22,1,.36,1) 1.95s both" }}
+              className="w-full sm:w-auto rounded-full border-2 border-[#a8451a]/30 bg-white/90 px-9 py-4 text-sm sm:text-base font-bold uppercase tracking-wider text-[#a8451a] shadow-xs hover:border-[#a8451a] hover:bg-white active:scale-95 transition-all text-center"
+            >
               My Orders
             </Link>
           </div>
@@ -208,10 +354,19 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
 
   if (cart.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-ink-line py-24 text-center">
-        <p className="font-display text-xl sm:text-2xl text-ivory/70">Your bag is empty</p>
-        <Link href="/shop" className="btn-gold mt-6 inline-flex w-full sm:w-fit px-8 py-4 text-sm font-medium">
-          Explore the Shop
+      <div className="rounded-3xl border border-[#a8451a]/20 bg-white/85 p-12 sm:p-16 text-center shadow-sm backdrop-blur-xl">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-white to-[#fde3cf] border border-[#a8451a]/25 shadow-lg">
+          <ShoppingBag className="h-10 w-10 text-[#c04a1c]" />
+        </div>
+        <p className="font-display text-2xl sm:text-3xl font-extrabold text-[#1c1109]">Your bag is empty</p>
+        <p className="mt-2 text-base text-[#2b1d12]/75 max-w-sm mx-auto">
+          Add some of our artisan fragrances to your bag before checking out.
+        </p>
+        <Link
+          href="/shop"
+          className="mt-8 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] px-9 py-4 text-sm sm:text-base font-bold uppercase tracking-wider text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all"
+        >
+          Explore Fragrances
         </Link>
       </div>
     );
@@ -221,214 +376,304 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
     <>
       {razorpayEnabled && <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />}
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px]">
-        <form onSubmit={handleSubmit} noValidate className="space-y-6">
-          <h2 className="font-display text-xl sm:text-2xl uppercase tracking-widest text-gold-300/85">Shipping Details</h2>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelClass}>Full Name</label>
-              <input 
-                required 
-                placeholder="Full Name" 
-                value={form.fullName} 
-                onChange={update("fullName")} 
-                minLength={3}
-                pattern="^[a-zA-Z\s]*$"
-                title="Name must only contain letters and spaces, at least 3 characters."
-                className={inputClass} 
-              />
-              {errors.fullName && <p className="text-red-400 text-sm mt-1.5">{errors.fullName}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Phone Number</label>
-              <input 
-                required 
-                type="tel"
-                placeholder="10-Digit Phone Number" 
-                value={form.phone} 
-                onChange={update("phone")} 
-                maxLength={10}
-                pattern="[6-9][0-9]{9}"
-                title="Enter a valid 10-digit Indian phone number starting with 6-9."
-                className={inputClass} 
-              />
-              {errors.phone && <p className="text-red-400 text-sm mt-1.5">{errors.phone}</p>}
-            </div>
-          </div>
-
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_400px] items-start">
+        {/* Left Form: Shipping Details & Payment */}
+        <form onSubmit={handleSubmit} noValidate className="rounded-3xl border border-[#a8451a]/20 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-sm backdrop-blur-xl space-y-8">
           <div>
-            <label className={labelClass}>Address Line 1</label>
-            <input required placeholder="Flat, House no., Building, Street, Area" value={form.addressLine1} onChange={update("addressLine1")} className={inputClass} />
-            {errors.addressLine1 && <p className="text-red-400 text-sm mt-1.5">{errors.addressLine1}</p>}
-          </div>
-          
-          <div>
-            <label className={labelClass}>Address Line 2 (Optional)</label>
-            <input placeholder="Landmark, Suite, Unit, etc." value={form.addressLine2} onChange={update("addressLine2")} className={inputClass} />
-          </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white px-3.5 py-1 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs mb-3">
+              <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+              <span>Delivery Address</span>
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#1c1109]">
+              Shipping Details
+            </h2>
+            <div className="mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-transparent mb-6" />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label className={labelClass}>City</label>
-              <input required placeholder="City" value={form.city} onChange={update("city")} className={inputClass} />
-              {errors.city && <p className="text-red-400 text-sm mt-1.5">{errors.city}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>State</label>
-              <input required placeholder="State" value={form.state} onChange={update("state")} className={inputClass} />
-              {errors.state && <p className="text-red-400 text-sm mt-1.5">{errors.state}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>PIN Code</label>
-              <input 
-                required 
-                placeholder="6-digit PIN code" 
-                value={form.postalCode} 
-                onChange={update("postalCode")} 
-                maxLength={6}
-                pattern="[0-9]{6}"
-                title="Enter a valid 6-digit PIN code."
-                className={inputClass} 
-              />
-              {errors.postalCode && <p className="text-red-400 text-sm mt-1.5">{errors.postalCode}</p>}
-            </div>
-          </div>
-
-          <h2 className="pt-4 font-display text-xl sm:text-2xl uppercase tracking-widest text-gold-300/85">Payment Method</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {codEnabled && (
-              <label
-                className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-500 hover:-translate-y-0.5 ${
-                  paymentMethod === "COD"
-                    ? "border-gold-400/60 bg-gold-400/5 shadow-[0_0_20px_rgba(212,163,89,0.05)]"
-                    : "border-gold-400/10 bg-ink/20 hover:border-gold-400/30"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="pm"
-                  checked={paymentMethod === "COD"}
-                  onChange={() => setPaymentMethod("COD")}
-                  className="sr-only"
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass}>Full Name</label>
+                <input 
+                  required 
+                  placeholder="e.g. Rahul Sharma" 
+                  value={form.fullName} 
+                  onChange={update("fullName")} 
+                  minLength={3}
+                  pattern="^[a-zA-Z\s]*$"
+                  title="Name must only contain letters and spaces, at least 3 characters."
+                  className={inputClass} 
                 />
-                
-                {/* Custom Radio Ring */}
-                <div className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                  paymentMethod === "COD" ? "border-gold-400 bg-gold-400" : "border-gold-400/30"
-                }`}>
-                  <Check className={`h-3 w-3 text-ink transition-all duration-300 ${paymentMethod === "COD" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} strokeWidth={3} />
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2">
-                    <Banknote className={`h-5 w-5 ${paymentMethod === "COD" ? "text-gold-300" : "text-ivory/40 group-hover:text-gold-300/80"} transition-colors duration-300`} />
-                    <span className="font-semibold text-base text-ivory tracking-wide">Cash on Delivery</span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-ivory/40 font-light">Pay when your order arrives (₹{shipping.cod_charge} COD fee applies).</p>
-                </div>
-              </label>
-            )}
-
-            {razorpayEnabled && (
-              <label
-                className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-500 hover:-translate-y-0.5 ${
-                  paymentMethod === "RAZORPAY"
-                    ? "border-gold-400/60 bg-gold-400/5 shadow-[0_0_20px_rgba(212,163,89,0.05)]"
-                    : "border-gold-400/10 bg-ink/20 hover:border-gold-400/30"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="pm"
-                  checked={paymentMethod === "RAZORPAY"}
-                  onChange={() => setPaymentMethod("RAZORPAY")}
-                  className="sr-only"
-                />
-
-                {/* Custom Radio Ring */}
-                <div className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                  paymentMethod === "RAZORPAY" ? "border-gold-400 bg-gold-400" : "border-gold-400/30"
-                }`}>
-                  <Check className={`h-3 w-3 text-ink transition-all duration-300 ${paymentMethod === "RAZORPAY" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} strokeWidth={3} />
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className={`h-5 w-5 ${paymentMethod === "RAZORPAY" ? "text-gold-300" : "text-ivory/40 group-hover:text-gold-300/80"} transition-colors duration-300`} />
-                    <span className="font-semibold text-base text-ivory tracking-wide">Pay Online</span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-ivory/40 font-light">Cards, UPI, and netbanking via Razorpay.</p>
-                </div>
-              </label>
-            )}
-
-            {!codEnabled && !razorpayEnabled && (
-              <div className="sm:col-span-2 flex items-center gap-2 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-300">
-                <span className="h-2 w-2 rounded-full bg-red-400 animate-pulse shrink-0" />
-                Checkout is temporarily unavailable — please contact us on WhatsApp to place your order.
+                {errors.fullName && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.fullName}</p>}
               </div>
-            )}
+              <div>
+                <label className={labelClass}>Phone Number</label>
+                <div className="relative">
+                  <input 
+                    required 
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="10-Digit Mobile Number" 
+                    value={form.phone} 
+                    onChange={handlePhoneChange} 
+                    onBlur={handlePhoneBlur}
+                    maxLength={10}
+                    className={`${inputClass} ${errors.phone ? "!border-rose-500 !ring-rose-500/20" : ""}`} 
+                  />
+                  {form.phone && form.phone.length > 0 && (
+                    <span className={`absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono font-bold pointer-events-none select-none ${
+                      form.phone.length === 10 ? "text-emerald-700" : "text-[#a8451a]/60"
+                    }`}>
+                      {form.phone.length}/10
+                    </span>
+                  )}
+                </div>
+                {errors.phone && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.phone}</p>}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className={labelClass}>Address Line 1</label>
+              <input 
+                required 
+                placeholder="Flat, House no., Building, Street, Area" 
+                value={form.addressLine1} 
+                onChange={update("addressLine1")} 
+                className={inputClass} 
+              />
+              {errors.addressLine1 && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.addressLine1}</p>}
+            </div>
+            
+            <div className="mt-4">
+              <label className={labelClass}>Address Line 2 (Optional)</label>
+              <input 
+                placeholder="Landmark, Suite, Unit, etc." 
+                value={form.addressLine2} 
+                onChange={update("addressLine2")} 
+                className={inputClass} 
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label className={labelClass}>City</label>
+                <input 
+                  required 
+                  placeholder="City" 
+                  value={form.city} 
+                  onChange={update("city")} 
+                  className={inputClass} 
+                />
+                {errors.city && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.city}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>State</label>
+                <input 
+                  required 
+                  placeholder="State" 
+                  value={form.state} 
+                  onChange={update("state")} 
+                  className={inputClass} 
+                />
+                {errors.state && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.state}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>PIN Code</label>
+                <input 
+                  required 
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="6-digit PIN" 
+                  value={form.postalCode} 
+                  onChange={handlePostalCodeChange} 
+                  maxLength={6}
+                  className={`${inputClass} ${errors.postalCode ? "!border-rose-500 !ring-rose-500/20" : ""}`} 
+                />
+                {errors.postalCode && <p className="text-rose-600 text-sm font-semibold mt-1.5">{errors.postalCode}</p>}
+              </div>
+            </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting || !paymentMethod}
-            className="btn-gold group w-full sm:w-fit px-10 py-5 text-sm font-semibold tracking-widest uppercase disabled:opacity-60 shadow-[0_4px_20px_rgba(212,163,89,0.12)] hover:shadow-[0_4px_25px_rgba(212,163,89,0.25)] hover:-translate-y-0.5 transition-all duration-300 mt-4 text-center"
-          >
-            {submitting ? "Placing Order…" : `Place Order — ₹${total.toLocaleString("en-IN")}`}
-          </button>
+          <div className="pt-6 border-t border-[#a8451a]/15">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white px-3.5 py-1 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs mb-3">
+              <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+              <span>Payment Option</span>
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#1c1109]">
+              Payment Method
+            </h2>
+            <div className="mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-transparent mb-6" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {codEnabled && (
+                <label
+                  className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
+                    paymentMethod === "COD"
+                      ? "border-2 border-[#c04a1c] bg-gradient-to-br from-white to-[#fff8f2] shadow-md ring-2 ring-[#c04a1c]/15"
+                      : "border border-[#a8451a]/20 bg-white/70 hover:border-[#a8451a]/40 hover:bg-white"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="pm"
+                    checked={paymentMethod === "COD"}
+                    onChange={() => setPaymentMethod("COD")}
+                    className="sr-only"
+                  />
+                  
+                  {/* Custom Radio Ring */}
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                    paymentMethod === "COD" ? "border-[#c04a1c] bg-gradient-to-br from-[#8e3510] to-[#c04a1c]" : "border-[#a8451a]/30 bg-white"
+                  }`}>
+                    <Check className={`h-3 w-3 text-white transition-all duration-300 ${paymentMethod === "COD" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} strokeWidth={3} />
+                  </div>
+
+                  <div className="flex min-w-0 flex-1 items-start gap-3.5">
+                    <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
+                      paymentMethod === "COD"
+                        ? "border-transparent bg-gradient-to-br from-[#8e3510] to-[#c04a1c] text-white shadow-md"
+                        : "border-[#a8451a]/25 bg-[#fde3cf]/50 text-[#c04a1c]"
+                    }`}>
+                      <Banknote className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0 space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-display text-base font-extrabold text-[#1c1109]">Cash on Delivery</span>
+                        <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                          Number(shipping.cod_charge) > 0
+                            ? "border-[#a8451a]/25 bg-white text-[#a8451a]"
+                            : "border-emerald-500/30 bg-emerald-50 text-emerald-800"
+                        }`}>
+                          {Number(shipping.cod_charge) > 0 ? `+₹${shipping.cod_charge} fee` : "No extra fee"}
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed text-[#2b1d12]/75 font-normal">
+                        Pay in cash when your parcel arrives at your door.
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              )}
+
+              {razorpayEnabled && (
+                <label
+                  className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
+                    paymentMethod === "RAZORPAY"
+                      ? "border-2 border-[#c04a1c] bg-gradient-to-br from-white to-[#fff8f2] shadow-md ring-2 ring-[#c04a1c]/15"
+                      : "border border-[#a8451a]/20 bg-white/70 hover:border-[#a8451a]/40 hover:bg-white"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="pm"
+                    checked={paymentMethod === "RAZORPAY"}
+                    onChange={() => setPaymentMethod("RAZORPAY")}
+                    className="sr-only"
+                  />
+
+                  {/* Custom Radio Ring */}
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                    paymentMethod === "RAZORPAY" ? "border-[#c04a1c] bg-gradient-to-br from-[#8e3510] to-[#c04a1c]" : "border-[#a8451a]/30 bg-white"
+                  }`}>
+                    <Check className={`h-3 w-3 text-white transition-all duration-300 ${paymentMethod === "RAZORPAY" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} strokeWidth={3} />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className={`h-5 w-5 ${paymentMethod === "RAZORPAY" ? "text-[#c04a1c]" : "text-[#2b1d12]/70 group-hover:text-[#a8451a]"} transition-colors duration-300`} />
+                      <span className="font-bold text-base text-[#1c1109] tracking-wide">Pay Online</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-[#2b1d12]/75 font-normal">Cards, UPI, and Netbanking via Razorpay.</p>
+                  </div>
+                </label>
+              )}
+
+              {!codEnabled && !razorpayEnabled && (
+                <div className="sm:col-span-2 flex items-center gap-2 rounded-2xl border border-rose-500/25 bg-rose-50/80 p-4 text-sm text-rose-800">
+                  <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
+                  Checkout is temporarily unavailable — please contact us on WhatsApp to place your order.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center sm:items-center gap-3.5 sm:gap-5">
+            <button
+              type="submit"
+              disabled={submitting || !paymentMethod}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] py-3.5 sm:py-4 px-6 sm:px-8 text-sm sm:text-base font-bold tracking-wider uppercase text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap"
+            >
+              <Sparkles className="h-4 w-4 shrink-0" />
+              <span>{submitting ? "Placing Order…" : `Place Order — ₹${total.toLocaleString("en-IN")}`}</span>
+            </button>
+            <p className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[#2b1d12]/75 font-medium text-center sm:text-left">
+              <ShieldCheck className="h-4 w-4 text-[#a8451a] shrink-0" />
+              <span>100% Encrypted &amp; Secure Order</span>
+            </p>
+          </div>
         </form>
 
-        <div className="relative rounded-[2.5rem] border border-gold-400/10 bg-gradient-to-b from-[#120f0d]/95 via-[#0b0a0a]/95 to-[#080707]/98 p-6 sm:p-8 space-y-5 backdrop-blur-xl shadow-2xl h-fit">
-          {/* Subtle radial backdrop to echo the About page's glass panels */}
-          <div className="absolute inset-0 rounded-[2.5rem] bg-[radial-gradient(circle_at_top,rgba(202,161,75,0.06),transparent_70%)] pointer-events-none" />
+        {/* Right Sticky Order Summary */}
+        <div className="relative rounded-3xl border border-[#a8451a]/25 bg-white/85 p-6 sm:p-8 space-y-6 backdrop-blur-xl shadow-lg h-fit lg:sticky lg:top-28">
+          <div className="flex items-center gap-2 border-b border-[#a8451a]/15 pb-4">
+            <ShoppingBag className="h-5 w-5 text-[#c04a1c]" />
+            <h2 className="font-display text-xl sm:text-2xl font-extrabold text-[#1c1109]">
+              Order Summary
+            </h2>
+            <span className="ml-auto inline-flex items-center justify-center rounded-full bg-[#a8451a]/10 border border-[#a8451a]/25 px-2.5 py-0.5 text-xs font-bold text-[#a8451a]">
+              {cartCount} {cartCount === 1 ? "item" : "items"}
+            </span>
+          </div>
 
-          <h2 className="relative font-display text-xl sm:text-2xl uppercase tracking-widest text-gold-300/85">Order Summary</h2>
-          <ul className="relative space-y-4">
+          <ul className="space-y-4 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
             {cart.map((item) => (
-              <li key={item.variantId} className="flex gap-4 items-center pb-4 border-b border-gold-400/5 last:border-b-0 last:pb-0">
+              <li key={item.variantId} className="flex gap-4 items-center pb-4 border-b border-[#a8451a]/10 last:border-b-0 last:pb-0">
                 {/* Product Thumbnail */}
-                <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-gold-400/10 bg-ink-soft shadow-sm">
-                  {item.image && (
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[#a8451a]/20 bg-[#fff8f2] shadow-2xs">
+                  {item.image ? (
                     <Image
                       src={item.image}
                       alt={item.name}
                       fill
-                      sizes="60px"
+                      sizes="64px"
                       className="object-cover"
                     />
+                  ) : (
+                    <div className="flex h-full items-center justify-center bg-[#fde3cf]/40">
+                      <ShoppingBag className="h-6 w-6 text-[#a8451a]/40" />
+                    </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                 </div>
+
                 {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <h4 className="truncate text-base font-medium text-ivory">{item.name}</h4>
+                  <h4 className="truncate text-base font-bold text-[#1c1109]">{item.name}</h4>
                   {item.variantName && (
-                    <span className="text-sm text-ivory/40">{item.variantName}</span>
+                    <span className="mt-0.5 inline-block text-xs font-semibold text-[#a8451a]">
+                      {item.variantName}
+                    </span>
                   )}
                   <div className="flex items-center justify-between mt-2">
-                    <div className="flex items-center gap-3 rounded-full border border-gold-400/15 bg-ink/30 px-3 py-1 backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5 rounded-full border border-[#a8451a]/25 bg-[#fffaf5] px-2.5 py-0.5 shadow-2xs">
                       <button
                         type="button"
                         onClick={() => item.quantity > 1 && updateQuantity(item.variantId, item.quantity - 1)}
                         disabled={item.quantity <= 1}
-                        className="text-ivory/50 hover:text-gold-300 transition-colors p-0.5 disabled:opacity-30 disabled:hover:text-ivory/50"
+                        className="text-[#2b1d12]/70 hover:text-[#a8451a] transition-colors p-0.5 disabled:opacity-30"
                         aria-label="Decrease quantity"
                       >
-                        <Minus className="h-3 w-3" />
+                        <Minus className="h-3 w-3 stroke-[2.5]" />
                       </button>
-                      <span className="w-4 text-center text-xs font-semibold text-ivory">{item.quantity}</span>
+                      <span className="w-4 text-center text-xs font-extrabold text-[#1c1109]">{item.quantity}</span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                        className="text-ivory/50 hover:text-gold-300 transition-colors p-0.5"
+                        className="text-[#2b1d12]/70 hover:text-[#a8451a] transition-colors p-0.5"
                         aria-label="Increase quantity"
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-3 w-3 stroke-[2.5]" />
                       </button>
                     </div>
-                    <span className="text-base font-semibold text-gold-200">
+                    <span className="text-base font-bold text-[#1c1109]">
                       ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -437,73 +682,91 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             ))}
           </ul>
 
-          <div className="relative space-y-2 border-t border-gold-400/10 pt-4 text-base">
-            <div className="flex justify-between text-ivory/50 font-light">
+          <div className="space-y-2.5 border-t border-[#a8451a]/15 pt-4 text-sm sm:text-base">
+            <div className="flex justify-between text-[#2b1d12]/80 font-normal">
               <span>Subtotal</span>
-              <span className="text-ivory font-medium">₹{cartSubtotal.toLocaleString("en-IN")}</span>
+              <span className="text-[#1c1109] font-bold">₹{cartSubtotal.toLocaleString("en-IN")}</span>
             </div>
-            <div className="flex justify-between text-ivory/50 font-light">
+            <div className="flex justify-between text-[#2b1d12]/80 font-normal">
               <span>Shipping</span>
-              <span className="text-ivory font-medium">{shippingCost === 0 ? "Free" : `₹${shippingCost}`}</span>
+              <span className="text-[#1c1109] font-bold">{shippingCost === 0 ? "Free" : `₹${shippingCost}`}</span>
             </div>
             {codCost > 0 && (
-              <div className="flex justify-between text-ivory/50 font-light">
+              <div className="flex justify-between text-[#2b1d12]/80 font-normal">
                 <span>COD Fee</span>
-                <span className="text-ivory font-medium">₹{codCost}</span>
+                <span className="text-[#1c1109] font-bold">₹{codCost}</span>
               </div>
             )}
             {qtyDiscount > 0 && (
-              <div className="flex justify-between text-green-400 font-light">
+              <div className="flex justify-between text-emerald-800 font-semibold">
                 <span>Bulk Discount ({nonBundleQty} items)</span>
-                <span className="font-medium">-₹{qtyDiscount.toLocaleString("en-IN")}</span>
+                <span className="font-bold">-₹{qtyDiscount.toLocaleString("en-IN")}</span>
               </div>
             )}
             {bundleDiscount > 0 && (
-              <div className="flex justify-between text-green-400 font-light">
+              <div className="flex justify-between text-emerald-800 font-semibold">
                 <span>Bundle Discount</span>
-                <span className="font-medium">-₹{bundleDiscount.toLocaleString("en-IN")}</span>
+                <span className="font-bold">-₹{bundleDiscount.toLocaleString("en-IN")}</span>
               </div>
             )}
             {couponDiscount > 0 && (
-              <div className="flex justify-between text-green-400 font-light">
+              <div key={appliedCoupon.code} className="flex justify-between text-emerald-800 font-semibold animate-slideInRight">
                 <span>Coupon ({appliedCoupon.code})</span>
-                <span className="font-medium">-₹{couponDiscount.toLocaleString("en-IN")}</span>
+                <span className="font-bold">-₹{couponDiscount.toLocaleString("en-IN")}</span>
               </div>
             )}
-            <div className="flex justify-between border-t border-gold-400/10 pt-3 font-display text-lg text-ivory">
-              <span className="text-gold-300">Total</span>
-              <span className="font-semibold text-gold-200">₹{total.toLocaleString("en-IN")}</span>
+            <div className="flex justify-between border-t border-[#a8451a]/15 pt-3.5 items-baseline">
+              <span className="font-display text-lg font-bold text-[#1c1109] uppercase tracking-wider">Total</span>
+              <span
+                key={`total-${couponDiscount}`}
+                className={`font-display text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f] inline-block ${couponDiscount > 0 ? "animate-couponPulse" : ""}`}
+              >
+                ₹{total.toLocaleString("en-IN")}
+              </span>
             </div>
           </div>
 
-          <div className="relative border-t border-gold-400/10 pt-4 space-y-3">
-            <div className="flex flex-col sm:flex-row gap-2">
+          <div className="border-t border-[#a8451a]/15 pt-4 space-y-3">
+            <div className="flex gap-2">
               <input
-                placeholder="Coupon code"
+                placeholder="Coupon Code"
                 value={couponInput}
                 onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                className="min-w-0 flex-1 rounded-2xl border border-gold-400/10 bg-ink/40 px-4 py-3 text-sm text-ivory placeholder:text-ivory/20 transition-all duration-300 focus:border-gold-300/50 focus:outline-none"
+                className="min-w-0 flex-1 rounded-2xl border border-[#a8451a]/25 bg-white px-4 py-3 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 font-mono uppercase"
               />
               <button
                 type="button"
                 onClick={handleApplyCoupon}
                 disabled={applyingCoupon || !couponInput}
-                className="btn-outline shrink-0 rounded-2xl px-5 py-3 text-xs disabled:opacity-60 hover:bg-gold-400/10 transition-colors duration-300"
+                className="rounded-2xl bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] text-white px-5 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-xs hover:shadow-md active:scale-95 disabled:opacity-50 transition-all"
               >
                 {applyingCoupon ? "Checking…" : "Apply"}
               </button>
             </div>
+            {appliedCoupon && couponDiscount > 0 && (
+              <div
+                key={`badge-${appliedCoupon.code}`}
+                className="animate-scaleUp flex items-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-800"
+              >
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+                <span>
+                  <span className="font-mono font-bold">{appliedCoupon.code}</span> applied — you save ₹{couponDiscount.toLocaleString("en-IN")}
+                </span>
+              </div>
+            )}
             {couponHints.length > 0 && !appliedCoupon && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 pt-1">
                 {couponHints.map((c) => (
                   <button
                     key={c.code}
                     type="button"
                     onClick={() => setCouponInput(c.code)}
-                    className="flex items-center gap-1.5 rounded-full border border-gold-400/15 bg-gold-400/5 px-3 py-1 text-xs text-ivory/50 hover:border-gold-400/35 hover:text-gold-300 transition-all duration-200"
+                    className="flex items-center gap-1.5 rounded-full border border-[#a8451a]/20 bg-[#fde3cf]/50 px-3 py-1 text-xs text-[#2b1d12]/80 font-medium hover:border-[#a8451a] hover:bg-[#fde3cf] transition-all"
                   >
-                    <span className="font-mono font-semibold text-gold-400/80">{c.code}</span>
-                    <span className="text-ivory/30">·</span>
+                    <span className="font-mono font-bold text-[#a8451a]">{c.code}</span>
+                    <span className="text-[#a8451a]/40">·</span>
                     <span>{c.hint}</span>
                   </button>
                 ))}

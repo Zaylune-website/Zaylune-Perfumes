@@ -55,16 +55,16 @@ export default function ProductGallery({ images, name, featuredImage }) {
     <div className="w-full relative">
 
       {/* Ambient glow behind the frame */}
-      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[3rem] bg-gold-400/5 blur-3xl" />
+      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[3rem] bg-[#c04a1c]/[0.08] blur-3xl" />
 
       {/* Main Image Container */}
-      <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-gold-400/20 bg-ink-gradient shadow-2xl group transition-all duration-500 hover:border-gold-300/35 hover:shadow-[0_0_50px_rgba(212,163,89,0.1)]">
+      <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-[#a8451a]/25 bg-gradient-to-b from-[#fffaf4] via-white to-[#fdebd9] shadow-xl group transition-all duration-500 hover:border-[#a8451a]/40 hover:shadow-2xl">
 
         {/* Shimmering top sheen */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer z-20" />
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#d4a359] z-20 opacity-80" />
 
-        {/* Soft background light */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(202,161,75,0.03),transparent_70%)] pointer-events-none" />
+        {/* Soft pedestal glow light */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(242,144,90,0.16),transparent_70%)] pointer-events-none" />
 
         {activeImage ? (
           <Image
@@ -72,12 +72,12 @@ export default function ProductGallery({ images, name, featuredImage }) {
             alt={name}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="rounded-[2rem] object-cover scale-100 group-hover:scale-103 transition-transform duration-700 ease-out p-3 sm:p-5"
+            className="rounded-[2rem] object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-out p-3 sm:p-5"
             priority
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <BottleGlyph className="h-2/3 w-auto text-gold-300/40 animate-floatSlow" />
+            <BottleGlyph className="h-2/3 w-auto text-[#a8451a]/40 animate-floatSlow" />
           </div>
         )}
 
@@ -86,14 +86,14 @@ export default function ProductGallery({ images, name, featuredImage }) {
             type="button"
             onClick={() => setLightboxOpen(true)}
             aria-label="View full image"
-            className="absolute bottom-5 right-5 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-gold-gradient text-ink opacity-100 shadow-gold transition-all duration-300 hover:scale-105 md:opacity-0 md:group-hover:opacity-100"
+            className="absolute bottom-5 right-5 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] text-white opacity-100 shadow-md transition-all duration-300 hover:scale-110 md:opacity-0 md:group-hover:opacity-100"
           >
-            <ZoomIn className="h-4.5 w-4.5" />
+            <ZoomIn className="h-5 w-5" />
           </button>
         )}
 
         {/* Double Luxury Borders */}
-        <div className="absolute inset-4 rounded-[2rem] border border-gold-400/10 pointer-events-none z-20" />
+        <div className="absolute inset-4 rounded-[2rem] border border-[#a8451a]/10 pointer-events-none z-20" />
       </div>
 
       {/* Thumbnail Selection */}
@@ -104,8 +104,8 @@ export default function ProductGallery({ images, name, featuredImage }) {
               key={img.id}
               onClick={() => setActive(i)}
               className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border transition-all duration-300 ${active === i
-                  ? "border-gold-300 ring-2 ring-gold-400/20 scale-95 shadow-[0_0_20px_rgba(212,163,89,0.25)] bg-gold-400/5"
-                  : "border-ink-line bg-ink-soft/40 opacity-70 hover:opacity-100 hover:border-gold-400/25 hover:-translate-y-0.5"
+                  ? "border-2 border-[#a8451a] ring-2 ring-[#a8451a]/25 scale-95 shadow-md bg-white"
+                  : "border-[#a8451a]/20 bg-white/80 opacity-75 hover:opacity-100 hover:border-[#a8451a]/50 hover:bg-white hover:-translate-y-0.5"
                 }`}
             >
               {img.image_url && (
@@ -122,14 +122,14 @@ export default function ProductGallery({ images, name, featuredImage }) {
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-md p-6 sm:p-10"
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/85 backdrop-blur-md p-6 sm:p-10"
             onClick={() => setLightboxOpen(false)}
           >
             <button
               type="button"
               onClick={() => setLightboxOpen(false)}
               aria-label="Close"
-              className="group absolute right-5 top-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-gold-400/20 bg-ink-soft/80 text-ivory/70 backdrop-blur-sm transition-all hover:border-gold-300/40 hover:text-gold-200"
+              className="group absolute right-5 top-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/20 text-white backdrop-blur-md transition-all hover:bg-white hover:text-black"
             >
               <X className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
             </button>

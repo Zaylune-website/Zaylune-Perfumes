@@ -1,4 +1,4 @@
-﻿const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylune.com";
+﻿const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylunefragrances.com";
 
 export default function robots() {
   return {
@@ -19,5 +19,6 @@ export default function robots() {
       ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

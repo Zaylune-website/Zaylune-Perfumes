@@ -21,17 +21,17 @@ export default function HomeCustomizationTabs({ slides, settings }) {
 
   return (
     <div>
-      <div className="mb-6 -mx-4 flex gap-2 overflow-x-auto border-b border-gold-400/10 px-4 pb-4 scrollbar-thin scrollbar-thumb-gold-400/10 scrollbar-track-transparent sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+      <div className="thin-x-scroll mb-6 -mx-4 flex gap-2 overflow-x-auto px-4 pb-3 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {TABS.map((tab) => {
           const active = tab.id === activeId;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveId(tab.id)}
-              className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border px-4 py-2 text-xs font-semibold transition-colors duration-300 ${
+              className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-wide transition-all duration-300 ${
                 active
-                  ? "border-gold-400/30 bg-gold-400/10 text-gold-200"
-                  : "border-gold-400/10 bg-white/[0.02] text-ivory/50 hover:border-gold-400/20 hover:text-ivory"
+                  ? "border-transparent bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#c04a1c] text-white shadow-sm"
+                  : "border-[#a8451a]/20 bg-white text-[#a8451a] hover:border-[#a8451a]/40 hover:bg-[#fff5ee]"
               }`}
             >
               <tab.icon className="h-3.5 w-3.5" />

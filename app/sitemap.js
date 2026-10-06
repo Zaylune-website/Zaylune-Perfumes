@@ -1,6 +1,6 @@
 ﻿import { getProducts } from "@/actions/products";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylune.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylunefragrances.com";
 
 export default async function sitemap() {
   const products = await getProducts({});

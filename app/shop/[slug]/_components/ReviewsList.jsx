@@ -9,16 +9,16 @@ function ReviewCard({ r }) {
   // Name stored as "Name: review text" — extract just the name part if present
   const rawText = r.review_text || "";
   const colonIdx = rawText.indexOf(": ");
-  const name = colonIdx > 0 ? rawText.slice(0, colonIdx) : (r.profiles?.full_name || "Zaylune Customer");
+  const name = colonIdx > 0 ? rawText.slice(0, colonIdx) : (r.profiles?.full_name || "Verified Customer");
   const text = colonIdx > 0 ? rawText.slice(colonIdx + 2) : rawText;
 
   return (
-    <li className="rounded-2xl border border-ink-line bg-ink-soft/40 p-5 flex flex-col justify-between hover:border-gold-400/25 hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(212,163,89,0.06)] transition-all duration-300">
+    <li className="rounded-2xl border border-[#a8451a]/20 bg-white/85 p-5 sm:p-6 flex flex-col justify-between hover:border-[#a8451a]/40 hover:bg-white hover:shadow-md transition-all duration-300 shadow-2xs">
       <div>
-        <StarRating rating={r.rating} size={12} />
-        {text && <p className="mt-3 text-sm sm:text-base text-ivory/70 font-light leading-relaxed">&ldquo;{text}&rdquo;</p>}
+        <StarRating rating={r.rating} size={16} />
+        {text && <p className="mt-3 text-base sm:text-lg text-[#2b1d12]/90 font-medium leading-relaxed">&ldquo;{text}&rdquo;</p>}
       </div>
-      <p className="mt-4 text-xs uppercase tracking-wider text-ivory/40 font-semibold">{name}</p>
+      <p className="mt-4 text-sm uppercase tracking-wider text-[#a8451a] font-bold">{name}</p>
     </li>
   );
 }
@@ -26,7 +26,7 @@ function ReviewCard({ r }) {
 export default function ReviewsList({ reviews, slug, hasOwnReview = false }) {
   if (!reviews || reviews.length === 0) {
     return (
-      <p className="text-sm sm:text-base text-ivory/40 font-light">
+      <p className="text-base sm:text-lg text-[#2b1d12]/80 font-normal">
         {hasOwnReview ? "No other reviews yet." : "No reviews yet — be the first to share yours."}
       </p>
     );
@@ -37,7 +37,7 @@ export default function ReviewsList({ reviews, slug, hasOwnReview = false }) {
 
   return (
     <div className="space-y-4">
-      <ul className="space-y-4">
+      <ul className="space-y-3.5">
         {preview.map((r) => (
           <ReviewCard key={r.id} r={r} />
         ))}
@@ -46,7 +46,7 @@ export default function ReviewsList({ reviews, slug, hasOwnReview = false }) {
       {remaining > 0 && slug && (
         <Link
           href={`/shop/${slug}/reviews`}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-gold-400/25 bg-ink-soft/40 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-gold-300 transition-all duration-300 hover:border-gold-300/50 hover:bg-gold-400/5 hover:scale-[1.01]"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#a8451a]/30 bg-white/90 px-6 py-3.5 text-sm sm:text-base font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs transition-all duration-300 hover:border-[#a8451a] hover:bg-white hover:shadow-md"
         >
           See All Reviews ({reviews.length})
         </Link>

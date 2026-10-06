@@ -9,8 +9,8 @@ import { addBundleItem, updateBundleItem, removeBundleItem } from "@/actions/adm
 import ImageUploader from "@/components/admin/ImageUploader";
 
 const inputClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-base text-ivory transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-1.5 block text-sm uppercase tracking-wide text-ivory/50";
+  "w-full rounded-xl border border-[#a8451a]/10 bg-white px-4 py-2.5 text-base text-[#1c1109] shadow-2xs transition-all duration-300 focus:border-[#a8451a]/40 focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/40";
+const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-[#2b1d12]/72";
 
 function ProductFields({ defaults, images, setImages }) {
   return (
@@ -20,12 +20,12 @@ function ProductFields({ defaults, images, setImages }) {
         <ImageUploader value={images} onChange={setImages} multiple showCoverPicker folder="zaylune/bundle-items" />
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5">
-        <div key="name" className="col-span-2">
+      <div className="grid w-full min-w-0 grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+        <div key="name" className="col-span-full min-w-0">
           <label className={labelClass}>Product Name</label>
           <input type="text" name="name" placeholder="e.g. Oudh Mini" defaultValue={defaults?.name} className={inputClass} required />
         </div>
-        <div key="description" className="col-span-2">
+        <div key="description" className="col-span-full min-w-0">
           <label className={labelClass}>Description</label>
           <textarea
             name="description"
@@ -35,20 +35,20 @@ function ProductFields({ defaults, images, setImages }) {
             className={inputClass}
           />
         </div>
-        <div key="variant_name">
+        <div key="variant_name" className="min-w-0">
           <label className={labelClass}>Size / Label</label>
           <input type="text" name="variant_name" placeholder="e.g. 6ml" defaultValue={defaults?.variantName} className={inputClass} />
         </div>
-        <div key="stock_quantity">
+        <div key="stock_quantity" className="min-w-0">
           <label className={labelClass}>Stock</label>
           <input type="number" name="stock_quantity" min={0} defaultValue={defaults?.stock ?? 0} className={inputClass} required />
         </div>
-        <div key="price">
+        <div key="price" className="min-w-0">
           <label className={labelClass}>Price (₹)</label>
           <input type="number" name="price" min={1} defaultValue={defaults?.price} className={inputClass} required />
         </div>
-        <div key="original_price">
-          <label className={`${labelClass} whitespace-nowrap`}>Cut Price (₹)</label>
+        <div key="original_price" className="min-w-0">
+          <label className={`${labelClass} sm:whitespace-nowrap`}>Cut Price (₹)</label>
           <input
             type="number"
             name="original_price"
@@ -68,16 +68,16 @@ function AddItemForm() {
   const [images, setImages] = useState([]);
 
   return (
-    <form action={formAction} className="space-y-3 rounded-xl border border-gold-400/10 bg-ink/30 p-4">
+    <form action={formAction} className="space-y-3 rounded-xl border border-[#a8451a]/10 bg-white/30 p-4">
       <input type="hidden" name="images" value={JSON.stringify(images)} />
 
       {state.error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-300">
+        <div className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-700">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {state.error}
         </div>
       )}
 
-      <p className="text-sm text-ivory/40">
+      <p className="text-sm text-[#2b1d12]/70">
         Add a brand-new product just for the bundle — it won't appear on the regular shop or in Products.
       </p>
 
@@ -116,20 +116,20 @@ function EditItemModal({ item, onDone }) {
   if (typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto sm:p-6 sm:pt-12">
-      <div className="fixed inset-0 bg-black/75 backdrop-blur-md" onClick={onDone} />
+    <div className="fixed inset-0 z-[80] overflow-y-auto bg-white sm:flex sm:items-start sm:justify-center sm:bg-transparent sm:p-6 sm:pt-12">
+      <div className="fixed inset-0 hidden bg-black/75 backdrop-blur-md sm:block" onClick={onDone} />
 
       <form
         action={formAction}
-        className="relative flex min-h-screen w-full max-w-lg animate-fadeUp flex-col overflow-hidden border-gold-400/15 bg-gradient-to-b from-[#181310] via-[#120f0d] to-[#0b0a0a] shadow-[0_30px_80px_rgba(0,0,0,0.8),0_0_50px_rgba(212,163,89,0.05)] sm:mb-8 sm:min-h-0 sm:max-h-[85vh] sm:rounded-[2rem] sm:border"
+        className="relative flex min-h-screen w-full max-w-none animate-fadeUp flex-col sm:overflow-hidden border-[#a8451a]/15 sm:max-w-lg bg-white shadow-[0_30px_80px_rgba(0,0,0,0.15),0_0_50px_rgba(212,163,89,0.05)] sm:mb-8 sm:min-h-0 sm:max-h-[85vh] sm:rounded-3xl sm:border"
       >
-        <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-gold-400/10 bg-[#120f0d]/95 px-4 py-4 backdrop-blur-md sm:px-8">
-          <h3 className="font-display text-lg sm:text-xl text-ivory">Edit Bundle Product</h3>
+        <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#a8451a]/10 bg-white/95 px-4 py-4 backdrop-blur-md sm:px-8">
+          <h3 className="font-display text-lg sm:text-xl text-[#1c1109]">Edit Bundle Product</h3>
           <button
             type="button"
             onClick={onDone}
             aria-label="Close"
-            className="group flex h-9 w-9 items-center justify-center rounded-full border border-gold-400/15 bg-ink/60 text-ivory/70 transition-all duration-300 hover:border-gold-400/30 hover:text-gold-300"
+            className="group flex h-9 w-9 items-center justify-center rounded-full border border-[#a8451a]/15 bg-white text-[#2b1d12]/78 transition-all duration-300 hover:border-[#a8451a]/30 hover:text-[#a8451a]"
           >
             <X className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
           </button>
@@ -141,7 +141,7 @@ function EditItemModal({ item, onDone }) {
           <input type="hidden" name="images" value={JSON.stringify(images)} />
 
           {state.error && (
-            <div className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-300">
+            <div className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-700">
               <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {state.error}
             </div>
           )}
@@ -160,14 +160,14 @@ function EditItemModal({ item, onDone }) {
           />
         </div>
 
-        <div className="sticky bottom-0 flex shrink-0 items-center gap-2 border-t border-gold-400/10 bg-[#120f0d]/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
+        <div className="sticky bottom-0 flex shrink-0 items-center gap-2 border-t border-[#a8451a]/10 bg-white/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
           <button type="submit" disabled={pending} className="btn-gold flex-1 px-8 py-2.5 text-base disabled:opacity-60 sm:flex-none sm:w-fit">
             {pending ? "Saving…" : "Save Changes"}
           </button>
           <button
             type="button"
             onClick={onDone}
-            className="flex w-fit items-center justify-center gap-1.5 rounded-xl border border-ink-line px-4 py-2.5 text-base text-ivory/60 hover:text-ivory hover:border-gold-400/20"
+            className="flex w-fit items-center justify-center gap-1.5 rounded-xl border border-[#a8451a]/15 px-4 py-2.5 text-base text-[#2b1d12]/75 hover:text-[#1c1109] hover:border-[#a8451a]/40"
           >
             <X className="h-4 w-4" /> Cancel
           </button>
@@ -198,7 +198,7 @@ function ItemRow({ item }) {
   };
 
   return (
-    <div className="rounded-xl border border-gold-400/10 bg-ink/20 px-3 py-2.5">
+    <div className="rounded-xl border border-[#a8451a]/10 bg-white/20 px-3 py-2.5">
       {editing && (
         <EditItemModal
           item={item}
@@ -208,22 +208,22 @@ function ItemRow({ item }) {
           }}
         />
       )}
-      <div className="flex items-center gap-3">
-        <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-gold-400/10 bg-ink-soft">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl sm:h-11 sm:w-11 sm:rounded-lg border border-[#a8451a]/10 bg-[#fde3cf]/40">
           {item.productImage && <Image src={item.productImage} alt="" fill sizes="44px" className="object-cover" />}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-medium text-ivory">{item.productName}</p>
-          <p className="truncate text-sm text-ivory/50">
+          <p className="line-clamp-2 text-sm font-bold leading-snug text-[#1c1109] sm:text-base sm:font-medium">{item.productName}</p>
+          <p className="text-xs leading-snug text-[#2b1d12]/72 sm:truncate sm:text-sm">
             {item.variantName} {item.price != null && `· ₹${item.price}`}
-            {item.originalPrice != null && <span className="line-through text-ivory/30"> ₹{item.originalPrice}</span>}
+            {item.originalPrice != null && <span className="line-through text-[#2b1d12]/67"> ₹{item.originalPrice}</span>}
             {item.stock != null && ` · Stock ${item.stock}`}
           </p>
-          {item.productDescription && <p className="truncate text-sm text-ivory/40">{item.productDescription}</p>}
+          {item.productDescription && <p className="line-clamp-2 text-xs text-[#2b1d12]/70 sm:truncate sm:text-sm">{item.productDescription}</p>}
         </div>
         <button
           onClick={() => setEditing(true)}
-          className="shrink-0 rounded-lg p-2 border border-transparent text-ivory/40 transition-all duration-300 hover:text-gold-300 hover:bg-gold-400/10 hover:border-gold-400/10"
+          className="shrink-0 rounded-lg p-1.5 sm:p-2 border border-transparent text-[#2b1d12]/70 transition-all duration-300 hover:text-[#a8451a] hover:bg-[#a8451a]/10 hover:border-[#a8451a]/10"
           title="Edit"
         >
           <Pencil className="h-4 w-4" />
@@ -231,14 +231,14 @@ function ItemRow({ item }) {
         <button
           onClick={handleDelete}
           disabled={pending}
-          className="shrink-0 rounded-lg p-2 border border-transparent text-ivory/40 transition-all duration-300 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 disabled:opacity-50"
+          className="shrink-0 rounded-lg p-1.5 sm:p-2 border border-transparent text-[#2b1d12]/70 transition-all duration-300 hover:text-red-600 hover:bg-red-500/10 hover:border-red-500/20 disabled:opacity-50"
           title="Remove"
         >
           <Trash2 className="h-4 w-4" />
         </button>
       </div>
       {error && (
-        <div className="mt-2 flex items-center gap-1.5 text-sm text-red-300">
+        <div className="mt-2 flex items-center gap-1.5 text-sm text-red-700">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {error}
         </div>
       )}
@@ -248,19 +248,19 @@ function ItemRow({ item }) {
 
 export default function BundleItemsManager({ items }) {
   return (
-    <div className="space-y-5 rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md md:p-8">
+    <div className="min-w-0 space-y-5 rounded-3xl border border-[#a8451a]/10 bg-white/95 p-5 sm:p-6 backdrop-blur-xl shadow-sm md:p-8">
       <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-400/10 text-gold-300">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#a8451a]/10 text-[#a8451a]">
           <ListChecks className="h-4 w-4" />
         </div>
-        <h2 className="font-display text-lg text-ivory">Bundle Products</h2>
+        <h2 className="font-display text-lg text-[#1c1109]">Bundle Products</h2>
       </div>
 
       <AddItemForm />
 
       <div className="space-y-2">
         {items.length === 0 ? (
-          <p className="py-8 text-center text-base text-ivory/40">No products added yet — add one above.</p>
+          <p className="py-8 text-center text-base text-[#2b1d12]/70">No products added yet — add one above.</p>
         ) : (
           items.map((item) => <ItemRow key={item.id} item={item} />)
         )}

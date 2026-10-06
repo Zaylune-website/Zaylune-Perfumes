@@ -12,10 +12,10 @@ import { GENDERS } from "@/lib/constants";
 import { validateVariants } from "@/lib/productValidation";
 
 const inputClass =
-  "w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-5 py-3.5 text-sm text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-300/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-2 block text-xs font-semibold uppercase tracking-widest text-gold-300/85";
+  "w-full rounded-2xl border border-[#a8451a]/20 bg-white px-4 py-3 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/40 shadow-2xs transition-all duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 hover:border-[#a8451a]/40 sm:px-5 sm:py-3.5";
+const labelClass = "mb-2 block text-xs font-bold uppercase tracking-widest text-[#a8451a]";
 const panelClass =
-  "relative rounded-[2.5rem] border border-gold-400/10 bg-gradient-to-b from-[#120f0d]/95 via-[#0b0a0a]/95 to-[#080707]/98 p-6 sm:p-8 space-y-5 backdrop-blur-xl shadow-xl";
+  "relative overflow-hidden rounded-3xl border border-[#a8451a]/20 bg-white/90 p-5 sm:p-7 space-y-5 backdrop-blur-xl shadow-sm";
 
 
 export default function ProductForm({ product, categories }) {
@@ -60,7 +60,7 @@ export default function ProductForm({ product, categories }) {
       <input type="hidden" name="is_featured" value={isFeatured ? "on" : "off"} />
 
       {(variantError || state.error) && (
-        <div className="flex items-center gap-2 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-300">
+        <div className="flex items-center gap-2 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-700">
           <span className="h-2 w-2 rounded-full bg-red-400 animate-pulse shrink-0" />
           {variantError || state.error}
         </div>
@@ -69,7 +69,7 @@ export default function ProductForm({ product, categories }) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">Basic Information</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">Basic Information</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelClass}>Product Name</label>
@@ -120,17 +120,17 @@ export default function ProductForm({ product, categories }) {
           </div>
 
           <div id="variants-section" className={panelClass}>
-            <h2 className="font-display text-base text-ivory">Bottle Sizes &amp; Pricing</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">Bottle Sizes &amp; Pricing</h2>
             <VariantsEditor variants={variants} onChange={setVariants} showErrors={showVariantErrors} />
           </div>
 
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">FAQs</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">FAQs</h2>
             <FaqsEditor faqs={faqs} onChange={setFaqs} />
           </div>
 
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">SEO</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">SEO</h2>
             <div>
               <label className={labelClass}>SEO Title</label>
               <input name="seo_title" maxLength={60} defaultValue={product?.seo_title} className={inputClass} />
@@ -144,7 +144,7 @@ export default function ProductForm({ product, categories }) {
 
         <div className="space-y-6">
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">Status</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">Status</h2>
             <div>
               <label className={labelClass}>Badge</label>
               <input
@@ -158,43 +158,43 @@ export default function ProductForm({ product, categories }) {
             <button
               type="button"
               onClick={() => setIsActive((v) => !v)}
-              className={`flex w-full items-center justify-between rounded-2xl border px-5 py-3.5 text-sm transition-all duration-500 ${
-                isActive ? "border-green-400/20 bg-green-500/10 text-green-300" : "border-gold-400/10 bg-ink/40 text-ivory/40"
+              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-sm font-semibold transition-all duration-300 sm:px-5 ${
+                isActive ? "border-emerald-500/30 bg-emerald-50 text-emerald-800" : "border-[#a8451a]/20 bg-white text-[#2b1d12]/70"
               }`}
             >
               {isActive ? "Visible in store" : "Hidden"}
-              <span className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-500 ${isActive ? "bg-green-500" : "bg-ivory/10"}`}>
-                <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-500 ${isActive ? "translate-x-5" : "translate-x-0"}`} />
+              <span className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${isActive ? "bg-emerald-500" : "bg-[#a8451a]/25"}`}>
+                <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-300 ${isActive ? "translate-x-5" : "translate-x-0"}`} />
               </span>
             </button>
             <button
               type="button"
               onClick={() => setIsFeatured((v) => !v)}
-              className={`flex w-full items-center justify-between rounded-2xl border px-5 py-3.5 text-sm transition-all duration-500 ${
-                isFeatured ? "border-gold-400/20 bg-gold-400/10 text-gold-200" : "border-gold-400/10 bg-ink/40 text-ivory/40"
+              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-sm font-semibold transition-all duration-300 sm:px-5 ${
+                isFeatured ? "border-[#a8451a]/35 bg-[#fde3cf]/70 text-[#a8451a]" : "border-[#a8451a]/20 bg-white text-[#2b1d12]/70"
               }`}
             >
               Featured on homepage
-              <span className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-500 ${isFeatured ? "bg-gold-500" : "bg-ivory/10"}`}>
-                <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-500 ${isFeatured ? "translate-x-5" : "translate-x-0"}`} />
+              <span className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${isFeatured ? "bg-gradient-to-r from-[#8e3510] to-[#c04a1c]" : "bg-[#a8451a]/25"}`}>
+                <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-300 ${isFeatured ? "translate-x-5" : "translate-x-0"}`} />
               </span>
             </button>
           </div>
 
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">Featured Image</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">Featured Image</h2>
             <ImageUploader value={featuredImage} onChange={setFeaturedImage} folder="zaylune/products" />
           </div>
 
           <div className={panelClass}>
-            <h2 className="font-display text-base text-ivory">Gallery Images</h2>
+            <h2 className="font-display text-lg font-extrabold text-[#1c1109]">Gallery Images</h2>
             <SizeImageMapper images={gallery} onChange={setGallery} variants={variants} folder="zaylune/products" />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col-reverse items-center gap-4 border-t border-gold-400/10 pt-6 sm:flex-row sm:justify-between">
-        <Link href="/admin/products" className="text-sm text-ivory/50 hover:text-ivory">Cancel</Link>
+      <div className="flex flex-col-reverse items-center gap-4 border-t border-[#a8451a]/15 pt-6 sm:flex-row sm:justify-between">
+        <Link href="/admin/products" className="text-sm font-semibold text-[#2b1d12]/70 hover:text-[#a8451a]">Cancel</Link>
         <button type="submit" disabled={pending} className="btn-gold w-full disabled:opacity-60 sm:w-auto">
           <Save className="h-4 w-4" /> {pending ? "Saving…" : isEditing ? "Update Product" : "Create Product"}
         </button>

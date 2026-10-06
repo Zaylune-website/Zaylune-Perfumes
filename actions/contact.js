@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { phoneError } from "@/lib/phone";
 
 export async function submitInquiry(_prevState, formData) {
   const name = formData.get("name");
@@ -11,6 +12,8 @@ export async function submitInquiry(_prevState, formData) {
   if (!name || !message) {
     return { error: "Please share your name and a short message." };
   }
+  const phoneErr = phoneError(phone);
+  if (phoneErr) return { error: phoneErr };
 
   const supabase = await createClient();
   const { error } = await supabase.from("inquiries").insert({

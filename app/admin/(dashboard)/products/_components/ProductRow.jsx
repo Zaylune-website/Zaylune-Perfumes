@@ -23,10 +23,10 @@ export default function ProductRow({ product }) {
 
   const stockBadge =
     product.totalStock === 0
-      ? "bg-red-500/10 text-red-300 border-red-500/20"
+      ? "border-rose-500/30 bg-rose-50 text-rose-700"
       : product.totalStock <= 5
-      ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
-      : "bg-ivory/5 text-ivory/60 border-ivory/10";
+      ? "border-amber-500/30 bg-amber-50 text-amber-800"
+      : "border-[#a8451a]/25 bg-[#fde3cf]/50 text-[#a8451a]";
 
   return (
     <>
@@ -37,42 +37,46 @@ export default function ProductRow({ product }) {
         pending={pending}
         label={product.name}
       />
-      <tr className="group/row transition-colors duration-300 hover:bg-white/[0.01]">
+      <tr className="group/row transition-colors duration-300 hover:bg-[#fde3cf]/30">
         <td className="py-4 pr-4 pl-2">
-          <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-gold-400/10 bg-ink-soft group-hover/row:border-gold-400/30 transition-colors duration-300">
+          <div className="flex items-center gap-3.5">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/40 shadow-2xs transition-all duration-300 group-hover/row:border-[#a8451a]/40 group-hover/row:shadow-md">
               {product.featured_image_url && (
                 <Image
                   src={product.featured_image_url}
                   alt=""
                   fill
-                  sizes="44px"
-                  className="object-cover transition-transform duration-500 group-hover/row:scale-[1.05]"
+                  sizes="48px"
+                  className="object-cover transition-transform duration-500 group-hover/row:scale-[1.08]"
                 />
               )}
             </div>
-            <span className="text-sm font-medium text-ivory group-hover/row:text-gold-200 transition-colors duration-300">
+            <span className="text-sm font-bold text-[#1c1109] transition-colors duration-300 group-hover/row:text-[#a8451a]">
               {product.name}
             </span>
           </div>
         </td>
-        <td className="py-4 pr-4 text-sm text-ivory/50">{product.categoryName || "—"}</td>
-        <td className="py-4 pr-4 text-sm font-medium text-ivory/70">
+        <td className="py-4 pr-4 text-sm font-medium text-[#2b1d12]/80">{product.categoryName || "—"}</td>
+        <td className="py-4 pr-4 text-sm font-bold text-[#1c1109]">
           {product.minPrice != null ? `₹${product.minPrice.toLocaleString("en-IN")}` : "—"}
         </td>
         <td className="py-4 pr-4">
-          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold border ${stockBadge}`}>
+          <span className={`inline-flex min-w-[2rem] items-center justify-center rounded-full border px-2.5 py-1 text-xs font-bold ${stockBadge}`}>
             {product.totalStock}
           </span>
         </td>
         <td className="py-4 pr-4">
           <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold tracking-wider uppercase border ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
               product.is_active
-                ? "bg-green-500/10 text-green-300 border-green-500/20"
-                : "bg-ivory/5 text-ivory/40 border-ivory/10"
+                ? "border-emerald-500/30 bg-emerald-50 text-emerald-800"
+                : "border-[#a8451a]/20 bg-white text-[#2b1d12]/70"
             }`}
           >
+            <span className="relative flex h-1.5 w-1.5">
+              {product.is_active && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />}
+              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${product.is_active ? "bg-emerald-500" : "bg-[#a8451a]/40"}`} />
+            </span>
             {product.is_active ? "Active" : "Hidden"}
           </span>
         </td>
@@ -80,7 +84,7 @@ export default function ProductRow({ product }) {
           <div className="flex items-center justify-end gap-1.5">
             <Link
               href={`/admin/products/${product.id}/edit`}
-              className="rounded-xl p-2.5 text-ivory/40 hover:text-gold-300 hover:bg-gold-400/10 border border-transparent hover:border-gold-400/10 transition-all duration-300"
+              className="rounded-xl border border-transparent p-2.5 text-[#a8451a]/70 transition-all duration-300 hover:border-[#a8451a]/25 hover:bg-[#fde3cf]/60 hover:text-[#a8451a]"
               title="Edit"
             >
               <Pencil className="h-4 w-4" />
@@ -88,7 +92,7 @@ export default function ProductRow({ product }) {
             <button
               onClick={() => setModalOpen(true)}
               disabled={pending}
-              className="rounded-xl p-2.5 border border-transparent text-ivory/40 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 disabled:opacity-40"
+              className="rounded-xl border border-transparent p-2.5 text-[#a8451a]/70 transition-all duration-300 hover:border-rose-500/25 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"
               title="Delete"
             >
               <Trash2 className="h-4 w-4" />

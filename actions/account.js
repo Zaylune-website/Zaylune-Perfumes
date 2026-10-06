@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { phoneError } from "@/lib/phone";
 
 export async function updateProfile(_prevState, formData) {
   const supabase = await createClient();
@@ -16,9 +17,8 @@ export async function updateProfile(_prevState, formData) {
   if (!fullName || !/^[a-zA-Z\s]+$/.test(fullName)) {
     return { error: "Name must only contain letters and spaces." };
   }
-  if (phone && !/^[6-9][0-9]{9}$/.test(phone)) {
-    return { error: "Enter a valid 10-digit Indian phone number, or leave it blank." };
-  }
+  const phoneErr = phoneError(phone);
+  if (phoneErr) return { error: phoneErr };
 
   const { error } = await supabase
     .from("profiles")

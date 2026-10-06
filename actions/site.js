@@ -3,20 +3,18 @@
 import { unstable_cache } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
 
-const getActiveAnnouncementCached = unstable_cache(
+const getActiveAnnouncementsCached = unstable_cache(
   async () => {
     const supabase = createPublicClient();
     const { data } = await supabase
       .from("announcements")
       .select("message")
       .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .order("created_at", { ascending: false });
 
-    return data?.message || null;
+    return (data || []).map((a) => a.message);
   },
-  ["active-announcement"],
+  ["active-announcements"],
   { revalidate: 120, tags: ["announcements"] }
 );
 
@@ -50,8 +48,8 @@ const getActiveTestimonialsCached = unstable_cache(
   { revalidate: 120, tags: ["testimonials"] }
 );
 
-export async function getActiveAnnouncement() {
-  return getActiveAnnouncementCached();
+export async function getActiveAnnouncements() {
+  return getActiveAnnouncementsCached();
 }
 
 export async function getActiveHeroSlides() {

@@ -51,16 +51,22 @@ export default function SortSelect({ className = "" }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between gap-3 rounded-full border px-4 py-2.5 text-sm text-ivory transition-colors ${
-          open ? "border-gold-300/50 bg-ink-soft" : "border-gold-400/15 bg-ink-soft hover:border-gold-400/30"
+        className={`flex w-full items-center justify-between gap-3 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 shadow-2xs ${
+          open
+            ? "border-[#a8451a] bg-white text-[#1c1109] ring-2 ring-[#a8451a]/20"
+            : "border-[#a8451a]/25 bg-white/90 text-[#1c1109] hover:border-[#a8451a]/50 hover:bg-white"
         }`}
       >
-        {activeLabel}
-        <ChevronDown className={`h-4 w-4 shrink-0 text-gold-300 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
+        <span>{activeLabel}</span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[#c04a1c] transition-transform duration-300 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-full min-w-[220px] overflow-hidden rounded-2xl border border-gold-400/15 bg-gradient-to-b from-ink-soft/95 to-ink-soft/85 py-1.5 shadow-2xl backdrop-blur-md animate-fadeUp">
+        <div className="absolute right-0 z-30 mt-2 w-full min-w-[220px] overflow-hidden rounded-2xl border border-[#a8451a]/20 bg-white/95 py-1.5 shadow-xl backdrop-blur-xl animate-fadeUp">
           {OPTIONS.map((option) => {
             const isActive = option.value === activeSort;
             return (
@@ -68,12 +74,14 @@ export default function SortSelect({ className = "" }) {
                 key={option.value || "default"}
                 type="button"
                 onClick={() => selectValue(option.value)}
-                className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
-                  isActive ? "bg-gold-400/15 text-gold-200" : "text-ivory/70 hover:bg-ink/60 hover:text-ivory"
+                className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-[#a8451a]/10 font-bold text-[#8e3510]"
+                    : "text-[#2b1d12]/80 hover:bg-[#fde3cf]/40 hover:text-[#1c1109]"
                 }`}
               >
-                {option.label}
-                {isActive && <Check className="h-3.5 w-3.5 shrink-0 text-gold-300" />}
+                <span>{option.label}</span>
+                {isActive && <Check className="h-4 w-4 shrink-0 text-[#a8451a]" />}
               </button>
             );
           })}

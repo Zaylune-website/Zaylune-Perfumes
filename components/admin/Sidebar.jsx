@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -94,32 +94,32 @@ export default function AdminSidebar({ adminName = "Admin" }) {
   return (
     <>
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-[#1c1109]/50 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r border-gold-400/10 bg-gradient-to-b from-[#110e0d] via-[#090807] to-[#050404] backdrop-blur-md transition-transform duration-300 lg:static lg:h-screen lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r border-[#a8451a]/20 bg-white/85 backdrop-blur-xl shadow-[10px_0_40px_-30px_rgba(122,40,18,0.4)] transition-transform duration-300 lg:static lg:h-screen lg:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Top accent line */}
-        <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
+        <div className="h-1 w-full shrink-0 bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#d4a359]" />
 
-        <div className="relative flex h-16 shrink-0 items-center gap-3 border-b border-gold-400/10 px-5">
-          <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-gold-400/10 blur-3xl" />
+        <div className="relative flex h-16 shrink-0 items-center gap-3 border-b border-[#a8451a]/15 px-5">
+          <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#c04a1c]/10 blur-3xl" />
           <div className="relative flex-1 overflow-hidden">
-            <p className="truncate text-sm font-semibold tracking-wider text-ivory">Zaylune</p>
-            <p className="truncate text-[10px] uppercase tracking-[0.2em] text-gold-300/60 font-semibold">Admin Panel</p>
+            <p className="truncate font-display text-base font-extrabold tracking-wide text-[#1c1109]">Zaylune</p>
+            <p className="truncate text-[10px] uppercase tracking-[0.2em] text-[#a8451a] font-bold">Admin Panel</p>
           </div>
-          <button onClick={() => setMobileOpen(false)} className="relative p-1 text-ivory/50 hover:text-ivory lg:hidden">
+          <button onClick={() => setMobileOpen(false)} className="relative p-1 text-[#2b1d12]/70 hover:text-[#1c1109] lg:hidden">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 space-y-7 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-thumb-gold-400/5 scrollbar-track-transparent">
+        <nav className="flex-1 space-y-7 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-thumb-[#a8451a]/5 scrollbar-track-transparent">
           {NAV_GROUPS.map((group) => (
             <div key={group.title} className="space-y-2">
-              <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold-400/35">
+              <p className="px-3 text-[10px] font-bold uppercase tracking-[0.25em] text-[#a8451a]/80">
                 {group.title}
               </p>
               <div className="space-y-1">
@@ -134,22 +134,22 @@ export default function AdminSidebar({ adminName = "Admin" }) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`group relative flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium tracking-wide transition-all duration-300 ${
+                      className={`group relative flex items-center gap-3 rounded-full px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-300 ${
                         active
-                          ? "border-gold-400 bg-gradient-to-r from-gold-400/12 to-transparent text-gold-200 shadow-[inset_1px_0_0_rgba(212,163,89,0.1)]"
-                          : "border-transparent text-ivory/50 hover:border-gold-400/25 hover:bg-white/[0.02] hover:text-ivory hover:translate-x-0.5"
+                          ? "bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] text-white shadow-md"
+                          : "text-[#2b1d12]/75 hover:bg-[#fde3cf]/60 hover:text-[#a8451a] hover:translate-x-0.5"
                       }`}
                     >
                       <item.icon
                         className={`h-4 w-4 shrink-0 transition-colors duration-300 ${
-                          active ? "text-gold-300 filter drop-shadow-[0_0_5px_rgba(212,163,89,0.5)]" : "text-ivory/40 group-hover:text-gold-300/80"
+                          active ? "text-white" : "text-[#a8451a]/70 group-hover:text-[#c04a1c]"
                         }`}
                       />
                       <span className="flex-1">{item.label}</span>
                       {!!badgeCount && (
                         <span
-                          className={`flex h-4.5 min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[9px] font-bold ${
-                            active ? "bg-gold-400/25 text-gold-200" : "bg-red-400/20 text-red-300 group-hover:bg-red-400/25"
+                          className={`flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${
+                            active ? "bg-white/25 text-white" : "bg-rose-100 text-rose-700 border border-rose-300/60"
                           }`}
                         >
                           {badgeCount > 99 ? "99+" : badgeCount}
@@ -163,20 +163,20 @@ export default function AdminSidebar({ adminName = "Admin" }) {
           ))}
         </nav>
 
-        <div className="shrink-0 border-t border-gold-400/10 bg-black/20 p-3">
-          <div className="flex items-center gap-3 rounded-2xl border border-gold-400/10 bg-white/[0.02] p-2.5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold-gradient text-xs font-bold text-ink shadow-gold">
+        <div className="shrink-0 border-t border-[#a8451a]/15 bg-[#fffaf5] p-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-[#a8451a]/20 bg-white p-2.5 shadow-2xs">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#8e3510] to-[#c04a1c] text-xs font-bold text-white shadow-sm">
               {initial}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-semibold text-ivory">{adminName}</p>
-              <p className="truncate text-[10px] uppercase tracking-widest text-gold-300/50">Administrator</p>
+              <p className="truncate text-xs font-bold text-[#1c1109]">{adminName}</p>
+              <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-[#a8451a]">Administrator</p>
             </div>
             <form action={adminLogout}>
               <button
                 type="submit"
                 title="Log out"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-ivory/40 transition-colors hover:bg-red-400/10 hover:text-red-300"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#2b1d12]/70 transition-colors hover:bg-rose-50 hover:text-rose-700"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>

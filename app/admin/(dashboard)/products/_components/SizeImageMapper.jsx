@@ -72,18 +72,18 @@ export default function SizeImageMapper({ images, onChange, variants, folder = "
               onClick={() => setActive(t.key)}
               className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-all duration-300 ${
                 activeTab.key === t.key
-                  ? "border-gold-300/60 bg-gold-400/15 text-gold-200"
-                  : "border-ink-line bg-ink/40 text-ivory/50 hover:border-gold-400/25 hover:text-ivory"
+                  ? "border-[#a8451a]/60 bg-[#a8451a]/15 text-[#a8451a]"
+                  : "border-[#a8451a]/15 bg-white/40 text-[#2b1d12]/72 hover:border-[#a8451a]/25 hover:text-[#1c1109]"
               }`}
             >
               {t.label}
-              {count > 0 && <span className="text-[10px] text-ivory/40">({count})</span>}
+              {count > 0 && <span className="text-[10px] text-[#2b1d12]/70">({count})</span>}
             </button>
           );
         })}
       </div>
 
-      <p className="text-xs text-ivory/40">
+      <p className="text-xs text-[#2b1d12]/70">
         {activeTab.key === "General"
           ? "These images show for every bottle size and type."
           : `These images show only when a shopper selects "${activeTab.label}".`}

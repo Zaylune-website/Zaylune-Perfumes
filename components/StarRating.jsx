@@ -11,12 +11,12 @@ export default function StarRating({ rating = 0, size = 14, showValue = false })
             key={n}
             width={size}
             height={size}
-            className={n <= rounded ? "fill-gold-300 text-gold-300" : "fill-none text-ivory/25"}
+            className={n <= rounded ? "fill-gold-300 text-gold-300" : "fill-none text-ivory/65"}
           />
         ))}
       </div>
       {showValue && rating > 0 && (
-        <span className="text-xs text-ivory/50">{rating.toFixed(1)}</span>
+        <span className="text-xs text-ivory/72">{rating.toFixed(1)}</span>
       )}
     </div>
   );

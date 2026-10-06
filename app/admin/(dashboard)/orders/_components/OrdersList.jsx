@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Eye, Search } from "lucide-react";
+import { Eye, Search, Table, List } from "lucide-react";
 import FilterSelect from "@/components/admin/FilterSelect";
 
 const STATUS_STYLES = {
-  pending: "bg-ivory/10 text-ivory/70 border-ivory/15",
-  processing: "bg-gold-400/15 text-gold-200 border-gold-400/20",
-  shipped: "bg-blue-400/15 text-blue-300 border-blue-400/20",
-  delivered: "bg-green-400/15 text-green-300 border-green-400/20",
-  cancelled: "bg-red-400/15 text-red-300 border-red-400/20",
+  pending: "bg-amber-50 text-amber-800 border-amber-500/25",
+  processing: "bg-amber-100/80 text-amber-900 border-amber-500/35",
+  shipped: "bg-blue-50 text-blue-900 border-blue-500/30",
+  delivered: "bg-emerald-50 text-emerald-900 border-emerald-500/30",
+  cancelled: "bg-rose-50 text-rose-900 border-rose-500/30",
 };
 
 const STATUS_TABS = [
@@ -26,6 +26,11 @@ export default function OrdersList({ orders }) {
   const [status, setStatus] = useState("all");
   const [payment, setPayment] = useState("all");
   const [search, setSearch] = useState("");
+  const [view, setView] = useState("table");
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 639px)").matches) setView("list");
+  }, []);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -54,8 +59,8 @@ export default function OrdersList({ orders }) {
               onClick={() => setStatus(t.key)}
               className={`rounded-full border px-4 py-1.5 text-xs font-semibold capitalize transition-colors duration-300 ${
                 status === t.key
-                  ? "border-gold-400/30 bg-gold-400/10 text-gold-200"
-                  : "border-gold-400/10 text-ivory/40 hover:text-ivory"
+                  ? "border-[#a8451a]/30 bg-[#a8451a]/10 text-[#a8451a]"
+                  : "border-[#a8451a]/10 text-[#2b1d12]/70 hover:text-[#1c1109]"
               }`}
             >
               {t.label}
@@ -65,13 +70,13 @@ export default function OrdersList({ orders }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ivory/30" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a8451a]/70" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search order #, name, email..."
-              className="w-full rounded-xl border border-gold-400/10 bg-ink-soft/40 py-2 pl-9 pr-3 text-sm text-ivory placeholder:text-ivory/30 focus:border-gold-400/30 focus:outline-none sm:w-64"
+              className="w-full rounded-full border border-[#a8451a]/25 bg-white py-2.5 pl-10 pr-4 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/40 shadow-2xs focus:border-[#a8451a] focus:outline-none sm:w-72"
             />
           </div>
           <FilterSelect
@@ -87,18 +92,41 @@ export default function OrdersList({ orders }) {
         </div>
       </div>
 
-      <p className="mb-3 text-xs text-ivory/40">
-        Showing {filtered.length} of {orders.length} order{orders.length === 1 ? "" : "s"}.
-      </p>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-xs text-[#2b1d12]/70">
+          Showing {filtered.length} of {orders.length} order{orders.length === 1 ? "" : "s"}.
+        </p>
+        <div className="inline-flex rounded-full border border-[#a8451a]/25 bg-white p-1 shadow-2xs">
+          {[
+            { key: "table", label: "Table", Icon: Table },
+            { key: "list", label: "List", Icon: List },
+          ].map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setView(key)}
+              aria-pressed={view === key}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                view === key
+                  ? "bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#c04a1c] text-white shadow-sm"
+                  : "text-[#a8451a] hover:bg-[#fde3cf]/60"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {/* Table (sm and up) */}
-      <div className="hidden overflow-x-auto rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md shadow-2xl sm:block md:p-8">
+      {view === "table" && (
+      <div className="overflow-x-auto thin-x-scroll rounded-3xl border border-[#a8451a]/10 bg-white/90 p-4 backdrop-blur-md shadow-sm sm:p-6 md:p-8">
         {filtered.length === 0 ? (
-          <p className="py-12 text-center text-sm text-ivory/40">No orders match these filters.</p>
+          <p className="py-12 text-center text-sm text-[#2b1d12]/70">No orders match these filters.</p>
         ) : (
           <table className="w-full min-w-[720px] text-left border-collapse">
             <thead>
-              <tr className="border-b border-gold-400/10 text-xs uppercase tracking-widest text-ivory/40 font-semibold">
+              <tr className="border-b border-[#a8451a]/10 text-xs uppercase tracking-widest text-[#2b1d12]/70 font-semibold">
                 <th className="pb-4 font-medium pl-2">Order</th>
                 <th className="pb-4 font-medium">Customer</th>
                 <th className="pb-4 font-medium">Date</th>
@@ -108,22 +136,22 @@ export default function OrdersList({ orders }) {
                 <th className="pb-4 font-medium pr-2 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gold-400/5">
+            <tbody className="divide-y divide-[#a8451a]/5">
               {filtered.map((o) => (
-                <tr key={o.id} className="group/row transition-colors duration-300 hover:bg-white/[0.01]">
+                <tr key={o.id} className="group/row transition-colors duration-300 hover:bg-[#1c1109]/[0.01]">
                   <td className="py-4 pr-4 pl-2">
-                    <Link href={`/admin/orders/${o.id}`} className="text-sm font-medium text-ivory group-hover/row:text-gold-200 transition-colors">
+                    <Link href={`/admin/orders/${o.id}`} className="text-sm font-medium text-[#1c1109] group-hover/row:text-[#a8451a] transition-colors">
                       {o.order_number}
                     </Link>
                   </td>
-                  <td className="py-4 pr-4 text-sm text-ivory/60">{o.profiles?.full_name || o.profiles?.email || "—"}</td>
-                  <td className="py-4 pr-4 text-sm text-ivory/45">
+                  <td className="py-4 pr-4 text-sm text-[#2b1d12]/75">{o.profiles?.full_name || o.profiles?.email || "—"}</td>
+                  <td className="py-4 pr-4 text-sm text-[#2b1d12]/71">
                     {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
-                  <td className="py-4 pr-4 text-sm capitalize text-ivory/60">
+                  <td className="py-4 pr-4 text-sm capitalize text-[#2b1d12]/75">
                     {o.payment_method === "COD" ? "COD" : "Online"} · {o.payment_status}
                   </td>
-                  <td className="py-4 pr-4 text-sm font-semibold text-ivory">₹{Number(o.total_amount).toLocaleString("en-IN")}</td>
+                  <td className="py-4 pr-4 text-sm font-semibold text-[#1c1109]">₹{Number(o.total_amount).toLocaleString("en-IN")}</td>
                   <td className="py-4 pr-4">
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider border capitalize ${STATUS_STYLES[o.order_status] || ""}`}>
                       {o.order_status}
@@ -132,7 +160,7 @@ export default function OrdersList({ orders }) {
                   <td className="py-4 pr-2 text-right">
                     <Link
                       href={`/admin/orders/${o.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-gold-400/15 bg-gold-400/5 px-3 py-2 text-xs font-semibold text-gold-200 transition-all duration-300 hover:border-gold-300/40 hover:bg-gold-400/10"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#a8451a]/30 bg-white px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs transition-all duration-300 hover:border-[#a8451a] hover:bg-[#fff5ee]"
                     >
                       <Eye className="h-3.5 w-3.5" /> View Details
                     </Link>
@@ -143,36 +171,37 @@ export default function OrdersList({ orders }) {
           </table>
         )}
       </div>
+      )}
 
-      {/* Card List (mobile only) */}
-      <div className="rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-4 backdrop-blur-md shadow-2xl sm:hidden">
+      {view === "list" && (
+      <div className="rounded-3xl border border-[#a8451a]/10 bg-white/90 p-4 backdrop-blur-md shadow-sm sm:p-5">
         {filtered.length === 0 ? (
-          <p className="py-12 text-center text-sm text-ivory/40">No orders match these filters.</p>
+          <p className="py-12 text-center text-sm text-[#2b1d12]/70">No orders match these filters.</p>
         ) : (
           <ul className="space-y-3">
             {filtered.map((o) => (
               <li key={o.id}>
                 <Link
                   href={`/admin/orders/${o.id}`}
-                  className="block rounded-2xl border border-gold-400/10 bg-white/[0.02] p-4 transition-colors hover:bg-gold-400/5"
+                  className="block rounded-2xl border border-[#a8451a]/10 bg-[#1c1109]/[0.02] p-4 transition-colors hover:bg-[#a8451a]/5"
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-ivory">{o.order_number}</span>
-                    <span className="text-sm font-semibold text-ivory">₹{Number(o.total_amount).toLocaleString("en-IN")}</span>
+                    <span className="text-sm font-medium text-[#1c1109]">{o.order_number}</span>
+                    <span className="text-sm font-semibold text-[#1c1109]">₹{Number(o.total_amount).toLocaleString("en-IN")}</span>
                   </div>
-                  <p className="mt-1 truncate text-sm text-ivory/50">{o.profiles?.full_name || o.profiles?.email || "—"}</p>
+                  <p className="mt-1 truncate text-sm text-[#2b1d12]/72">{o.profiles?.full_name || o.profiles?.email || "—"}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wider border capitalize ${STATUS_STYLES[o.order_status] || ""}`}>
                       {o.order_status}
                     </span>
-                    <span className="rounded-full border border-ivory/10 bg-ivory/5 px-2.5 py-1 text-xs font-semibold capitalize text-ivory/50">
+                    <span className="rounded-full border border-[#1c1109]/10 bg-[#1c1109]/5 px-2.5 py-1 text-xs font-semibold capitalize text-[#2b1d12]/72">
                       {o.payment_method === "COD" ? "COD" : "Online"} · {o.payment_status}
                     </span>
-                    <span className="ml-auto text-sm text-ivory/30">
+                    <span className="ml-auto text-sm text-[#2b1d12]/67">
                       {new Date(o.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                     </span>
                   </div>
-                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gold-300">
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#a8451a]">
                     <Eye className="h-3.5 w-3.5" /> View Details
                   </span>
                 </Link>
@@ -181,6 +210,7 @@ export default function OrdersList({ orders }) {
           </ul>
         )}
       </div>
+      )}
     </div>
   );
 }

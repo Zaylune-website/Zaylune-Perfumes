@@ -5,10 +5,10 @@ import { updateSiteSetting } from "@/actions/settings";
 import { Check, AlertCircle, Building2, Phone, Share2, Wallet } from "lucide-react";
 
 const inputClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-sm text-ivory placeholder:text-ivory/30 transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-ivory/40";
+  "w-full rounded-xl border border-[#a8451a]/20 bg-white px-4 py-2.5 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/50 transition-colors duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/35";
+const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-[#2b1d12]/70";
 const panelClass =
-  "rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md md:p-8";
+  "rounded-3xl border border-[#a8451a]/20 bg-white/90 p-5 shadow-sm backdrop-blur-xl sm:p-6 md:p-8";
 
 const CATEGORIES = {
   brand: { label: "Brand Information", icon: Building2 },
@@ -68,17 +68,17 @@ export default function SettingsForm({ initialSettings }) {
         const isSaving = pending && savingCategory === category;
         return (
           <div key={category} className={panelClass}>
-            <div className="mb-5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-400/10 text-gold-300">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/60 text-[#c04a1c]">
                   <meta.icon className="h-4 w-4" />
                 </div>
-                <h2 className="font-display text-lg text-ivory">{meta.label}</h2>
+                <h2 className="font-display text-lg font-bold text-[#1c1109]">{meta.label}</h2>
               </div>
               <button
                 onClick={() => handleSaveSection(category, items)}
                 disabled={isSaving}
-                className="btn-gold px-6 py-2.5 text-xs font-semibold disabled:opacity-60"
+                className="btn-gold w-full px-6 py-2.5 text-xs font-semibold disabled:opacity-60 sm:w-auto"
               >
                 {isSaving ? "Saving…" : "Save"}
               </button>
@@ -95,8 +95,8 @@ export default function SettingsForm({ initialSettings }) {
                       key={item.key}
                       type="button"
                       onClick={() => handleChange(item.key, isOn ? "false" : "true")}
-                      className={`flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-300 ${
-                        isOn ? "border-green-400/30 bg-green-400/10 text-green-300" : "border-ink-line bg-ink/40 text-ivory/60"
+                      className={`flex w-full items-center gap-4 rounded-2xl border px-4 py-3.5 text-left text-sm shadow-sm transition-all duration-300 hover:-translate-y-0.5 ${
+                        isOn ? "border-green-400/35 bg-green-50 text-green-900" : "border-[#a8451a]/20 bg-white text-[#2b1d12]/75"
                       }`}
                     >
                       <span className="min-w-0 flex-1">
@@ -107,7 +107,7 @@ export default function SettingsForm({ initialSettings }) {
                       </span>
                       <span
                         className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-300 ${
-                          isOn ? "bg-green-400/80" : "bg-ivory/15"
+                          isOn ? "bg-green-400/80" : "bg-[#1c1109]/15"
                         }`}
                       >
                         <span
@@ -135,7 +135,7 @@ export default function SettingsForm({ initialSettings }) {
             </div>
 
             {saved?.category === category && (
-              <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-400" : "text-red-400"}`}>
+              <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-700" : "text-red-600"}`}>
                 {saved.success ? (
                   <>
                     <Check className="h-3.5 w-3.5" /> Saved successfully

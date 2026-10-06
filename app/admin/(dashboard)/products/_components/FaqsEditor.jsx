@@ -2,7 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 
-const inputClass = "w-full rounded-lg border border-ink-line bg-ink px-3 py-2 text-sm text-ivory placeholder:text-ivory/30 focus:border-gold-400/50 focus:outline-none";
+const inputClass = "w-full rounded-lg border border-[#a8451a]/15 bg-white px-3 py-2 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/67 focus:border-[#a8451a]/50 focus:outline-none";
 
 export default function FaqsEditor({ faqs, onChange }) {
   const update = (idx, key, value) => {
@@ -15,7 +15,7 @@ export default function FaqsEditor({ faqs, onChange }) {
   return (
     <div className="space-y-3">
       {faqs.map((f, i) => (
-        <div key={i} className="space-y-2 rounded-xl border border-ink-line p-3">
+        <div key={i} className="space-y-2 rounded-xl border border-[#a8451a]/15 p-3">
           <div className="flex items-center gap-2">
             <input
               placeholder="Question"
@@ -23,7 +23,7 @@ export default function FaqsEditor({ faqs, onChange }) {
               onChange={(e) => update(i, "question", e.target.value)}
               className={inputClass}
             />
-            <button type="button" onClick={() => remove(i)} className="shrink-0 rounded-lg p-2 text-ivory/40 hover:bg-ink hover:text-red-400">
+            <button type="button" onClick={() => remove(i)} className="shrink-0 rounded-lg p-2 text-[#2b1d12]/70 hover:bg-white hover:text-red-600">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -37,7 +37,7 @@ export default function FaqsEditor({ faqs, onChange }) {
         </div>
       ))}
 
-      <button type="button" onClick={add} className="flex items-center gap-1.5 text-sm text-gold-300 hover:text-gold-200">
+      <button type="button" onClick={add} className="flex items-center gap-1.5 text-sm text-[#a8451a] hover:text-[#a8451a]">
         <Plus className="h-4 w-4" /> Add FAQ
       </button>
     </div>

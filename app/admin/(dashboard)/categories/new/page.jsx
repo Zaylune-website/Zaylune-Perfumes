@@ -9,12 +9,12 @@ export default function NewCategoryPage() {
     <div>
       <Link
         href="/admin/categories"
-        className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-ivory/40 transition-colors hover:text-gold-300"
+        className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-[#2b1d12]/70 transition-colors hover:text-[#a8451a]"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> Back to Categories
       </Link>
-      <h1 className="mb-6 font-display text-3xl font-light text-ivory">
-        New <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">Category</span>
+      <h1 className="mb-6 font-display text-3xl sm:text-4xl font-semibold text-[#1c1109]">
+        New <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#c04a1c] via-[#a8451a] to-[#d4651f]">Category</span>
       </h1>
       <CategoryForm />
     </div>

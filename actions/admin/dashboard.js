@@ -19,21 +19,13 @@ const getDashboardStatsCached = unstable_cache(
       { data: orders, count: orderCount },
       { count: productCount },
       { count: customerCount },
-      { data: lowStockRaw },
       { data: recentOrders },
       { count: pendingReviewCount },
       { count: unresolvedInquiryCount },
     ] = await Promise.all([
-      supabase.from("orders").select("total_amount, payment_status, order_status", { count: "exact" }).or(VISIBLE_ORDERS_FILTER),
+      supabase.from("orders").select("total_amount, payment_status, order_status, created_at", { count: "exact" }).or(VISIBLE_ORDERS_FILTER),
       supabase.from("products").select("id", { count: "exact", head: true }).eq("show_in_shop", true).eq("is_active", true),
       supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase
-        .from("product_variants")
-        .select("id, variant_name, stock_quantity, products!inner ( name, show_in_shop, is_active )")
-        .lte("stock_quantity", 5)
-        .gt("stock_quantity", 0)
-        .eq("is_active", true)
-        .order("stock_quantity", { ascending: true }),
       supabase
         .from("orders")
         .select("id, order_number, total_amount, order_status, created_at")
@@ -44,25 +36,42 @@ const getDashboardStatsCached = unstable_cache(
       supabase.from("inquiries").select("id", { count: "exact", head: true }).eq("is_resolved", false),
     ]);
 
-    // PostgREST embedded-resource filters are unreliable for nested columns;
-    // post-filter in JS to ensure we only surface active, visible products,
-    // and deduplicate any rows sharing the same product + variant name (DB
-    // can accumulate duplicate variant records from re-saves).
-    const _seen = new Set();
-    const lowStock = (lowStockRaw || [])
-      .filter((v) => v.products?.is_active === true && v.products?.show_in_shop === true)
-      .filter((v) => {
-        const key = `${v.products?.name}::${v.variant_name}`;
-        if (_seen.has(key)) return false;
-        _seen.add(key);
-        return true;
-      });
+    const isRealized = (o) => o.payment_status === "paid" || o.order_status !== "cancelled";
 
     const revenue = (orders || [])
-      .filter((o) => o.payment_status === "paid" || o.order_status !== "cancelled")
+      .filter(isRealized)
       .reduce((sum, o) => sum + Number(o.total_amount), 0);
 
     const pendingOrders = (orders || []).filter((o) => o.order_status === "pending").length;
+
+    // Revenue for each of the last 6 calendar months (including the current
+    // one), for the dashboard trend chart. Reuses the `orders` rows already
+    // fetched above for the all-time revenue total — no extra query needed.
+    const monthKeys = Array.from({ length: 6 }, (_, i) => {
+      const d = new Date();
+      d.setUTCDate(1); // pin to day 1 first so subtracting months never rolls into the wrong month
+      d.setUTCMonth(d.getUTCMonth() - (5 - i));
+      return d.toISOString().slice(0, 7); // "YYYY-MM"
+    });
+    const revenueByMonth = Object.fromEntries(monthKeys.map((k) => [k, 0]));
+    const orderCountByMonth = Object.fromEntries(monthKeys.map((k) => [k, 0]));
+    (orders || []).filter(isRealized).forEach((o) => {
+      const key = new Date(o.created_at).toISOString().slice(0, 7);
+      if (key in revenueByMonth) {
+        revenueByMonth[key] += Number(o.total_amount);
+        orderCountByMonth[key] += 1;
+      }
+    });
+    const revenueTrend = monthKeys.map((month) => ({
+      month,
+      revenue: revenueByMonth[month],
+      orders: orderCountByMonth[month],
+    }));
+
+    const orderStatusCounts = (orders || []).reduce((acc, o) => {
+      acc[o.order_status] = (acc[o.order_status] || 0) + 1;
+      return acc;
+    }, {});
 
     return {
       orderCount: orderCount || 0,
@@ -70,13 +79,14 @@ const getDashboardStatsCached = unstable_cache(
       customerCount: customerCount || 0,
       revenue,
       pendingOrders,
-      lowStock: lowStock || [],
       recentOrders: recentOrders || [],
       pendingReviewCount: pendingReviewCount || 0,
       unresolvedInquiryCount: unresolvedInquiryCount || 0,
+      revenueTrend,
+      orderStatusCounts,
     };
   },
-  ["admin-dashboard-stats-v3"],
+  ["admin-dashboard-stats-v6"],
   { revalidate: 30, tags: ["dashboard-stats"] }
 );
 

@@ -36,7 +36,7 @@ async function syncBundleImages(supabase, productId, images) {
 export async function getBundleSettingsAdmin() {
   const supabase = createAdminClient();
   const { data } = await supabase.from("settings").select("bundle").eq("id", 1).maybeSingle();
-  return data?.bundle || BUNDLE_DEFAULTS;
+  return { ...BUNDLE_DEFAULTS, ...(data?.bundle || {}) };
 }
 
 export async function updateBundleSettings(_prevState, formData) {
@@ -49,6 +49,9 @@ export async function updateBundleSettings(_prevState, formData) {
   const title = (formData.get("title") || "").trim();
   const subtitle = (formData.get("subtitle") || "").trim();
   const bannerImageUrl = formData.get("banner_image_url") || null;
+  const showcaseBadge = (formData.get("showcase_badge") || "").trim();
+  const showcaseHeading = (formData.get("showcase_heading") || "").trim();
+  const showcaseDescription = (formData.get("showcase_description") || "").trim();
 
   if (!Number.isFinite(bottleCount) || bottleCount < 2) {
     return { error: "Bottle count must be at least 2." };
@@ -59,14 +62,28 @@ export async function updateBundleSettings(_prevState, formData) {
   if (!title) {
     return { error: "Title is required." };
   }
+  if (!showcaseHeading) {
+    return { error: "Menu card heading is required." };
+  }
 
-  const bundle = { enabled, bottle_count: bottleCount, fixed_price: fixedPrice, title, subtitle, banner_image_url: bannerImageUrl };
+  const bundle = {
+    enabled,
+    bottle_count: bottleCount,
+    fixed_price: fixedPrice,
+    title,
+    subtitle,
+    banner_image_url: bannerImageUrl,
+    showcase_badge: showcaseBadge,
+    showcase_heading: showcaseHeading,
+    showcase_description: showcaseDescription,
+  };
 
   const { error } = await supabase.from("settings").update({ bundle }).eq("id", 1);
   if (error) return { error: error.message };
 
   revalidatePath("/admin/bundle");
   revalidatePath("/bundle");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 

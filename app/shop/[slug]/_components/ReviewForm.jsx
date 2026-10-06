@@ -37,7 +37,7 @@ export default function ReviewForm({ productId, existingReview }) {
 
   if (done) {
     return (
-      <div className="card-panel p-6 text-base text-ivory/60">
+      <div className="rounded-3xl border border-emerald-500/25 bg-emerald-50/70 p-6 text-sm sm:text-base font-medium text-emerald-900 shadow-2xs">
         Thank you for your review — it will appear here once approved by our team.
       </div>
     );
@@ -47,23 +47,23 @@ export default function ReviewForm({ productId, existingReview }) {
   // blank form, since only one review per product is allowed per user.
   if (existingReview) {
     return (
-      <div className="card-panel space-y-3 p-6">
-        <p className="font-display text-lg text-ivory">Your Review</p>
-        <StarRating rating={existingReview.rating} size={16} />
+      <div className="rounded-3xl border border-[#a8451a]/20 bg-white/85 space-y-3 p-6 sm:p-7 shadow-sm backdrop-blur-md">
+        <p className="font-display text-xl font-bold text-[#1c1109]">Your Review</p>
+        <StarRating rating={existingReview.rating} size={18} />
         {existingReview.review_text && (
-          <p className="text-base text-ivory/70 font-light leading-relaxed">&ldquo;{existingReview.review_text}&rdquo;</p>
+          <p className="text-base sm:text-lg text-[#2b1d12]/90 font-medium leading-relaxed">&ldquo;{existingReview.review_text}&rdquo;</p>
         )}
         {!existingReview.is_approved && (
-          <p className="text-sm text-ivory/40">Pending approval — it will appear publicly once our team reviews it.</p>
+          <p className="text-sm text-[#a8451a] font-semibold">Pending approval — it will appear publicly once our team reviews it.</p>
         )}
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card-panel space-y-4 p-6">
-      <p className="font-display text-lg text-ivory">Write a Review</p>
-      <div className="flex items-center gap-1.5">
+    <form onSubmit={handleSubmit} className="rounded-3xl border border-[#a8451a]/20 bg-white/85 space-y-4 p-6 sm:p-7 shadow-sm backdrop-blur-md">
+      <p className="font-display text-xl font-bold text-[#1c1109]">Write a Review</p>
+      <div className="flex items-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
           <button
             type="button"
@@ -72,10 +72,11 @@ export default function ReviewForm({ productId, existingReview }) {
             onMouseLeave={() => setHoverRating(0)}
             onClick={() => setRating(n)}
             aria-label={`Rate ${n} stars`}
+            className="p-1 transition-transform hover:scale-110 active:scale-95"
           >
             <Star
-              className={`h-6 w-6 ${
-                n <= (hoverRating || rating) ? "fill-gold-300 text-gold-300" : "fill-none text-ivory/25"
+              className={`h-7 w-7 transition-colors ${
+                n <= (hoverRating || rating) ? "fill-[#c04a1c] text-[#c04a1c]" : "fill-none text-[#a8451a]/30"
               }`}
             />
           </button>
@@ -87,9 +88,13 @@ export default function ReviewForm({ productId, existingReview }) {
         rows={3}
         maxLength={800}
         placeholder="How did this fragrance wear for you?"
-        className="w-full rounded-xl border border-ink-line bg-ink px-4 py-3 text-base text-ivory placeholder:text-ivory/30 focus:border-gold-400/50 focus:outline-none"
+        className="w-full rounded-2xl border border-[#a8451a]/20 bg-white px-4 py-3.5 text-base sm:text-lg text-[#1c1109] placeholder:text-[#2b1d12]/40 focus:border-[#a8451a] focus:ring-2 focus:ring-[#a8451a]/15 focus:outline-none shadow-2xs transition-all"
       />
-      <button type="submit" disabled={pending} className="btn-gold disabled:opacity-60">
+      <button
+        type="submit"
+        disabled={pending}
+        className="rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] px-8 py-3.5 text-sm sm:text-base font-bold uppercase tracking-wider text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-50"
+      >
         {pending ? "Submitting…" : "Submit Review"}
       </button>
     </form>

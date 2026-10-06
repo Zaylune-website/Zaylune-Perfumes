@@ -1,10 +1,10 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import StarRating from "@/components/StarRating";
-import { Quote, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Quote } from "lucide-react";
 
 const DEFAULT_TESTIMONIALS = [
   {
@@ -51,18 +51,26 @@ const DEFAULT_TESTIMONIALS = [
   },
 ];
 
+function getInitials(name) {
+  if (!name) return "Z";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 export default function Testimonials({
   testimonials = [],
   subtitle = "Real experiences from real customers, in their own words.",
 }) {
   const items = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
   const containerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const scrollByCard = (direction) => {
     const container = containerRef.current;
     if (!container) return;
     const card = container.firstElementChild;
-    const cardWidth = card ? card.clientWidth + 24 : 389; // card width + 24px gap
+    const cardWidth = card ? card.clientWidth + 24 : 380;
     const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
     if (direction === "next") {
@@ -81,110 +89,139 @@ export default function Testimonials({
   };
 
   useEffect(() => {
-    if (items.length <= 1) return;
-    const interval = setInterval(() => scrollByCard("next"), 4000);
+    if (items.length <= 1 || isPaused) return;
+    const interval = setInterval(() => scrollByCard("next"), 4500);
     return () => clearInterval(interval);
-  }, [items.length]);
+  }, [items.length, isPaused]);
 
   return (
-    <section className="relative bg-[#0a0908] py-16 sm:py-24">
-      {/* Ambient glows */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-60">
-        <div className="absolute left-[8%] top-0 h-[400px] w-[450px] rounded-full bg-gold-500/10 blur-[130px]" />
-        <div className="absolute right-[6%] bottom-0 h-[400px] w-[450px] rounded-full bg-gold-300/10 blur-[130px]" />
-        <div className="absolute left-1/2 top-1/2 h-[350px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/5 blur-[140px]" />
+    <section className="relative overflow-hidden border-y border-[#a8451a]/20 bg-gradient-to-b from-[#fde3cf] via-[#fff5eb] to-[#fde3cf] py-16 sm:py-24 lg:py-28">
+      {/* Ambient luminous luxury orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-[6%] top-1/4 h-[460px] w-[480px] rounded-full bg-[#c04a1c]/[0.07] blur-[150px]" />
+        <div className="absolute right-[6%] bottom-1/4 h-[480px] w-[500px] rounded-full bg-[#cfa14b]/[0.08] blur-[150px]" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[380px] w-[380px] rounded-full bg-white/[0.25] blur-[130px]" />
       </div>
 
-      <div className="relative mx-auto max-w-wrap px-6 md:px-12">
-        <Reveal className="mx-auto mb-10 max-w-xl text-center sm:mb-16">
-          <p className="eyebrow justify-center">
-            <span className="gold-line" /> Customer Voices <span className="gold-line" />
-          </p>
-          <h2 className="section-heading mt-4 font-light text-ivory">
+      <div className="relative mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
+        {/* Section Header */}
+        <Reveal className="mx-auto mb-12 sm:mb-16 max-w-2xl text-center">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#a8451a]/25 bg-white/75 px-4 py-1.5 shadow-sm backdrop-blur-sm mb-4">
+            <Sparkles className="h-3.5 w-3.5 text-[#c04a1c] animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#a8451a]">
+              Customer Voices
+            </span>
+            <Sparkles className="h-3.5 w-3.5 text-[#c04a1c] animate-pulse" />
+          </div>
+
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-[#1c1109] leading-tight">
             What Our{" "}
-            <span className="bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400 bg-clip-text font-semibold text-transparent">
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
               Customers Say
             </span>
           </h2>
-          <p className="mt-3 text-base font-light leading-relaxed text-ivory/50 sm:mt-4 sm:text-lg lg:text-xl">
+
+          <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base md:text-lg text-[#2b1d12]/85 leading-relaxed font-normal">
             {subtitle}
           </p>
         </Reveal>
 
-        {/* Horizontal Swiper (Single Row Scroll) */}
-        <div className="relative">
-          <div ref={containerRef} className="no-scrollbar relative z-0 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pt-3 pb-6 pr-1">
+        {/* Horizontal Swiper Carousel */}
+        <div
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div
+            ref={containerRef}
+            className="no-scrollbar relative z-0 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pt-2 pb-6 px-1"
+          >
             {items.map((item, i) => (
-                <div key={i} className="w-[80vw] shrink-0 snap-start sm:w-[calc(50%-12px)] lg:w-[calc((100%-48px)/3)]">
-                  <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-[2rem] border border-ink-line bg-gradient-to-b from-ink-soft/50 to-ink-soft/10 p-5 transition-all duration-500 hover:-translate-y-1.5 hover:border-gold-400/30 hover:shadow-[0_25px_60px_-24px_rgba(202,161,75,0.3)] sm:p-8 lg:p-9">
-                    {/* Hover glow wash */}
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(202,161,75,0.08),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div
+                key={i}
+                className="w-[85vw] shrink-0 snap-start sm:w-[calc(50%-12px)] lg:w-[calc((100%-48px)/3)]"
+              >
+                <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-[#a8451a]/20 bg-white/80 backdrop-blur-md p-6 sm:p-8 lg:p-8 shadow-[0_12px_32px_rgba(43,29,18,0.06)] transition-all duration-500 hover:-translate-y-2 hover:border-[#a8451a]/45 hover:bg-white/95 hover:shadow-[0_22px_45px_rgba(168,69,26,0.18)]">
+                  {/* Top hairline shimmer sweep on hover */}
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#c04a1c] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                    <span
-                      aria-hidden
-                      className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-gold-300 to-transparent transition-transform duration-500 group-hover:scale-x-100"
-                    />
+                  {/* Subtle radial glow on hover */}
+                  <div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(circle_at_top,rgba(192,74,28,0.1),transparent_70%)]" />
 
-                    <Quote
-                      className="absolute right-5 top-5 h-8 w-8 text-gold-400/[0.1] transition-all duration-500 group-hover:scale-110 group-hover:text-gold-300/25 sm:right-6 sm:top-6 sm:h-11 sm:w-11"
-                      strokeWidth={1.5}
-                    />
-
-                    <div className="relative">
-                      <StarRating rating={item.rating} size={14} />
-                      <p className="mt-3 text-sm font-light italic leading-relaxed text-ivory/70 sm:mt-5 sm:text-base lg:text-xl">
-                        &ldquo;{item.review_text}&rdquo;
-                      </p>
+                  {/* Top Section: Rating & Quote Glyph */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <StarRating rating={item.rating} size={15} />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#cfa14b]/15 to-[#a8451a]/15 text-[#a8451a] transition-transform duration-500 group-hover:scale-110">
+                        <Quote className="h-4 w-4" />
+                      </div>
                     </div>
 
-                    <div className="relative mt-6 flex items-center gap-3 border-t border-gold-400/10 pt-4 sm:mt-8 sm:gap-4 sm:pt-5">
-                      <div className="relative h-11 w-11 shrink-0 sm:h-14 sm:w-14">
-                        <div
-                          className="absolute -inset-1.5 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100 animate-spin"
-                          style={{
-                            animationDuration: "5s",
-                            background: "conic-gradient(from 0deg, transparent 0%, rgba(212,163,89,0.7) 20%, transparent 40%)",
-                          }}
-                        />
-                        <div className="relative h-full w-full overflow-hidden rounded-full border border-gold-400/20 bg-ink transition-all duration-300 group-hover:border-gold-400/40">
-                          {item.image_url ? (
-                            <Image src={item.image_url} alt={item.customer_name} fill sizes="56px" className="object-cover" />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gold-400/5">
-                              <User className="h-1/2 w-auto text-gold-300/40" strokeWidth={1.5} />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-left">
-                        <p className="font-display text-sm font-semibold text-ivory transition-colors duration-300 group-hover:text-gold-200 sm:text-lg">
-                          {item.customer_name}
-                        </p>
-                        {item.location && (
-                          <p className="mt-0.5 text-[10px] uppercase tracking-widest text-ivory/40 sm:text-xs">
-                            {item.location}
-                          </p>
+                    {/* Review Copy */}
+                    <p className="font-normal italic leading-relaxed text-[#2b1d12]/90 text-sm sm:text-base lg:text-[1.05rem]">
+                      &ldquo;{item.review_text}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Bottom Section: Customer Monogram / Avatar & Location */}
+                  <div className="relative mt-6 flex items-center gap-3.5 border-t border-[#a8451a]/15 pt-5 sm:mt-8">
+                    <div className="relative h-12 w-12 shrink-0">
+                      {/* Rotating gold halo ring on hover */}
+                      <div
+                        className="absolute -inset-1 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100 animate-spin"
+                        style={{
+                          animationDuration: "8s",
+                          background:
+                            "conic-gradient(from 0deg, transparent 0%, rgba(192,74,28,0.45) 25%, transparent 50%)",
+                        }}
+                      />
+                      <div className="relative h-full w-full overflow-hidden rounded-full border border-[#a8451a]/25 shadow-xs transition-all duration-300 group-hover:border-[#a8451a]">
+                        {item.image_url ? (
+                          <Image
+                            src={item.image_url}
+                            alt={item.customer_name}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#fff7ef] via-white to-[#fde5ce] font-display text-xs sm:text-sm font-bold tracking-wider text-[#a8451a]">
+                            {getInitials(item.customer_name)}
+                          </div>
                         )}
                       </div>
                     </div>
+
+                    <div className="text-left min-w-0">
+                      <p className="truncate font-display text-base font-semibold text-[#1c1109] transition-colors duration-300 group-hover:text-[#8e3510]">
+                        {item.customer_name}
+                      </p>
+                      {item.location && (
+                        <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#a8451a]">
+                          {item.location}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
+              </div>
             ))}
           </div>
 
+          {/* Navigation Controls */}
           {items.length > 1 && (
-            <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="mt-8 flex items-center justify-center gap-3">
               <button
                 onClick={() => scrollByCard("prev")}
                 aria-label="Previous testimonial"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/20 bg-ink-soft/40 text-ivory/50 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/10 hover:text-gold-300 hover:shadow-[0_0_15px_rgba(212,163,89,0.15)]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#a8451a]/25 bg-white/80 text-[#2b1d12] shadow-sm backdrop-blur-md transition-all duration-300 hover:border-[#a8451a] hover:bg-gradient-to-r hover:from-[#8e3510] hover:to-[#a8451a] hover:text-white hover:scale-105 active:scale-95"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 onClick={() => scrollByCard("next")}
                 aria-label="Next testimonial"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-400/20 bg-ink-soft/40 text-ivory/50 transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-400/10 hover:text-gold-300 hover:shadow-[0_0_15px_rgba(212,163,89,0.15)]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#a8451a]/25 bg-white/80 text-[#2b1d12] shadow-sm backdrop-blur-md transition-all duration-300 hover:border-[#a8451a] hover:bg-gradient-to-r hover:from-[#8e3510] hover:to-[#a8451a] hover:text-white hover:scale-105 active:scale-95"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>

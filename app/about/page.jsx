@@ -3,219 +3,269 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
-import BottleGlyph from "@/components/BottleGlyph";
 import TestimonialSection from "@/components/about/TestimonialSection";
 import StatCounter from "@/components/about/StatCounter";
 import { getActiveTestimonials } from "@/actions/site";
-import { whatsappLink } from "@/lib/constants";
+import { getSiteSettings } from "@/actions/settings";
+import { settingsToBrand, whatsappLink } from "@/lib/constants";
 import {
   Sparkles,
   FlaskConical,
   Clock,
   ShieldCheck,
-  Award,
-  ArrowRight,
   MapPin,
   Check,
   Quote,
-  Heart,
   Droplets,
 } from "lucide-react";
 
 export const metadata = {
-  title: "About Us — Zaylune Fragrances",
+  title: "About Us — Honest, Long-Lasting Perfumes & Attars",
   description:
-    "Zaylune crafts hand-poured attars and fine fragrances in small batches. Born in Robertsonpet, KGF — learn our story, craftsmanship, and philosophy.",
+    "Learn the story behind Zaylune Fragrances. Handcrafted perfumes and pure attar oils made with honest pricing in Robertsonpet, KGF.",
   alternates: { canonical: "/about" },
 };
 
 const STATS = [
-  { value: "100%", label: "IFRA Compliant" },
-  { value: "10h+", label: "Average Longevity" },
+  { value: "100%", label: "Safe on Skin" },
+  { value: "10h+", label: "Lasts All Day" },
   { value: "100%", label: "Cruelty Free" },
-  { value: "100%", label: "Small Batch Poured" },
+  { value: "100%", label: "Hand-Made Batches" },
 ];
 
 const CRAFT_PILLARS = [
   {
     icon: Droplets,
-    title: "High Oil Concentration",
+    title: "Lasts All Day (10+ Hours)",
     description:
-      "We formulate at extrait strength so your fragrance doesn't evaporate after an hour. Rich, layered oils that hold close to the skin and project naturally through the day.",
+      "We use more pure perfume oil in every bottle, so your scent stays strong on your skin from morning to night without needing to re-apply.",
   },
   {
     icon: FlaskConical,
-    title: "IFRA Certified Ingredients",
+    title: "100% Safe on Skin",
     description:
-      "Every drop uses imported fragrance oils blended with certified premix cosmetic solvents. Completely skin-safe, consistent, and free from harmful additives.",
+      "We only use skin-friendly, certified ingredients. No harsh chemicals, no burning sensation, and completely safe for daily use.",
   },
   {
     icon: Clock,
-    title: "Personally Wear-Tested",
+    title: "Made for Indian Weather",
     description:
-      "Before any formula launches, we wear it ourselves through real Indian weather, humidity, and long days. If it doesn't perform to our standards, it never goes into a bottle.",
+      "We test our perfumes in real heat, humidity, and long workdays before releasing them, so they don't fade away when you sweat.",
   },
   {
     icon: ShieldCheck,
-    title: "100% Cruelty-Free",
+    title: "Never Tested on Animals",
     description:
-      "We love animals as much as we love great scent. None of our oils, solvents, or finished bottles are ever tested on animals. Ethical from start to finish.",
+      "We love animals as much as great scent. None of our oils or bottles are ever tested on animals. 100% clean and ethical.",
   },
 ];
 
 const ADVANTAGES = [
-  "Imported premium fragrance oils",
-  "IFRA-compliant cosmetic grade solvents",
-  "Extrait-grade concentration for lasting sillage",
-  "Personally tested in Indian climate",
-  "Formulations for Men, Women & Unisex",
-  "Hand-poured and inspected in small batches",
-  "100% Cruelty-Free, zero animal testing",
-  "Fair, direct-to-consumer pricing",
+  "Imported high-quality perfume oils",
+  "Lasts all day on skin and clothes",
+  "Gentle and safe on sensitive skin",
+  "Tested to perform in hot & humid weather",
+  "Scents for Men, Women & Unisex",
+  "Every bottle checked by hand",
+  "Zero animal testing, 100% cruelty-free",
+  "Direct from maker, honest prices",
 ];
 
 export default async function AboutPage() {
-  const testimonials = await getActiveTestimonials();
-  const safeTestimonials = JSON.parse(JSON.stringify(testimonials));
+  const [testimonials, settings] = await Promise.all([
+    getActiveTestimonials(),
+    getSiteSettings(),
+  ]);
+
+  const safeTestimonials = JSON.parse(JSON.stringify(testimonials || []));
+  const brand = settingsToBrand(settings);
 
   return (
     <>
       <SiteHeader />
-      <main className="min-h-screen bg-[#090807] text-ivory overflow-hidden pb-24 pt-10">
-        {/* Subtle, warm ambient background glow */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-40">
-          <div className="absolute top-[5%] left-[10%] h-[500px] w-[500px] rounded-full bg-gold-500/10 blur-[140px]" />
-          <div className="absolute top-[40%] right-[5%] h-[550px] w-[550px] rounded-full bg-gold-400/8 blur-[150px]" />
-          <div className="absolute bottom-[10%] left-[20%] h-[450px] w-[450px] rounded-full bg-gold-600/8 blur-[130px]" />
+      <main className="relative min-h-screen overflow-hidden pb-24 pt-8 sm:pt-12 bg-gradient-to-b from-[#fde3cf] via-[#fdf7f2] to-[#fde3cf] text-[#1c1109] selection:bg-[#a8451a]/20 selection:text-[#1c1109]">
+        
+        {/* Decorative ambient background glows */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-24 left-[10%] h-[500px] w-[500px] rounded-full bg-[#c04a1c]/[0.08] blur-[160px]" />
+          <div className="absolute top-[35%] right-[-5%] h-[600px] w-[600px] rounded-full bg-[#cfa14b]/[0.10] blur-[180px]" />
+          <div className="absolute bottom-[10%] left-[5%] h-[550px] w-[550px] rounded-full bg-[#8e3510]/[0.06] blur-[160px]" />
         </div>
 
-        {/* ─── Hero Section: Clean & Confident ────────────────────────── */}
+        {/* ─── Hero Section ────────────────────────── */}
         <section className="relative pt-6 pb-12 sm:pt-10 sm:pb-20 lg:pt-14 lg:pb-24">
-          <div className="relative mx-auto max-w-4xl px-6 text-center">
+          <div className="relative mx-auto max-w-4xl px-5 sm:px-8 text-center">
             <Reveal>
-              <p className="eyebrow justify-center mb-6">
-                <span className="gold-line" />
-                Robertsonpet, KGF
-                <span className="gold-line" />
-              </p>
+              {/* Status Pill */}
+              <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white/80 px-4 py-2 backdrop-blur-md shadow-xs mb-6">
+                <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+                  Pure Perfume Oils · Made in Small Batches
+                </span>
+                <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+              </div>
 
-              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] tracking-tight leading-[1.1] text-ivory font-light">
-                The Art of Scent, <br />
-                <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">
-                  Crafted Without Compromise.
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.12] text-[#1c1109] font-light">
+                Luxury Perfumes, <br />
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+                  Made Honest & Affordable.
                 </span>
               </h1>
 
-              <p className="mt-8 text-base sm:text-lg md:text-xl text-ivory/70 leading-relaxed font-light max-w-2xl mx-auto">
-                Zaylune was built on a simple premise: a truly great fragrance should not cost a fortune. We hand-blend fine fragrances and luxury attars right here in Robertsonpet, KGF, and ship them to scent lovers across India.
+              <p className="mt-6 text-base sm:text-lg md:text-xl text-[#2b1d12]/85 leading-relaxed font-normal max-w-2xl mx-auto">
+                We started {brand.name} with one simple goal: you shouldn&rsquo;t have to spend a fortune to smell amazing. We hand-blend long-lasting perfumes and pure attars in small batches, and ship them directly to your door across India.
               </p>
 
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+              <div className="mt-9 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
                 <Link
                   href="/shop"
-                  className="btn-gold px-8 py-3.5 text-xs sm:text-sm font-semibold tracking-wider hover:scale-105 transition-all"
+                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] px-9 sm:px-10 py-3.5 sm:py-4 font-display text-base font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
                 >
-                  Explore The Collection
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+                  <span className="relative z-10">Explore Our Perfumes</span>
                 </Link>
+
                 <a
-                  href={whatsappLink(
-                    "Hi Zaylune, I would love to explore your fragrances."
-                  )}
+                  href={whatsappLink(`Hi ${brand.name}, I would like to explore your perfumes.`, brand)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-outline px-8 py-3.5 text-xs sm:text-sm font-semibold tracking-wider hover:border-gold-300 transition-all"
+                  className="inline-flex items-center justify-center rounded-full border border-[#a8451a]/30 bg-white/85 px-8 sm:px-9 py-3.5 sm:py-4 font-display text-base font-semibold text-[#a8451a] hover:bg-[#a8451a] hover:text-white transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5"
                 >
-                  Chat with Us
+                  Chat on WhatsApp
                 </a>
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ─── Story Section: Honest & Human ──────────────────────────── */}
-        <section className="relative py-16 sm:py-24 border-y border-ink-line/80 bg-ink-soft/30 backdrop-blur-sm">
-          <div className="mx-auto max-w-wrap px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              {/* Left: Product / Studio Visual */}
+        {/* ─── Story Section ──────────────────────────── */}
+        <section className="relative py-16 sm:py-24 border-y border-[#a8451a]/15 bg-white/50 backdrop-blur-xs">
+          <div className="mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-16 items-center">
+              
+              {/* Left Column: Bottle photo */}
               <div className="lg:col-span-5 flex justify-center">
-                <Reveal className="group relative w-full max-w-[340px] sm:max-w-[380px]">
-                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-gold-400/25 bg-ink-soft shadow-2xl transition-all duration-500 hover:border-gold-300/50">
+                <Reveal className="group relative w-full max-w-[360px] sm:max-w-[400px]">
+                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2.25rem] sm:rounded-[2.75rem] border border-[#a8451a]/25 bg-white shadow-xl transition-all duration-500 hover:border-[#a8451a]/45 hover:shadow-2xl">
                     <Image
                       src="/about.png"
-                      alt="Zaylune fragrance handcrafted in KGF"
+                      alt={`${brand.name} handcrafted fragrance bottle`}
                       fill
-                      sizes="(max-width: 1024px) 85vw, 380px"
+                      priority
+                      sizes="(max-width: 1024px) 85vw, 400px"
                       className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                     />
 
-                    {/* Subtle bottom vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                    {/* Subtle top hairline highlight */}
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#a8451a]/40 to-transparent z-10" />
 
-                    {/* Bottom caption */}
-                    <div className="absolute inset-x-4 bottom-4 z-20 rounded-xl border border-white/10 bg-ink/90 p-4 backdrop-blur-md">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-300">
-                        Hand-Poured Atelier
+                    {/* Subtle gradient vignette at bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                    {/* Bottom floating workshop badge */}
+                    <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl border border-white/20 bg-white/90 p-4 shadow-lg backdrop-blur-md">
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a8451a]">
+                        Hand-Made In KGF
                       </p>
-                      <p className="font-display text-sm sm:text-base text-ivory font-medium mt-0.5">
-                        Zaylune Fragrances · KGF
+                      <p className="font-display text-sm sm:text-base text-[#1c1109] font-bold mt-0.5 truncate">
+                        {brand.name}
                       </p>
                     </div>
                   </div>
                 </Reveal>
               </div>
 
-              {/* Right: Authentic Story Copy */}
+              {/* Right Column: Story Copy in Simple English */}
               <div className="lg:col-span-7 flex flex-col justify-center">
                 <Reveal delay={100}>
-                  <p className="eyebrow mb-3">Our Story</p>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white/80 px-4 py-1.5 backdrop-blur-md shadow-xs mb-3.5">
+                    <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+                      Our Story
+                    </span>
+                  </div>
 
-                  <h2 className="font-display text-3xl sm:text-4xl md:text-5xl leading-tight text-ivory font-light">
-                    A Story of Scent <br />
-                    <span className="font-medium text-gold-200">and Simplicity.</span>
+                  <h2 className="font-display text-3xl sm:text-4xl md:text-5xl leading-tight text-[#1c1109] font-light">
+                    Why We Started <br />
+                    <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+                      {brand.name}
+                    </span>
                   </h2>
 
-                  <div className="mt-6 space-y-4 text-base sm:text-lg text-ivory/70 font-light leading-relaxed">
+                  <div className="mt-6 space-y-4 text-base sm:text-lg text-[#2b1d12]/85 font-normal leading-relaxed">
                     <p>
-                      Zaylune started with a frustration that every perfume enthusiast shares: why should a memorable, rich scent cost ₹15,000 or more? Most of that money never goes into the perfume itself — it goes to celebrity sponsorships, marble retail rents, and middleman markups.
+                      Big designer perfume brands charge ₹10,000 to ₹15,000 for a single bottle. But most of that money doesn&rsquo;t go into the perfume. It goes to celebrity advertising, expensive mall rent, and middleman profits.
                     </p>
                     <p>
-                      We set out to do things differently. We source genuine, imported fragrance oils and blend them with IFRA-certified cosmetic grade solvents at high concentrations. The result is pure, rich fragrance with impressive projection and staying power on skin.
+                      We wanted to change that. We cut out all the middlemen and sell directly to you. We source authentic imported oils and add more concentration to every bottle. That means you get a deep, rich scent that actually lasts on your skin all day long.
                     </p>
                     <p>
-                      Every single bottle is filled and checked by hand before dispatch. We believe in our products because we wear them ourselves every day.
+                      Every bottle is hand-filled, capped, and tested right here in our workshop. We wear our own perfumes every day, so we know they easily survive hot weather, sweat, and busy days.
                     </p>
                   </div>
 
-                  {/* Location card */}
-                  <div className="mt-8 flex items-start gap-4 p-5 rounded-xl bg-ink-soft/60 border border-gold-400/15">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-400/10 text-gold-300">
-                      <MapPin className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-display text-sm font-semibold text-gold-200 uppercase tracking-wider">
-                        Rooted in Robertsonpet, KGF
-                      </h4>
-                      <p className="mt-1 text-sm text-ivory/60 leading-relaxed font-light">
-                        Proudly formulated and dispatched from Robertsonpet, KGF, Karnataka. Carefully packed and shipped pan-India with dedicated customer support.
-                      </p>
+                  {/* Store & Workshop Card */}
+                  <div className="mt-8 rounded-2xl sm:rounded-3xl border border-[#a8451a]/20 bg-white/85 p-5 sm:p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-[#a8451a]/40">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8e3510] to-[#a8451a] text-white shadow-xs">
+                        <MapPin className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-display text-base font-bold text-[#1c1109]">
+                          Our Store & Workshop
+                        </h4>
+                        <p className="mt-1 text-sm text-[#2b1d12]/80 leading-relaxed font-normal">
+                          {brand.address}
+                        </p>
+                        <div className="mt-3.5 flex items-center gap-3 flex-wrap">
+                          <a
+                            href={`https://maps.google.com/?q=${encodeURIComponent(brand.address)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] px-4 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all"
+                          >
+                            Get Directions
+                          </a>
+                          <a
+                            href={whatsappLink(`Hi ${brand.name}, I would like to know more about your store.`, brand)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center rounded-full border border-[#a8451a]/25 bg-white px-4 py-1.5 text-xs sm:text-sm font-semibold text-[#a8451a] hover:bg-[#a8451a] hover:text-white transition-all"
+                          >
+                            WhatsApp Us
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Reveal>
               </div>
+
             </div>
           </div>
         </section>
 
-        {/* ─── Quality & Craft: Clean 4-Column Grid ───────────────────── */}
-        <section className="py-20 sm:py-28 relative">
-          <div className="mx-auto max-w-wrap px-6 md:px-12">
-            <Reveal className="text-center max-w-2xl mx-auto mb-16">
-              <p className="eyebrow justify-center mb-3">Our Standards</p>
-              <h2 className="section-heading mt-2">
-                What Goes Into Every Bottle
+        {/* ─── Quality & Craft: 4 Pillars Grid ───────────────────── */}
+        <section className="py-16 sm:py-24 relative">
+          <div className="mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
+            
+            <Reveal className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white/80 px-4 py-1.5 backdrop-blur-md shadow-xs mb-3.5">
+                <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+                  What Makes Us Special
+                </span>
+                <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-[#1c1109] leading-tight">
+                What Goes Into{" "}
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+                  Every Bottle
+                </span>
               </h2>
-              <div className="w-16 h-px bg-gold-400/40 mx-auto mt-4" />
+              <p className="mt-3.5 text-base sm:text-lg text-[#2b1d12]/80 leading-relaxed font-normal">
+                Four simple promises behind every perfume and attar we make.
+              </p>
             </Reveal>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -223,15 +273,19 @@ export default async function AboutPage() {
                 const Icon = pillar.icon;
                 return (
                   <Reveal key={pillar.title} delay={idx * 80}>
-                    <div className="group h-full rounded-2xl border border-ink-line/80 bg-ink-soft/40 p-7 transition-all duration-300 hover:border-gold-400/30 hover:bg-ink-soft/70 hover:-translate-y-1 flex flex-col justify-between">
+                    <div className="group relative h-full overflow-hidden rounded-[2rem] border border-[#a8451a]/20 bg-white/85 p-7 sm:p-8 backdrop-blur-md shadow-xs transition-all duration-500 hover:-translate-y-1.5 hover:border-[#a8451a]/40 hover:bg-white hover:shadow-lg flex flex-col justify-between">
+                      {/* Top shimmer sweep hairline on hover */}
+                      <span className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#c04a1c] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
                       <div>
-                        <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-gold-400/20 bg-gold-400/5 text-gold-300 group-hover:border-gold-300/40 transition-colors">
-                          <Icon className="w-5 h-5" strokeWidth={1.75} />
+                        {/* Icon Medallion */}
+                        <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#a8451a]/25 bg-gradient-to-br from-[#fff7ef] to-[#fde5ce] text-[#a8451a] shadow-xs group-hover:scale-105 transition-transform duration-300">
+                          <Icon className="h-6 w-6 text-[#a8451a]" strokeWidth={1.8} />
                         </div>
-                        <h3 className="font-display text-lg sm:text-xl text-ivory font-medium mb-2.5">
+                        <h3 className="font-display text-lg sm:text-xl text-[#1c1109] font-bold mb-2.5">
                           {pillar.title}
                         </h3>
-                        <p className="text-sm leading-relaxed text-ivory/60 font-light">
+                        <p className="text-sm sm:text-base leading-relaxed text-[#2b1d12]/80 font-normal">
                           {pillar.description}
                         </p>
                       </div>
@@ -240,23 +294,24 @@ export default async function AboutPage() {
                 );
               })}
             </div>
+
           </div>
         </section>
 
         {/* ─── Numbers / Stats Strip ──────────────────────────────────── */}
-        <section className="py-12 sm:py-16 relative border-y border-ink-line/80 bg-ink-soft/20">
-          <div className="mx-auto max-w-wrap px-6 md:px-12">
+        <section className="py-12 sm:py-16 relative border-y border-[#a8451a]/15 bg-white/60 backdrop-blur-xs">
+          <div className="mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
             <Reveal>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
                 {STATS.map((stat, idx) => (
                   <div key={stat.label} className="relative">
                     {idx > 0 && (
-                      <div className="hidden sm:block absolute left-0 top-1/4 bottom-1/4 w-px bg-gold-400/10" />
+                      <div className="hidden sm:block absolute left-0 top-1/4 bottom-1/4 w-px bg-[#a8451a]/15" />
                     )}
-                    <p className="font-display text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">
+                    <p className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
                       <StatCounter value={stat.value} />
                     </p>
-                    <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-ivory/50">
+                    <p className="mt-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#2b1d12]/80">
                       {stat.label}
                     </p>
                   </div>
@@ -267,28 +322,37 @@ export default async function AboutPage() {
         </section>
 
         {/* ─── Why Choose Zaylune: Two-Column Commitment ──────────────── */}
-        <section className="py-20 sm:py-28 relative">
-          <div className="mx-auto max-w-wrap px-6 md:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <section className="py-16 sm:py-24 relative">
+          <div className="mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-16 items-center">
+              
               <div className="lg:col-span-5">
                 <Reveal>
-                  <p className="eyebrow mb-3">The Zaylune Promise</p>
-                  <h2 className="section-heading mt-2">
-                    Why Choose <br />
-                    <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-gold-200 to-gold-400">
-                      Zaylune
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white/80 px-4 py-1.5 backdrop-blur-md shadow-xs mb-3.5">
+                    <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+                      Our Promise
+                    </span>
+                  </div>
+
+                  <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-[#1c1109] leading-tight">
+                    Why You&rsquo;ll Love <br />
+                    <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+                      {brand.name}
                     </span>
                   </h2>
-                  <p className="mt-6 text-base sm:text-lg text-ivory/70 leading-relaxed font-light">
-                    Every formulation choice we make — from the grade of oils we select to the atomizers we use — is made with one intention: delivering an extraordinary scent experience at an honest price.
+
+                  <p className="mt-5 text-base sm:text-lg text-[#2b1d12]/85 leading-relaxed font-normal">
+                    We want you to smell great and feel confident every day. From our smooth spray nozzles to long-lasting perfume oils, everything is made with care and sold at a fair price.
                   </p>
+
                   <div className="mt-8">
                     <Link
                       href="/shop"
-                      className="btn-outline text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-2"
+                      className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] px-9 sm:px-10 py-3.5 sm:py-4 font-display text-base font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
                     >
-                      Browse All Scents
-                      <ArrowRight className="w-4 h-4" />
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+                      <span className="relative z-10">See All Fragrances</span>
                     </Link>
                   </div>
                 </Reveal>
@@ -298,11 +362,11 @@ export default async function AboutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {ADVANTAGES.map((item, i) => (
                     <Reveal key={item} delay={i * 40}>
-                      <div className="flex items-center gap-3.5 p-4 rounded-xl bg-ink-soft/40 border border-ink-line/80 hover:border-gold-400/20 transition-all">
-                        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-400/10 text-gold-300">
+                      <div className="flex items-center gap-3.5 p-4 sm:p-5 rounded-2xl bg-white/85 border border-[#a8451a]/20 shadow-2xs backdrop-blur-md hover:border-[#a8451a]/40 hover:bg-white transition-all">
+                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#a8451a]/15 text-[#a8451a]">
                           <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
                         </div>
-                        <span className="text-sm sm:text-base text-ivory/80 font-light">
+                        <span className="text-sm sm:text-base text-[#1c1109] font-medium">
                           {item}
                         </span>
                       </div>
@@ -310,6 +374,7 @@ export default async function AboutPage() {
                   ))}
                 </div>
               </div>
+
             </div>
           </div>
         </section>
@@ -319,38 +384,51 @@ export default async function AboutPage() {
 
         {/* ─── Founder's Quote / Closing Statement ─────────────────────── */}
         <section className="relative py-12 sm:py-16">
-          <div className="mx-auto max-w-wrap px-6 md:px-12">
-            <Reveal className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-gold-400/20 bg-ink-soft/50 p-8 sm:p-14 md:p-18 text-center shadow-xl backdrop-blur-sm">
+          <div className="mx-auto max-w-wrap px-5 sm:px-8 md:px-12">
+            <Reveal className="relative overflow-hidden rounded-[2.25rem] sm:rounded-[3rem] border border-[#a8451a]/25 bg-white/90 p-8 sm:p-14 md:p-18 text-center shadow-lg backdrop-blur-md">
+              
+              {/* Top Hairline Highlight */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#a8451a]/40 to-transparent" />
+
               <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full border border-gold-400/20 bg-gold-400/5 text-gold-300">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#a8451a]/25 bg-gradient-to-br from-[#fff7ef] to-[#fde5ce] text-[#a8451a] shadow-xs">
                   <Quote className="w-6 h-6" />
                 </div>
 
-                <p className="font-display text-xl sm:text-2xl md:text-3xl text-ivory leading-relaxed font-light italic">
-                  &ldquo;Fragrance is personal. We exist to make sure the scent you love is always within reach.&rdquo;
+                <p className="font-display text-xl sm:text-2xl md:text-3xl text-[#1c1109] leading-relaxed font-light italic">
+                  &ldquo;A good perfume shouldn&rsquo;t be something you save only for weddings or special days. It should be something you enjoy every morning, feeling your best without worrying about the cost.&rdquo;
                 </p>
 
-                <div className="mt-6 h-px w-12 bg-gold-400/40" />
+                <div className="mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#a8451a]/40 to-transparent" />
 
-                <span className="font-display text-base uppercase tracking-widest text-gold-300 font-medium mt-4">
-                  Zaylune Fragrances
+                <span className="font-display text-base sm:text-lg uppercase tracking-wider text-[#a8451a] font-bold mt-4">
+                  {brand.name}
                 </span>
-                <span className="text-xs text-ivory/40 font-light tracking-wide mt-1">
-                  Robertsonpet, KGF · Karnataka
+                <span className="text-xs sm:text-sm text-[#2b1d12]/75 font-medium tracking-wide mt-1">
+                  {brand.address}
                 </span>
 
-                <div className="mt-8">
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
                   <Link
                     href="/shop"
-                    className="btn-gold px-8 py-3.5 text-xs font-semibold uppercase tracking-wider hover:scale-105 transition-all"
+                    className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] px-9 sm:px-10 py-3.5 sm:py-4 font-display text-base font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
                   >
-                    Shop Fragrances
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+                    <span className="relative z-10">Shop Fragrances</span>
+                  </Link>
+
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center rounded-full border border-[#a8451a]/30 bg-white/90 hover:bg-[#a8451a] hover:text-white px-8 sm:px-9 py-3.5 sm:py-4 font-display text-base font-semibold text-[#a8451a] transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5"
+                  >
+                    Contact Us
                   </Link>
                 </div>
               </div>
             </Reveal>
           </div>
         </section>
+
       </main>
       <Footer />
     </>

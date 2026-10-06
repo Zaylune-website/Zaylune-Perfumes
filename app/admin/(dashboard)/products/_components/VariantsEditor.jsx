@@ -2,7 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 
-const inputClass = "w-full rounded-lg border border-ink-line bg-ink px-3 py-2 text-sm text-ivory placeholder:text-ivory/30 focus:border-gold-400/50 focus:outline-none";
+const inputClass = "w-full rounded-lg border border-[#a8451a]/15 bg-white px-3 py-2 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/67 focus:border-[#a8451a]/50 focus:outline-none";
 const errorInputClass = "border-red-500/60 focus:border-red-500/60";
 
 export default function VariantsEditor({ variants, onChange, showErrors }) {
@@ -24,7 +24,7 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
         const stockMissing = showErrors && (v.stock_quantity === "" || v.stock_quantity == null || Number(v.stock_quantity) < 0);
 
         return (
-          <div key={i} className="grid grid-cols-1 gap-2 rounded-xl border border-ink-line p-3 sm:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_auto]">
+          <div key={i} className="grid grid-cols-1 gap-2 rounded-xl border border-[#a8451a]/15 bg-white/60 p-3 sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_auto]">
             <div>
               <input
                 placeholder="Size (e.g. 30ml)"
@@ -32,7 +32,7 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
                 onChange={(e) => update(i, "variant_name", e.target.value)}
                 className={`${inputClass} ${nameMissing ? errorInputClass : ""}`}
               />
-              {nameMissing && <p className="mt-1 text-[11px] text-red-400">Size name required</p>}
+              {nameMissing && <p className="mt-1 text-[11px] text-red-600">Size name required</p>}
             </div>
             <div>
               <select
@@ -52,7 +52,7 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
                 onChange={(e) => update(i, "price", e.target.value)}
                 className={`${inputClass} ${priceMissing ? errorInputClass : ""}`}
               />
-              {priceMissing && <p className="mt-1 text-[11px] text-red-400">Valid price required</p>}
+              {priceMissing && <p className="mt-1 text-[11px] text-red-600">Valid price required</p>}
             </div>
             <div>
               <input
@@ -71,7 +71,7 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
                 onChange={(e) => update(i, "stock_quantity", e.target.value)}
                 className={`${inputClass} ${stockMissing ? errorInputClass : ""}`}
               />
-              {stockMissing && <p className="mt-1 text-[11px] text-red-400">Stock required</p>}
+              {stockMissing && <p className="mt-1 text-[11px] text-red-600">Stock required</p>}
             </div>
             <div>
               <input
@@ -82,7 +82,7 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
                 className={inputClass}
               />
             </div>
-            <button type="button" onClick={() => remove(i)} className="flex h-fit items-center justify-center rounded-lg p-2 text-ivory/40 hover:bg-ink hover:text-red-400">
+            <button type="button" onClick={() => remove(i)} className="flex h-fit items-center justify-center rounded-lg p-2 text-[#2b1d12]/70 hover:bg-white hover:text-red-600">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
@@ -92,11 +92,11 @@ export default function VariantsEditor({ variants, onChange, showErrors }) {
       <button
         type="button"
         onClick={add}
-        className="flex items-center gap-1.5 text-sm text-gold-300 hover:text-gold-200"
+        className="flex items-center gap-1.5 text-sm text-[#a8451a] hover:text-[#a8451a]"
       >
         <Plus className="h-4 w-4" /> Add Bottle Size
       </button>
-      <p className="text-[11px] text-ivory/40">
+      <p className="text-[11px] text-[#2b1d12]/70">
         To offer both Glass and Plastic for the same size, add two rows with the same size name — one Glass, one Plastic (with a lower price). Glass is shown as the default on the product page. Weight (grams) is used for courier shipment booking — leave blank to use a default estimate.
       </p>
     </div>

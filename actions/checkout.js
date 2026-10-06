@@ -6,6 +6,8 @@ import { isCodEnabled, isOnlinePaymentEnabled } from "@/actions/settings";
 import { getQuantityDiscountSettings } from "@/actions/admin/quantityDiscount";
 import { getBundleSettings } from "@/actions/bundle";
 import crypto from "crypto";
+import { markOrderPaid } from "@/lib/orderPayment";
+import { sendOrderConfirmation } from "@/lib/orderConfirmation";
 
 function getRazorpayInstance() {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -95,6 +97,11 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
     return { success: false, error: "Online payment is currently unavailable. Please choose Cash on Delivery." };
   }
 
+  const cleanPhone = (addressInput.fullName && addressInput.phone ? String(addressInput.phone).replace(/\D/g, "") : "");
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return { success: false, error: "Please enter a valid 10-digit phone number." };
+  }
+
   // 1. Save the shipping address (reuse existing latest address if present)
   const { data: existingAddress } = await supabase
     .from("addresses")
@@ -107,7 +114,7 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
   const addressPayload = {
     user_id: user.id,
     full_name: addressInput.fullName,
-    phone: addressInput.phone,
+    phone: cleanPhone,
     address_line_1: addressInput.addressLine1,
     address_line_2: addressInput.addressLine2 || null,
     city: addressInput.city,
@@ -243,11 +250,12 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
   // client, same as the Razorpay path below already does.
   const { createAdminClient } = await import("@/lib/supabase/admin");
   await decrementStock(createAdminClient(), items);
+  await sendOrderConfirmation(createAdminClient(), order.id);
 
   return { success: true, isRazorpay: false, orderId: order.id, orderNumber: order.order_number };
 }
 
-export async function verifyRazorpayPayment(razorpayPaymentId, razorpayOrderId, razorpaySignature, internalOrderId, items) {
+export async function verifyRazorpayPayment(razorpayPaymentId, razorpayOrderId, razorpaySignature, internalOrderId) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -262,20 +270,35 @@ export async function verifyRazorpayPayment(razorpayPaymentId, razorpayOrderId, 
     .update(`${razorpayOrderId}|${razorpayPaymentId}`)
     .digest("hex");
 
-  if (expectedSignature !== razorpaySignature) {
+  const sigBuf = Buffer.from(String(razorpaySignature || ""), "utf8");
+  const expBuf = Buffer.from(expectedSignature, "utf8");
+  if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
     return { success: false, error: "Payment verification failed." };
   }
 
   const { createAdminClient } = await import("@/lib/supabase/admin");
   const admin = createAdminClient();
 
-  await admin
+  const { data: order } = await admin
     .from("orders")
-    .update({ payment_status: "paid", razorpay_payment_id: razorpayPaymentId })
+    .select("id, total_amount, razorpay_order_id")
     .eq("id", internalOrderId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-  await decrementStock(admin, items || []);
+  if (!order || order.razorpay_order_id !== razorpayOrderId) {
+    return { success: false, error: "Payment verification failed." };
+  }
+
+  const razorpay = getRazorpayInstance();
+  if (razorpay) {
+    const rzpOrder = await razorpay.orders.fetch(razorpayOrderId).catch(() => null);
+    if (!rzpOrder || rzpOrder.amount !== Math.round(Number(order.total_amount) * 100)) {
+      return { success: false, error: "Payment verification failed." };
+    }
+  }
+
+  await markOrderPaid(admin, order.id, razorpayPaymentId);
 
   return { success: true, razorpayPaymentId };
 }

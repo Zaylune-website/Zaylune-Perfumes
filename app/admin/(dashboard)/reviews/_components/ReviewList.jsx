@@ -72,8 +72,8 @@ export default function ReviewList({ reviews }) {
               onClick={() => setTab(t.key)}
               className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors duration-300 ${
                 tab === t.key
-                  ? "border-gold-400/30 bg-gold-400/10 text-gold-200"
-                  : "border-gold-400/10 text-ivory/40 hover:text-ivory"
+                  ? "border-[#a8451a]/30 bg-[#a8451a]/10 text-[#a8451a]"
+                  : "border-[#a8451a]/10 text-[#2b1d12]/70 hover:text-[#1c1109]"
               }`}
             >
               {t.label}
@@ -83,13 +83,13 @@ export default function ReviewList({ reviews }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ivory/30" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#2b1d12]/67" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search customer, product, review..."
-              className="w-full rounded-xl border border-gold-400/10 bg-ink-soft/40 py-2 pl-9 pr-3 text-sm text-ivory placeholder:text-ivory/30 focus:border-gold-400/30 focus:outline-none sm:w-64"
+              className="w-full rounded-xl border border-[#a8451a]/10 bg-[#fde3cf]/40 py-2 pl-9 pr-3 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/67 focus:border-[#a8451a]/30 focus:outline-none sm:w-64"
             />
           </div>
           <FilterSelect
@@ -108,12 +108,12 @@ export default function ReviewList({ reviews }) {
         </div>
       </div>
 
-      <p className="mb-3 text-xs text-ivory/40">
+      <p className="mb-3 text-xs text-[#2b1d12]/70">
         Showing {filtered.length} of {reviews.length} review{reviews.length === 1 ? "" : "s"}.
       </p>
 
       {filtered.length === 0 ? (
-        <p className="rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 py-12 text-center text-sm text-ivory/40 backdrop-blur-md">
+        <p className="rounded-3xl border border-[#a8451a]/20 bg-white/90 py-12 text-center text-sm text-[#2b1d12]/70 backdrop-blur-md">
           No reviews here.
         </p>
       ) : (
@@ -121,7 +121,7 @@ export default function ReviewList({ reviews }) {
           {filtered.map((r) => (
             <li
               key={r.id}
-              className="rounded-2xl border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-5 backdrop-blur-md"
+              className="rounded-3xl border border-[#a8451a]/20 bg-white/90 p-5 shadow-sm backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:p-6"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
@@ -130,16 +130,16 @@ export default function ReviewList({ reviews }) {
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold border ${
                         r.is_approved
-                          ? "bg-green-400/15 text-green-300 border-green-400/20"
-                          : "bg-gold-400/10 text-gold-200 border-gold-400/20"
+                          ? "bg-green-400/15 text-green-800 border-green-400/20"
+                          : "bg-[#a8451a]/10 text-[#a8451a] border-[#a8451a]/20"
                       }`}
                     >
                       {r.is_approved ? "Approved" : "Pending"}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-ivory/70">{r.review_text || <em className="text-ivory/30">No comment</em>}</p>
-                  <p className="mt-2 text-sm text-ivory/40">
-                    {r.profiles?.full_name || r.profiles?.email} on <span className="text-ivory/60">{r.products?.name}</span>
+                  <p className="mt-2 text-sm text-[#2b1d12]/78">{r.review_text || <em className="text-[#2b1d12]/67">No comment</em>}</p>
+                  <p className="mt-2 text-sm text-[#2b1d12]/70">
+                    {r.profiles?.full_name || r.profiles?.email} on <span className="text-[#2b1d12]/75">{r.products?.name}</span>
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
@@ -147,7 +147,7 @@ export default function ReviewList({ reviews }) {
                     <button
                       onClick={() => handleApprove(r.id)}
                       disabled={pending}
-                      className="flex items-center gap-1 rounded-xl bg-green-400/15 px-3 py-1.5 text-xs font-medium text-green-300 transition-colors hover:bg-green-400/25"
+                      className="flex items-center gap-1 rounded-xl bg-green-400/15 px-3 py-1.5 text-xs font-medium text-green-800 transition-colors hover:bg-green-400/25"
                     >
                       <Check className="h-3.5 w-3.5" /> Approve
                     </button>
@@ -155,7 +155,7 @@ export default function ReviewList({ reviews }) {
                   <button
                     onClick={() => setDeleteTarget({ id: r.id, label: `review by ${r.profiles?.full_name || r.profiles?.email || "customer"}` })}
                     disabled={pending}
-                    className="rounded-xl p-2 text-ivory/40 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                    className="rounded-xl p-2 text-[#2b1d12]/70 transition-colors hover:bg-red-500/10 hover:text-red-600"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

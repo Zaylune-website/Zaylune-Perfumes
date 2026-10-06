@@ -116,7 +116,7 @@ export default function Hero({
       )}
 
       {subtitle && (
-        <p className="hidden sm:block sm:mt-8 max-w-xl text-xl leading-relaxed text-ivory/80 font-light drop-shadow-md">
+        <p className="hidden sm:block sm:mt-8 max-w-xl text-xl leading-relaxed text-ivory/82 font-normal drop-shadow-md">
           {subtitle}
         </p>
       )}
@@ -138,7 +138,7 @@ export default function Hero({
           {showRatingRow && (
             <div className="flex items-center gap-1.5 sm:gap-3">
               {hasRating && <StarRating rating={parsedRating} size={12} />}
-              <span className="text-[11px] sm:text-sm font-semibold uppercase tracking-widest text-gold-300/80">
+              <span className="text-[11px] sm:text-sm font-semibold uppercase tracking-widest text-gold-300/90">
                 {hasRating && parsedRating.toFixed(1)}
                 {hasRating && hasReviews && " · "}
                 {hasReviews && reviewsText}
@@ -147,7 +147,7 @@ export default function Hero({
           )}
           {showRatingRow && hasShipped && <div className="hidden sm:block h-5 w-px bg-gold-400/10" />}
           {hasShipped && (
-            <span className="hidden sm:inline text-[9px] sm:text-sm font-semibold uppercase tracking-widest text-ivory/70">{shippedText}</span>
+            <span className="hidden sm:inline text-[9px] sm:text-sm font-semibold uppercase tracking-widest text-ivory/78">{shippedText}</span>
           )}
         </div>
       )}
@@ -170,7 +170,7 @@ export default function Hero({
 
   return (
     <section
-      className="relative overflow-hidden bg-[#0b0a0a] aspect-[4/5] sm:aspect-auto sm:min-h-[90vh] flex items-center pt-6 sm:pt-20 pb-6 sm:pb-20 select-none"
+      className="relative overflow-hidden bg-[#fde3cf] aspect-[4/5] sm:aspect-auto sm:min-h-[90vh] flex items-center pt-6 sm:pt-20 pb-6 sm:pb-20 select-none"
       onTouchStart={activeSlides.length > 1 ? handleTouchStart : undefined}
       onTouchEnd={activeSlides.length > 1 ? handleTouchEnd : undefined}
     >
@@ -196,14 +196,11 @@ export default function Hero({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-ink-gradient opacity-30">
-            <BottleGlyph className="h-2/3 w-auto text-gold-300/20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] animate-floatSlow" />
+            <BottleGlyph className="h-2/3 w-auto text-gold-300/90 drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)] animate-floatSlow" />
           </div>
         )}
-        {/* Light readability layers keep the banner image bright while preserving text contrast. */}
-        <div className="absolute inset-0 bg-[#0b0a0a]/20 sm:bg-[#0b0a0a]/15 md:bg-gradient-to-r md:from-[#0b0a0a]/38 md:via-[#0b0a0a]/12 md:to-transparent" />
-        <div className="absolute inset-x-0 top-0 h-16 sm:h-28 bg-gradient-to-b from-[#0b0a0a]/65 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-16 sm:h-28 bg-gradient-to-t from-[#0b0a0a]/55 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(0,0,0,0.16)_100%)] pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-14 sm:h-20 bg-gradient-to-b from-[#fde3cf]/35 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-14 sm:h-20 bg-gradient-to-t from-[#fde3cf]/25 to-transparent pointer-events-none" />
       </div>
 
       {/* Immersive background glows */}

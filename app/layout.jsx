@@ -23,9 +23,14 @@ const body = Jost({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylune.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zaylunefragrances.com";
 const SITE_DESCRIPTION =
   "Hand-poured attars and fine fragrances crafted in small batches — extrait-grade oils, alcohol-free options, made to last.";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),

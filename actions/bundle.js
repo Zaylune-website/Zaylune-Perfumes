@@ -7,7 +7,7 @@ export async function getBundleSettings() {
   try {
     const supabase = createPublicClient();
     const { data } = await supabase.from("settings").select("bundle").eq("id", 1).maybeSingle();
-    return data?.bundle || BUNDLE_DEFAULTS;
+    return { ...BUNDLE_DEFAULTS, ...(data?.bundle || {}) };
   } catch (err) {
     console.error("Fetch bundle settings error:", err);
     return BUNDLE_DEFAULTS;

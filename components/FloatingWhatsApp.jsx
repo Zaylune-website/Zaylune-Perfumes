@@ -19,7 +19,15 @@ export default function FloatingWhatsApp() {
     return () => observer.disconnect();
   }, []);
 
-  if (pathname?.startsWith("/admin") || pathname?.startsWith("/bundle") || pathname?.startsWith("/account")) return null;
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/bundle") ||
+    pathname?.startsWith("/account") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/register") ||
+    pathname === "/shop" ||
+    pathname?.startsWith("/shop/")
+  ) return null;
   if (drawerOpen || mobileMenuOpen) return null;
 
   return (

@@ -1,4 +1,4 @@
-﻿import { headers } from "next/headers";
+import { headers } from "next/headers";
 import { AdminSidebarProvider } from "@/context/AdminSidebarContext";
 import AdminSidebar from "@/components/admin/Sidebar";
 import AdminHeader from "@/components/admin/Header";
@@ -21,12 +21,12 @@ export default async function AdminDashboardLayout({ children }) {
 
   return (
     <AdminSidebarProvider>
-      <div className="flex h-screen overflow-hidden bg-ink">
+      <div className="admin-shell flex h-screen overflow-hidden bg-gradient-to-b from-[#fde3cf] via-[#fdf7f2] to-[#fde3cf] text-[#1c1109] selection:bg-[#a8451a]/20">
         <AdminSidebar adminName={adminName} />
-        <div className="flex h-screen flex-1 flex-col overflow-hidden lg:pl-0">
+        <div className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden lg:pl-0">
           <AdminHeader adminName={adminName} />
-          <main className="relative flex-1 overflow-y-auto p-4 md:p-8">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_1200px_600px_at_top,rgba(202,161,75,0.05),transparent_60%)]" />
+          <main className="relative min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_1000px_500px_at_top_right,rgba(192,74,28,0.08),transparent_60%),radial-gradient(ellipse_800px_500px_at_bottom_left,rgba(212,163,89,0.10),transparent_60%)]" />
             {children}
           </main>
         </div>

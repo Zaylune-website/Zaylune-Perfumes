@@ -8,7 +8,7 @@ export default function TermsPage() {
   return (
     <PolicyLayout title="Terms of Service" updated="October 2026" icon={FileText}>
       <p>
-        Please read these terms carefully before using <strong>zaylune.com</strong> or placing an
+        Please read these terms carefully before using <strong>zaylunefragrances.com</strong> or placing an
         order. By accessing the website or completing a purchase, you agree to be bound by these
         terms.
       </p>
@@ -16,7 +16,7 @@ export default function TermsPage() {
       <h2 className="font-display text-xl font-medium text-gold-200">1. About Zaylune</h2>
       <p>
         Zaylune is an Indian fragrance brand selling perfumes and related products directly to
-        customers across India through zaylune.com.
+        customers across India through zaylunefragrances.com.
       </p>
 
       <h2 className="font-display text-xl font-medium text-gold-200">2. Eligibility</h2>
@@ -80,7 +80,7 @@ export default function TermsPage() {
 
       <h2 className="font-display text-xl font-medium text-gold-200">9. Intellectual Property</h2>
       <p>
-        All content on zaylune.com — including logos, product imagery, copy, and design — is the
+        All content on zaylunefragrances.com — including logos, product imagery, copy, and design — is the
         exclusive property of Zaylune. You may not reproduce, distribute, or use any content
         without prior written permission.
       </p>

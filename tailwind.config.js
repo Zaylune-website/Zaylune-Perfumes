@@ -9,25 +9,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // "ink" now holds the light peach surface tones (page bg, panels, borders) —
+        // kept the same token names so every existing bg-ink/border-ink-line class
+        // just resolves to the new light palette without touching component files.
+        // Soft blush-peach, matched to the reference moodboard (rose-petal editorial look).
         ink: {
-          DEFAULT: "#12100e",
-          soft: "#1c1815",
-          line: "#322a21",
+          DEFAULT: "#fde3cf",
+          soft: "#fdd6bb",
+          line: "#f0b98e",
         },
+        // "ivory" now holds the dark warm-brown text tones (was light text on dark bg,
+        // is now dark text on light bg) for the same reason.
         ivory: {
-          DEFAULT: "#f7f3ea",
-          deep: "#efe7d4",
+          DEFAULT: "#2b1d12",
+          deep: "#1c1109",
         },
+        // Coral-terracotta accent (matched to reference's "Perfect Scent" heading color
+        // #cd571d) instead of yellow-gold. 200 darkened from the reference tone to
+        // ~4.8:1 contrast against the new ink background for small-text legibility.
         gold: {
-          50: "#faf3df",
-          100: "#f1d989",
-          200: "#e6c674",
-          300: "#dcb35f",
-          400: "#caa14b",
-          500: "#b3893a",
-          600: "#a97c2f",
-          700: "#8a6626",
-          DEFAULT: "#caa14b",
+          50: "#fce4cf",
+          100: "#a8451a",
+          200: "#a8451a",
+          300: "#8a3814",
+          400: "#6b2a0f",
+          500: "#552107",
+          600: "#431a06",
+          700: "#331404",
+          DEFAULT: "#a8451a",
         },
       },
       fontFamily: {
@@ -38,8 +47,13 @@ module.exports = {
         wrap: "1360px",
       },
       backgroundImage: {
-        "gold-gradient": "linear-gradient(135deg, #a97c2f 0%, #f1d989 45%, #caa14b 70%, #8a6626 100%)",
-        "ink-gradient": "linear-gradient(180deg, #12100e 0%, #201c18 100%)",
+        // Coral shine for small decorative fills (badges, icon circles) — matches
+        // the reference moodboard's terracotta-orange rather than yellow-gold.
+        "gold-gradient": "linear-gradient(135deg, #c0491c 0%, #f2905a 45%, #d9651f 70%, #8a3010 100%)",
+        "ink-gradient": "linear-gradient(180deg, #fef2e6 0%, #fdd6bb 100%)",
+        // Horizontal brown-to-coral shine, matched directly to the reference's
+        // "SHOP NOW" button (left #882d14 deep brown, right #eb7834 bright orange).
+        "accent-gradient": "linear-gradient(90deg, #7a2812 0%, #c04a1c 45%, #d4651f 100%)",
       },
       boxShadow: {
         gold: "0 20px 60px -20px rgba(202,161,75,0.35)",
@@ -78,6 +92,11 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateX(-100%)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        couponPulse: {
+          "0%": { transform: "scale(1)" },
+          "35%": { transform: "scale(1.12)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
         fadeUp: "fadeUp 0.8s cubic-bezier(.22,1,.36,1) forwards",
@@ -88,6 +107,7 @@ module.exports = {
         marquee: "marquee 32s linear infinite",
         slideInRight: "slideInRight 0.5s cubic-bezier(.22,1,.36,1) forwards",
         slideInLeft: "slideInLeft 0.35s cubic-bezier(.22,1,.36,1) forwards",
+        couponPulse: "couponPulse 0.7s cubic-bezier(.22,1,.36,1)",
       },
     },
   },

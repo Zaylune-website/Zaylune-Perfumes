@@ -62,7 +62,7 @@ export default function ImageUploader({
           <div
             key={url}
             className={`relative overflow-hidden rounded-xl border ${
-              idx === 0 && showCover ? "border-gold-400/60" : "border-ink-line"
+              idx === 0 && showCover ? "border-[#a8451a]/60" : "border-[#a8451a]/15"
             } ${previewClassName}`}
           >
             <Image src={url} alt="" fill sizes="(max-width: 640px) 100vw, 448px" className="object-cover" />
@@ -81,8 +81,8 @@ export default function ImageUploader({
                 title={idx === 0 ? "Cover image" : "Set as cover image"}
                 className={`absolute bottom-1 left-1 flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide backdrop-blur-sm ${
                   idx === 0
-                    ? "bg-gold-gradient text-ink"
-                    : "bg-black/60 text-ivory/80 hover:text-gold-300"
+                    ? "bg-gold-gradient text-[#1c1109]"
+                    : "bg-black/60 text-[#2b1d12]/82 hover:text-[#a8451a]"
                 }`}
               >
                 <Star className={`h-2.5 w-2.5 ${idx === 0 ? "fill-ink" : ""}`} />
@@ -97,7 +97,7 @@ export default function ImageUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-ink-line text-ivory/40 transition-colors hover:border-gold-400/50 hover:text-gold-300 disabled:opacity-50 ${previewClassName}`}
+            className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#a8451a]/15 text-[#2b1d12]/70 transition-colors hover:border-[#a8451a]/50 hover:text-[#a8451a] disabled:opacity-50 ${previewClassName}`}
           >
             {uploading ? (
               <Loader2 className="h-5 w-5 animate-spin" />

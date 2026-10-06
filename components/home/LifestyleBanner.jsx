@@ -18,7 +18,7 @@ export default function LifestyleBanner() {
           <h2 className="mt-5 font-display text-3xl leading-tight text-ivory md:text-4xl">
             Begins as a whisper. <br /> Settles into a signature.
           </h2>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-ivory/60">
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-ivory/75">
             One dab behind the ear, one on the wrist — a Zaylune attar opens quietly and deepens
             over hours, the way a fragrance should.
           </p>

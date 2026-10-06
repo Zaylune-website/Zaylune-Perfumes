@@ -9,7 +9,7 @@ const POINTS = [
 
 export default function AuthShowcase() {
   return (
-    <div className="relative hidden h-full flex-col justify-center overflow-hidden bg-gradient-to-b from-[#120f0d] to-[#080707] px-16 py-16 lg:flex border-r border-gold-400/10">
+    <div className="relative hidden h-full flex-col justify-center overflow-hidden bg-[#fde3cf] px-16 py-16 lg:flex border-r border-gold-400/10">
       <div className="pointer-events-none absolute -left-24 top-10 h-96 w-96 rounded-full bg-gold-500/5 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
       <div className="pointer-events-none absolute -right-16 bottom-0 h-96 w-96 rounded-full bg-gold-400/5 blur-[150px] animate-pulse" style={{ animationDuration: '12s' }} />
       <BottleGlyph className="pointer-events-none absolute -right-20 top-1/2 h-[30rem] w-auto -translate-y-1/2 opacity-[0.05]" />
@@ -22,7 +22,7 @@ export default function AuthShowcase() {
           Fragrance Worth <br />
           <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">Coming Back To</span>
         </h2>
-        <p className="mt-6 text-sm leading-relaxed text-ivory/50 font-light max-w-sm">
+        <p className="mt-6 text-sm leading-relaxed text-ivory/72 font-normal max-w-sm">
           Create an account to track orders, save favorites, and check out faster every time.
         </p>
 
@@ -32,13 +32,13 @@ export default function AuthShowcase() {
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gold-400/10 text-gold-300 ring-1 ring-gold-400/20 group-hover:scale-105 transition-transform duration-300">
                 <p.icon className="h-4.5 w-4.5" strokeWidth={1.5} />
               </span>
-              <span className="text-sm text-ivory/70 font-light">{p.text}</span>
+              <span className="text-sm text-ivory/78 font-normal">{p.text}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-12 border-l border-gold-400/40 pl-6 relative">
-          <p className="font-display text-lg xl:text-xl italic leading-relaxed text-ivory/80 font-light">
+          <p className="font-display text-lg xl:text-xl italic leading-relaxed text-ivory/82 font-normal">
             "The first attar I've tried that doesn't fade within an hour. Genuinely extrait-grade."
           </p>
         </div>

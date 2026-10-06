@@ -32,7 +32,7 @@ export default function PerfumeryShowcase({ products }) {
   const centerIndex = Math.floor((shiftedProducts.length - 1) / 2);
 
   return (
-    <section className="bg-gradient-to-b from-[#0b0a0a] via-[#120f0d] to-[#0b0a0a] py-28 relative overflow-hidden border-t border-ink-line">
+    <section className="bg-gradient-to-b from-[#fde3cf] via-[#fdd6bb] to-[#fde3cf] py-28 relative overflow-hidden border-t border-ink-line">
 
       {/* Dynamic ambient backgrounds */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -90,7 +90,7 @@ export default function PerfumeryShowcase({ products }) {
                         }`}
                     />
                   ) : (
-                    <BottleGlyph className={`h-1/2 w-auto transition-transform group-hover:scale-105 ${isCenter ? "opacity-80 text-gold-300" : "opacity-45 text-ivory/60"
+                    <BottleGlyph className={`h-1/2 w-auto transition-transform group-hover:scale-105 ${isCenter ? "opacity-80 text-gold-300" : "opacity-45 text-ivory/75"
                       }`} />
                   )}
 
@@ -99,7 +99,7 @@ export default function PerfumeryShowcase({ products }) {
                     <span className="font-display text-xs text-gold-200 leading-tight font-medium truncate max-w-full">
                       {p.name}
                     </span>
-                    <span className="text-[9px] uppercase tracking-widest text-ivory/40 mt-1">
+                    <span className="text-[9px] uppercase tracking-widest text-ivory/70 mt-1">
                       View details
                     </span>
                   </div>
@@ -114,7 +114,7 @@ export default function PerfumeryShowcase({ products }) {
           <h3 className="font-display text-2xl sm:text-3xl text-gold-200 font-semibold mb-4">
             For Those Who Love Quality
           </h3>
-          <p className="text-sm sm:text-base leading-relaxed text-ivory/60 font-light">
+          <p className="text-sm sm:text-base leading-relaxed text-ivory/75 font-normal">
             Every Zaylune perfume is made with high-quality oils to make sure it lasts up to 24 hours. We mix each batch by hand with pure ingredients, giving you premium quality at honest prices.
           </p>
         </Reveal>

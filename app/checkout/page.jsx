@@ -26,27 +26,27 @@ export default async function CheckoutPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative min-h-screen overflow-hidden bg-[#0b0a0a] pb-28 pt-20">
-        {/* Decorative background glows */}
+      <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#fde3cf] via-[#fdf7f2] to-[#fde3cf] text-[#1c1109] pb-24 sm:pb-32 pt-8 sm:pt-12 selection:bg-[#a8451a]/20 selection:text-[#1c1109]">
+        {/* Ambient luxury background glows */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[5%] left-[-10%] w-[500px] h-[500px] rounded-full bg-gold-500/5 blur-[120px]" />
-          <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] rounded-full bg-gold-400/5 blur-[150px]" />
-          <div className="absolute bottom-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-gold-600/5 blur-[130px]" />
+          <div className="absolute top-[5%] left-[-10%] w-[550px] h-[550px] rounded-full bg-[#c04a1c]/[0.08] blur-[150px]" />
+          <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#d4a359]/[0.10] blur-[160px]" />
+          <div className="absolute bottom-[10%] left-[20%] w-[550px] h-[550px] rounded-full bg-[#8e3510]/[0.07] blur-[150px]" />
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <Reveal className="mb-12 border-b border-gold-400/10 pb-8 text-center sm:text-left">
-            <span className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-gold-400/20 bg-ink-soft/80 text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-200 backdrop-blur-md mb-6">
-              <ShieldCheck className="w-3.5 h-3.5 text-gold-300" />
-              Safe &amp; Encrypted
+        <div className="relative mx-auto max-w-6xl px-5 sm:px-8 lg:px-12 z-10">
+          <Reveal className="mb-10 sm:mb-14 border-b border-[#a8451a]/15 pb-8 text-center sm:text-left">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#a8451a]/25 bg-white/85 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs backdrop-blur-md mb-4">
+              <ShieldCheck className="w-4 h-4 text-[#c04a1c]" />
+              Safe &amp; Encrypted Checkout
             </span>
-            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-light leading-[1.05] text-ivory">
+            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] text-[#1c1109]">
               Secure{" "}
-              <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400">
+              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
                 Checkout
               </span>
             </h1>
-            <p className="mt-4 text-base sm:text-lg text-ivory/60 font-light max-w-xl mx-auto sm:mx-0">
+            <p className="mt-4 text-base sm:text-lg lg:text-xl text-[#2b1d12]/85 font-normal max-w-2xl mx-auto sm:mx-0 leading-relaxed">
               Complete your details below to place your order — we'll confirm everything with you on WhatsApp.
             </p>
           </Reveal>

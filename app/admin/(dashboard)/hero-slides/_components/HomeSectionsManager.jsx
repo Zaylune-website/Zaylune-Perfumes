@@ -8,10 +8,10 @@ import ImageUploader from "@/components/admin/ImageUploader";
 import { updateSiteSetting } from "@/actions/settings";
 
 const inputClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-sm text-ivory placeholder:text-ivory/30 transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-ivory/40";
+  "w-full rounded-xl border border-[#a8451a]/20 bg-white px-4 py-2.5 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/50 transition-colors duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/35";
+const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-[#2b1d12]/70";
 const panelClass =
-  "rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md md:p-8";
+  "rounded-3xl border border-[#a8451a]/20 bg-white/90 p-5 shadow-sm backdrop-blur-xl sm:p-6 md:p-8";
 
 const SECTIONS = [
   {
@@ -154,9 +154,9 @@ export default function HomeSectionsManager({ settings, only }) {
           <div key={section.id} className={panelClass}>
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-3">
-                <h3 className="font-display text-lg text-ivory">{section.title}</h3>
+                <h3 className="font-display text-lg font-bold text-[#1c1109]">{section.title}</h3>
                 {section.enabledKey && (
-                  <label className="flex items-center gap-1.5 rounded-full border border-gold-400/10 bg-white/[0.02] px-3 py-1 text-xs font-medium text-ivory/60">
+                  <label className="flex items-center gap-1.5 rounded-full border border-[#a8451a]/20 bg-white px-3 py-1.5 text-xs font-semibold text-[#2b1d12]/75">
                     <input
                       type="checkbox"
                       checked={sectionEnabled}
@@ -179,7 +179,7 @@ export default function HomeSectionsManager({ settings, only }) {
               {section.fields.map((field) => (
                 <div key={field.key}>
                   <label className={labelClass}>{field.label}</label>
-                  {field.hint && <p className="mb-1.5 -mt-1 text-sm text-ivory/30">{field.hint}</p>}
+                  {field.hint && <p className="mb-1.5 -mt-1 text-sm text-[#2b1d12]/67">{field.hint}</p>}
                   <textarea
                     value={values[field.key]}
                     onChange={(e) => handleChange(field.key, e.target.value)}
@@ -203,7 +203,7 @@ export default function HomeSectionsManager({ settings, only }) {
               {section.note && (
                 <Link
                   href={section.noteHref}
-                  className="flex items-center gap-1.5 text-sm text-gold-300/80 transition-colors hover:text-gold-200"
+                  className="flex items-center gap-1.5 text-sm text-[#a8451a]/90 transition-colors hover:text-[#a8451a]"
                 >
                   {section.note} <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
@@ -211,7 +211,7 @@ export default function HomeSectionsManager({ settings, only }) {
             </div>
 
             {saved?.id === section.id && (
-              <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-400" : "text-red-400"}`}>
+              <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-700" : "text-red-600"}`}>
                 {saved.success ? (
                   <>
                     <Check className="h-3.5 w-3.5" /> Saved successfully

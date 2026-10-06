@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import crypto from "crypto";
 import { sendBrevoEmail, otpEmailHtml, resetPasswordEmailHtml } from "@/lib/brevo";
 import { createAdminSessionToken, COOKIE_NAME as ADMIN_COOKIE_NAME, MAX_AGE_SECONDS as ADMIN_COOKIE_MAX_AGE } from "@/lib/adminSession";
+import { phoneError } from "@/lib/phone";
 
 function safeRedirect(target) {
   return target && target.startsWith("/") ? target : "/";
@@ -41,6 +42,8 @@ export async function registerUser(_prevState, formData) {
   if (!fullName || !email || !password) {
     return { error: "Full name, email, and password are required." };
   }
+  const phoneErr = phoneError(phone, { required: true });
+  if (phoneErr) return { error: phoneErr };
   if (password.length < 6) {
     return { error: "Password must be at least 6 characters." };
   }
@@ -81,6 +84,8 @@ export async function requestSignupOtp(_prevState, formData) {
   if (!fullName || !email || !password) {
     return { error: "Full name, email, and password are required." };
   }
+  const phoneErr = phoneError(phone, { required: true });
+  if (phoneErr) return { error: phoneErr };
   if (password.length < 6) {
     return { error: "Password must be at least 6 characters." };
   }

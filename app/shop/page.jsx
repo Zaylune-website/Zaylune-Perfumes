@@ -1,6 +1,6 @@
-﻿import { Suspense } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import ProductGrid from "@/components/ProductGrid";
@@ -121,29 +121,37 @@ export default async function ShopPage({ searchParams }) {
   return (
     <>
       <SiteHeader />
-      <main className="min-h-screen overflow-hidden pb-24 pt-4 sm:pt-10 bg-[#0b0a0a] text-ivory">
-        <section className="relative">
-          
-          {/* Subtle background glows */}
-          <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-gold-400/5 blur-[100px]" />
-          <div className="pointer-events-none absolute -right-16 top-10 h-80 w-80 rounded-full bg-gold-300/5 blur-[100px]" />
-          <div className="pointer-events-none absolute left-1/3 bottom-0 h-72 w-72 rounded-full bg-gold-600/5 blur-[120px]" />
+      <main className="relative min-h-screen overflow-hidden pb-24 pt-4 sm:pt-8 bg-gradient-to-b from-[#fde3cf] via-[#fdf7f2] to-[#fde3cf] text-[#1c1109] selection:bg-[#a8451a]/20 selection:text-[#1c1109]">
+        
+        {/* Decorative ambient background glows */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-24 left-[10%] h-[500px] w-[500px] rounded-full bg-[#c04a1c]/[0.08] blur-[160px]" />
+          <div className="absolute top-[30%] right-[-5%] h-[600px] w-[600px] rounded-full bg-[#cfa14b]/[0.10] blur-[180px]" />
+          <div className="absolute bottom-[10%] left-[5%] h-[550px] w-[550px] rounded-full bg-[#8e3510]/[0.06] blur-[160px]" />
+        </div>
 
-          <div className="relative mx-auto max-w-wrap px-6 py-6 sm:py-10 md:px-12 md:py-14">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="eyebrow">
-                  <span className="gold-line" /> The Collection
-                </p>
-                <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-ivory mt-4">
-                  {params.search ? `Results for "${params.search}"` : activeCategoryName || "Shop All Fragrances"}
+        <section className="relative">
+          <div className="relative mx-auto max-w-wrap px-6 py-5 sm:py-10 md:px-12 md:py-12">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+              <div className="flex flex-col items-center sm:items-start">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white/80 px-4 py-1.5 backdrop-blur-md shadow-xs mb-3">
+                  <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+                    The Collection
+                  </span>
+                  <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
+                </div>
+                <h1 className="font-display text-2xl sm:text-4xl md:text-5xl font-light text-[#1c1109] leading-tight">
+                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
+                    {params.search ? `Results for "${params.search}"` : activeCategoryName || "Shop All Fragrances"}
+                  </span>
                 </h1>
-                <p className="mt-2 text-sm sm:text-base text-ivory/50 font-light">
-                  {products.length} fragrance{products.length === 1 ? "" : "s"}
+                <p className="mt-2 max-w-xs text-sm sm:max-w-none sm:text-base text-[#2b1d12]/80 font-normal">
+                  {products.length} {products.length === 1 ? "fragrance" : "fragrances"} crafted in small batches with extrait-grade oils
                 </p>
               </div>
               <Suspense fallback={null}>
-                <SortSelect className="hidden w-56 md:block" />
+                <SortSelect className="hidden w-56 md:block shrink-0" />
               </Suspense>
             </div>
 
@@ -154,13 +162,17 @@ export default async function ShopPage({ searchParams }) {
                     key={chip.key}
                     href={chipHref(chip.key)}
                     scroll={false}
-                    className="flex items-center gap-1.5 rounded-full border border-gold-400/20 bg-gold-400/10 px-3.5 py-1.5 text-sm text-gold-200 transition-colors hover:border-gold-300"
+                    className="flex items-center gap-1.5 rounded-full border border-[#a8451a]/25 bg-white/90 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-[#8e3510] shadow-2xs transition-all hover:border-[#a8451a] hover:bg-white"
                   >
-                    {chip.label}
-                    <X className="h-3 w-3" />
+                    <span>{chip.label}</span>
+                    <X className="h-3.5 w-3.5 text-[#a8451a]" />
                   </Link>
                 ))}
-                <Link href="/shop" scroll={false} className="text-sm text-ivory/40 hover:text-red-400 transition-colors ml-2">
+                <Link
+                  href="/shop"
+                  scroll={false}
+                  className="text-xs sm:text-sm font-semibold text-[#2b1d12]/70 hover:text-rose-600 transition-colors ml-2"
+                >
                   Clear all
                 </Link>
               </div>
@@ -168,8 +180,8 @@ export default async function ShopPage({ searchParams }) {
           </div>
         </section>
 
-        <div className="mx-auto max-w-wrap px-6 md:px-12">
-          <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-[240px_1fr]">
+        <div className="relative mx-auto max-w-wrap px-6 md:px-12">
+          <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[260px_1fr] lg:gap-12">
             <aside className="md:sticky md:top-24 md:self-start">
               <Suspense fallback={null}>
                 <ShopFilters categories={safeCategories} globalMin={globalMin} globalMax={globalMax} />
@@ -189,8 +201,8 @@ export default async function ShopPage({ searchParams }) {
                     aria-disabled={currentPage === 1}
                     className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all ${
                       currentPage === 1
-                        ? "pointer-events-none border-ink-line text-ivory/20"
-                        : "border-gold-400/20 bg-ink-soft/80 text-gold-300 hover:border-gold-300/40 hover:text-gold-200"
+                        ? "pointer-events-none border-[#a8451a]/15 bg-white/40 text-[#2b1d12]/30"
+                        : "border-[#a8451a]/25 bg-white/90 text-[#a8451a] hover:bg-white hover:border-[#a8451a] shadow-2xs"
                     }`}
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -198,7 +210,7 @@ export default async function ShopPage({ searchParams }) {
 
                   {getPageNumbers(currentPage, totalPages).map((p, i) =>
                     p === "..." ? (
-                      <span key={`ellipsis-${i}`} className="px-1 text-sm text-ivory/30">
+                      <span key={`ellipsis-${i}`} className="px-1 text-sm font-semibold text-[#2b1d12]/50">
                         &hellip;
                       </span>
                     ) : (
@@ -206,10 +218,10 @@ export default async function ShopPage({ searchParams }) {
                         key={p}
                         href={pageHref(p)}
                         scroll={false}
-                        className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border text-sm font-medium transition-all ${
+                        className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border text-sm transition-all ${
                           p === currentPage
-                            ? "border-gold-300 bg-gold-400/15 text-gold-200 shadow-gold"
-                            : "border-gold-400/10 text-ivory/60 hover:border-gold-400/40 hover:text-ivory"
+                            ? "border-[#a8451a] bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] text-white shadow-md font-bold"
+                            : "border-[#a8451a]/20 bg-white/80 text-[#2b1d12]/80 hover:border-[#a8451a] hover:bg-white hover:text-[#1c1109] font-semibold"
                         }`}
                       >
                         {p}
@@ -223,8 +235,8 @@ export default async function ShopPage({ searchParams }) {
                     aria-disabled={currentPage === totalPages}
                     className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all ${
                       currentPage === totalPages
-                        ? "pointer-events-none border-ink-line text-ivory/20"
-                        : "border-gold-400/20 bg-ink-soft/80 text-gold-300 hover:border-gold-300/40 hover:text-gold-200"
+                        ? "pointer-events-none border-[#a8451a]/15 bg-white/40 text-[#2b1d12]/30"
+                        : "border-[#a8451a]/25 bg-white/90 text-[#a8451a] hover:bg-white hover:border-[#a8451a] shadow-2xs"
                     }`}
                   >
                     <ChevronRight className="h-4 w-4" />

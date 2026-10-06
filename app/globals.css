@@ -6,6 +6,8 @@
   html {
     scroll-behavior: smooth;
     font-size: 106.25%;
+    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   @media (max-width: 639px) {
@@ -14,18 +16,75 @@
     }
   }
 
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a8451a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 16px;
+    padding-right: 2.6rem;
+    border: 1px solid rgba(168, 69, 26, 0.25);
+    border-radius: 1rem;
+    color: #1c1109;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  select:hover {
+    border-color: rgba(168, 69, 26, 0.45);
+  }
+
+  select:focus {
+    outline: none;
+    border-color: #a8451a;
+    box-shadow: 0 0 0 3px rgba(168, 69, 26, 0.15);
+  }
+
+  select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  option {
+    background-color: #ffffff;
+    color: #1c1109;
+  }
+
   body {
     @apply bg-ink text-ivory font-body antialiased;
+    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
 @layer components {
+  .thin-x-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 69, 26, 0.35) transparent;
+  }
+
+  .thin-x-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .thin-x-scroll::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgba(168, 69, 26, 0.35);
+  }
+
+  .thin-x-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .eyebrow {
     @apply inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.28em] text-gold-200;
   }
 
   .section-heading {
-    @apply font-display text-3xl md:text-[2.6rem] leading-[1.1] text-ivory;
+    @apply font-display text-3xl sm:text-4xl md:text-5xl leading-[1.1] text-ivory;
   }
 
   .gold-line {
@@ -33,11 +92,11 @@
   }
 
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold-gradient bg-[length:200%_200%] px-7 py-3 text-sm font-semibold tracking-wide text-ink shadow-gold transition-all duration-300 hover:bg-right hover:shadow-lg;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent-gradient bg-[length:200%_200%] px-7 py-3 text-sm font-semibold tracking-wide text-[#fef2e6] [text-shadow:0_1px_4px_rgba(60,15,5,0.35)] shadow-[0_14px_30px_-12px_rgba(122,40,18,0.55)] transition-all duration-300 hover:bg-right hover:shadow-[0_16px_34px_-10px_rgba(122,40,18,0.65)];
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-gold-400/50 px-7 py-3 text-sm font-semibold tracking-wide text-ivory transition-all duration-300 hover:border-gold-300 hover:bg-gold-400/10;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#c04a1c]/60 bg-[#fff8ef] px-7 py-3 text-sm font-semibold tracking-wide text-[#a8451a] shadow-[0_8px_20px_-14px_rgba(122,40,18,0.4)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#c04a1c] hover:bg-accent-gradient hover:text-[#fef2e6] hover:shadow-[0_12px_28px_-14px_rgba(122,40,18,0.5)];
   }
 
   .card-panel {
@@ -54,8 +113,8 @@
 }
 
 ::selection {
-  background: rgba(202, 161, 75, 0.35);
-  color: #f7f3ea;
+  background: rgba(169, 124, 47, 0.3);
+  color: #2b1d12;
 }
 
 /* Thin, gold-tinted scrollbar for a more considered feel */
@@ -66,14 +125,14 @@ html {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #12100e;
+  background: #fde3cf;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a241c;
+  background: #f0b98e;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3226;
+  background: #e0a06a;
 }
 
 /* Hides the scrollbar on horizontal touch-scroll strips (category rail, carousels) */
@@ -84,3 +143,145 @@ html {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ------------------------------------------------------------------
+   Admin dashboard theme — scoped to .admin-shell so the storefront is
+   unaffected. Upgrades the legacy faint "gold-400/10" panels, inputs and
+   borders to the same frosted-white / terracotta look as the homepage.
+   ------------------------------------------------------------------ */
+.admin-shell [class*="from-ink-soft/80"],
+.admin-shell .card-panel {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(168, 69, 26, 0.2) !important;
+  box-shadow: 0 10px 30px -18px rgba(122, 40, 18, 0.3);
+  backdrop-filter: blur(12px);
+}
+.admin-shell [class*="from-ink-soft/80"]:hover,
+.admin-shell .card-panel:hover {
+  border-color: rgba(168, 69, 26, 0.4) !important;
+  box-shadow: 0 16px 36px -18px rgba(122, 40, 18, 0.38);
+}
+.admin-shell [class*="border-gold-400/10"],
+.admin-shell [class*="border-gold-400/5"],
+.admin-shell [class*="border-ink-line"],
+.admin-shell [class*="divide-gold-400/5"] > * + * {
+  border-color: rgba(168, 69, 26, 0.18);
+}
+.admin-shell input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+.admin-shell select,
+.admin-shell textarea {
+  background-color: #ffffff !important;
+  color: #1c1109;
+  border-color: rgba(168, 69, 26, 0.25);
+  box-shadow: 0 1px 2px rgba(122, 40, 18, 0.06);
+}
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder {
+  color: rgba(43, 29, 18, 0.4);
+}
+.admin-shell input:not([type="checkbox"]):not([type="radio"]):focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  border-color: #a8451a;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(168, 69, 26, 0.15);
+}
+.admin-shell input[type="checkbox"],
+.admin-shell input[type="radio"] {
+  accent-color: #c04a1c;
+}
+.admin-shell .btn-gold {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.admin-shell table thead th {
+  color: #a8451a;
+  font-weight: 700;
+}
+.admin-shell [class*="bg-ivory/[0.02]"] {
+  background-color: #fffaf5;
+}
+
+/* ---- Admin polish: headings ---- */
+.admin-shell main h1 {
+  font-weight: 800;
+  color: #1c1109;
+  letter-spacing: -0.01em;
+}
+.admin-shell main h1::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 4px;
+  margin-top: 0.65rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8e3510, #c04a1c, transparent);
+}
+.admin-shell main h1 span[class*="from-gold-100"] {
+  background-image: linear-gradient(90deg, #7a2812, #c04a1c, #d4651f);
+  font-weight: 800;
+}
+.admin-shell main h2 {
+  font-weight: 800;
+  color: #1c1109;
+}
+
+/* ---- Admin polish: tables ---- */
+.admin-shell table thead tr {
+  border-bottom: 2px solid rgba(168, 69, 26, 0.22);
+}
+.admin-shell table thead th {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.admin-shell table tbody tr {
+  transition: background-color 0.2s ease;
+}
+.admin-shell table tbody tr:hover {
+  background-color: rgba(253, 227, 207, 0.45);
+}
+
+/* ---- Admin polish: active filter pills become solid terracotta ---- */
+.admin-shell button[class*="border-gold-400/30"][class*="bg-gold-400/10"],
+.admin-shell button[class*="border-gold-400/60"][class*="bg-gold-400/10"] {
+  background-image: linear-gradient(90deg, #8e3510, #c04a1c, #782c0c);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 16px -8px rgba(122, 40, 18, 0.6);
+}
+.admin-shell button[class*="border-gold-400/10"][class*="hover:text-ivory"] {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(168, 69, 26, 0.22);
+  font-weight: 700;
+}
+.admin-shell button[class*="border-gold-400/10"][class*="hover:text-ivory"]:hover {
+  border-color: rgba(168, 69, 26, 0.5);
+  color: #a8451a;
+}
+
+/* ---- Admin polish: icon chips + small action buttons ---- */
+.admin-shell [class*="bg-gold-400/10"][class*="text-gold-300"]:not(button) {
+  background-image: linear-gradient(135deg, #ffffff, #fde3cf);
+  border: 1px solid rgba(168, 69, 26, 0.22);
+  color: #c04a1c;
+}
+.admin-shell a[class*="bg-gold-400/5"],
+.admin-shell button[class*="bg-gold-400/5"] {
+  background-color: #ffffff;
+  border-color: rgba(168, 69, 26, 0.3);
+  color: #a8451a;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(122, 40, 18, 0.08);
+}
+.admin-shell a[class*="bg-gold-400/5"]:hover,
+.admin-shell button[class*="bg-gold-400/5"]:hover {
+  background-color: #fff5ee;
+  border-color: #a8451a;
+}
+
+/* ---- Admin polish: page fade-in (opacity only, so fixed modals are unaffected) ---- */
+.admin-shell main > div:not(.pointer-events-none) {
+  animation: fadeIn 0.35s ease-out both;
+}
+

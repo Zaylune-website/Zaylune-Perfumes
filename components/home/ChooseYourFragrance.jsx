@@ -18,7 +18,7 @@ export default function ChooseYourFragrance({ groups }) {
           <span className="gold-line" /> The Zaylune Edit <span className="gold-line" />
         </p>
         <h2 className="section-heading mt-4">Choose Your Fragrance</h2>
-        <p className="mx-auto mt-4 max-w-lg text-sm text-ivory/50">
+        <p className="mx-auto mt-4 max-w-lg text-sm text-ivory/72">
           Every scent we make falls into one of three moods — pick the one that fits your day.
         </p>
       </Reveal>

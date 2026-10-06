@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, Table, List } from "lucide-react";
 import FilterSelect from "@/components/admin/FilterSelect";
 
 const ROLE_STYLES = {
-  admin: "border-gold-400/25 bg-gold-400/10 text-gold-300",
-  customer: "border-ivory/15 bg-ivory/5 text-ivory/60",
+  admin: "border-[#a8451a]/25 bg-[#a8451a]/10 text-[#a8451a]",
+  customer: "border-[#1c1109]/15 bg-[#1c1109]/5 text-[#2b1d12]/75",
 };
 
 const SORTERS = {
@@ -19,6 +19,11 @@ export default function UsersList({ users }) {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [view, setView] = useState("table");
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 639px)").matches) setView("list");
+  }, []);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -39,13 +44,13 @@ export default function UsersList({ users }) {
       {/* Filters */}
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative flex-1 sm:max-w-xs">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ivory/30" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#2b1d12]/67" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, email, phone..."
-            className="w-full rounded-xl border border-gold-400/10 bg-ink-soft/40 py-2 pl-9 pr-3 text-sm text-ivory placeholder:text-ivory/30 focus:border-gold-400/30 focus:outline-none"
+            className="w-full rounded-xl border border-[#a8451a]/10 bg-[#fde3cf]/40 py-2 pl-9 pr-3 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/67 focus:border-[#a8451a]/30 focus:outline-none"
           />
         </div>
         <FilterSelect
@@ -70,18 +75,29 @@ export default function UsersList({ users }) {
         />
       </div>
 
-      <p className="mb-3 text-xs text-ivory/40">
+      <div className="mb-3 flex items-center justify-between gap-3">
+      <p className="text-xs text-[#2b1d12]/70">
         Showing {filtered.length} of {users.length} user{users.length === 1 ? "" : "s"}.
       </p>
+      <div className="inline-flex rounded-full border border-[#a8451a]/25 bg-white p-1 shadow-2xs">
+        {[{ key: "table", label: "Table", Icon: Table }, { key: "list", label: "List", Icon: List }].map(({ key, label, Icon }) => (
+          <button key={key} type="button" onClick={() => setView(key)} aria-pressed={view === key} className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${view === key ? "bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#c04a1c] text-white shadow-sm" : "text-[#a8451a] hover:bg-[#fde3cf]/60"}`}>
+            <Icon className="h-3.5 w-3.5" />
+            {label}
+          </button>
+        ))}
+      </div>
+      </div>
 
-      {/* Table (sm and up) */}
-      <div className="hidden overflow-x-auto rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md shadow-2xl sm:block md:p-8">
+      {view === "table" && (
+      /* Table (sm and up) */
+      <div className="overflow-x-auto thin-x-scroll rounded-3xl border border-[#a8451a]/10 bg-white/90 p-4 backdrop-blur-md shadow-sm sm:p-6 md:p-8">
         {filtered.length === 0 ? (
-          <p className="py-12 text-center text-sm text-ivory/40">No users match these filters.</p>
+          <p className="py-12 text-center text-sm text-[#2b1d12]/70">No users match these filters.</p>
         ) : (
           <table className="w-full min-w-[680px] text-left border-collapse">
             <thead>
-              <tr className="border-b border-gold-400/10 text-xs uppercase tracking-widest text-ivory/40 font-semibold">
+              <tr className="border-b border-[#a8451a]/10 text-sm uppercase tracking-widest text-[#2b1d12]/70 font-semibold">
                 <th className="pb-4 font-medium pl-2">Name</th>
                 <th className="pb-4 font-medium">Role</th>
                 <th className="pb-4 font-medium">Contact</th>
@@ -90,31 +106,31 @@ export default function UsersList({ users }) {
                 <th className="pb-4 font-medium pr-2">Joined</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gold-400/5">
+            <tbody className="divide-y divide-[#a8451a]/5">
               {filtered.map((u) => (
-                <tr key={u.id} className="transition-colors duration-300 hover:bg-white/[0.01]">
+                <tr key={u.id} className="transition-colors duration-300 hover:bg-[#1c1109]/[0.01]">
                   <td className="py-4 pr-4 pl-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-ivory">{u.full_name || "—"}</span>
+                      <span className="text-base font-medium text-[#1c1109]">{u.full_name || "—"}</span>
                       {u.orderCount > 1 && (
-                        <span className="rounded-full border border-gold-400/20 bg-gold-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold-300">
+                        <span className="rounded-full border border-[#a8451a]/20 bg-[#a8451a]/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-[#a8451a]">
                           VIP
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="py-4 pr-4">
-                    <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${ROLE_STYLES[u.role] || ROLE_STYLES.customer}`}>
+                    <span className={`rounded-full border px-2.5 py-0.5 text-sm font-semibold capitalize ${ROLE_STYLES[u.role] || ROLE_STYLES.customer}`}>
                       {u.role}
                     </span>
                   </td>
-                  <td className="py-4 pr-4 text-sm text-ivory/60">
+                  <td className="py-4 pr-4 text-base text-[#2b1d12]/75">
                     <p>{u.email}</p>
-                    {u.phone && <p className="text-ivory/35">{u.phone}</p>}
+                    {u.phone && <p className="text-[#2b1d12]/68">{u.phone}</p>}
                   </td>
-                  <td className="py-4 pr-4 text-sm text-ivory/70">{u.orderCount}</td>
-                  <td className="py-4 pr-4 text-sm font-medium text-ivory">₹{u.totalSpend.toLocaleString("en-IN")}</td>
-                  <td className="py-4 pr-2 text-sm text-ivory/45">
+                  <td className="py-4 pr-4 text-base text-[#2b1d12]/78">{u.orderCount}</td>
+                  <td className="py-4 pr-4 text-base font-medium text-[#1c1109]">₹{u.totalSpend.toLocaleString("en-IN")}</td>
+                  <td className="py-4 pr-2 text-base text-[#2b1d12]/71">
                     {new Date(u.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                 </tr>
@@ -123,33 +139,34 @@ export default function UsersList({ users }) {
           </table>
         )}
       </div>
+      )}
 
-      {/* Card List (mobile only) */}
-      <div className="rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-4 backdrop-blur-md shadow-2xl sm:hidden">
+      {view === "list" && (
+      <div className="rounded-3xl border border-[#a8451a]/10 bg-white/90 p-4 backdrop-blur-md shadow-sm sm:p-5">
         {filtered.length === 0 ? (
-          <p className="py-12 text-center text-sm text-ivory/40">No users match these filters.</p>
+          <p className="py-12 text-center text-sm text-[#2b1d12]/70">No users match these filters.</p>
         ) : (
           <ul className="space-y-3">
             {filtered.map((u) => (
-              <li key={u.id} className="rounded-2xl border border-gold-400/10 bg-white/[0.02] p-4">
+              <li key={u.id} className="rounded-2xl border border-[#a8451a]/10 bg-[#1c1109]/[0.02] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="truncate text-sm font-medium text-ivory">{u.full_name || "—"}</span>
+                    <span className="truncate text-sm font-medium text-[#1c1109]">{u.full_name || "—"}</span>
                     {u.orderCount > 1 && (
-                      <span className="shrink-0 rounded-full border border-gold-400/20 bg-gold-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold-300">
+                      <span className="shrink-0 rounded-full border border-[#a8451a]/20 bg-[#a8451a]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#a8451a]">
                         VIP
                       </span>
                     )}
                   </div>
-                  <span className="shrink-0 text-sm font-semibold text-ivory">₹{u.totalSpend.toLocaleString("en-IN")}</span>
+                  <span className="shrink-0 text-sm font-semibold text-[#1c1109]">₹{u.totalSpend.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="mt-1.5 flex items-center gap-2">
                   <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize ${ROLE_STYLES[u.role] || ROLE_STYLES.customer}`}>
                     {u.role}
                   </span>
-                  <p className="truncate text-sm text-ivory/50">{u.email}</p>
+                  <p className="truncate text-sm text-[#2b1d12]/72">{u.email}</p>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-sm text-ivory/40">
+                <div className="mt-3 flex items-center justify-between text-sm text-[#2b1d12]/70">
                   <span>{u.orderCount} order{u.orderCount === 1 ? "" : "s"}</span>
                   <span>Joined {new Date(u.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                 </div>
@@ -158,6 +175,7 @@ export default function UsersList({ users }) {
           </ul>
         )}
       </div>
+      )}
     </div>
   );
 }

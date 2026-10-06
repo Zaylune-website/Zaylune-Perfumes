@@ -9,11 +9,11 @@ export default function RegisterPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative flex min-h-[85vh] items-center justify-center bg-[#0b0a0a] px-6 py-10 sm:py-14 overflow-hidden">
+      <main className="relative flex min-h-[85vh] items-center justify-center bg-gradient-to-b from-[#fde3cf] via-[#fdf7f2] to-[#fde3cf] text-[#1c1109] px-5 py-12 sm:py-18 overflow-hidden selection:bg-[#a8451a]/20 selection:text-[#1c1109]">
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-          <div className="absolute -top-[10%] left-[-20%] w-[500px] h-[500px] rounded-full bg-gold-500/5 blur-[120px]" />
-          <div className="absolute -bottom-[10%] right-[-20%] w-[500px] h-[500px] rounded-full bg-gold-400/5 blur-[120px]" />
-          <div className="absolute top-[45%] left-[45%] w-[400px] h-[400px] rounded-full bg-gold-300/5 blur-[130px]" />
+          <div className="absolute top-[5%] left-[-10%] w-[550px] h-[550px] rounded-full bg-[#c04a1c]/[0.08] blur-[150px]" />
+          <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#d4a359]/[0.10] blur-[160px]" />
+          <div className="absolute bottom-[5%] left-[20%] w-[550px] h-[550px] rounded-full bg-[#8e3510]/[0.07] blur-[150px]" />
         </div>
         <div className="relative z-10 flex w-full items-center justify-center">
           <Suspense fallback={null}>

@@ -47,7 +47,7 @@ export default function PrivacyPolicyPage() {
       <h2 className="font-display text-xl font-medium text-gold-200">Third-Party Services</h2>
       <p>
         We share minimal necessary data with trusted service providers to operate our business:
-        Razorpay for payment processing, Delhivery for order delivery, and Supabase for secure
+        Razorpay for payment processing, Shiprocket for order delivery, and Supabase for secure
         data storage. Each of these partners maintains their own privacy and security standards.
       </p>
 

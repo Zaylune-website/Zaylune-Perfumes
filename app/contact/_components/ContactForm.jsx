@@ -2,13 +2,14 @@
 
 import { useActionState, useState } from "react";
 import { submitInquiry } from "@/actions/contact";
-import { Send, CheckCircle2, Sparkles, ShieldCheck } from "lucide-react";
+import { PHONE_PATTERN, keepDigits } from "@/lib/phone";
+import { CheckCircle2, Sparkles, ShieldCheck } from "lucide-react";
 
 const INQUIRY_TOPICS = [
-  { id: "recommendation", label: "Scent Advice" },
-  { id: "bespoke", label: "Gifts & Custom" },
+  { id: "recommendation", label: "Help Choosing a Scent" },
+  { id: "bespoke", label: "Gift Sets & Bulk" },
   { id: "order", label: "Order Status" },
-  { id: "general", label: "General Query" },
+  { id: "general", label: "General Question" },
 ];
 
 export default function ContactForm() {
@@ -18,21 +19,24 @@ export default function ContactForm() {
 
   if (state.success) {
     return (
-      <div className="relative overflow-hidden rounded-[2rem] border border-gold-400/25 bg-ink-soft/80 p-8 text-center shadow-gold/10 backdrop-blur-md md:p-12 animate-fadeUp">
-        <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-gold-400/5 blur-3xl" />
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-400/10 text-gold-300 ring-8 ring-gold-400/5">
+      <div className="relative overflow-hidden rounded-[2.25rem] sm:rounded-[2.75rem] border border-[#a8451a]/25 bg-white/90 p-8 sm:p-12 text-center shadow-lg backdrop-blur-md animate-fadeUp">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-500/25 text-emerald-700 shadow-xs">
           <CheckCircle2 className="h-8 w-8" />
         </div>
-        <span className="eyebrow mt-6 inline-flex">Message Received</span>
-        <h3 className="font-display mt-3 text-2xl text-ivory font-medium">Thank You for Your Message</h3>
-        <p className="mx-auto mt-3 max-w-sm text-base leading-relaxed text-ivory/60 font-light">
-          We have received your message. Our team will review it and reply to you in a few hours.
+        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-50 px-4 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800">
+          Message Sent
+        </div>
+        <h3 className="font-display mt-3 text-2xl sm:text-3xl font-bold text-[#1c1109]">
+          Thank You!
+        </h3>
+        <p className="mx-auto mt-3 max-w-md text-base sm:text-lg leading-relaxed text-[#2b1d12]/85 font-normal">
+          We have received your message and will get back to you soon.
         </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="mt-8 flex justify-center">
           <button
             onClick={() => window.location.reload()}
-            className="rounded-full border border-gold-400/30 bg-ink-soft px-8 py-3 text-sm font-semibold uppercase tracking-wider text-ivory hover:border-gold-300 hover:bg-gold-400/5 transition-all"
+            className="rounded-full border border-[#a8451a]/30 bg-white/80 px-8 py-3.5 text-sm sm:text-base font-semibold uppercase tracking-wider text-[#a8451a] hover:border-[#a8451a] hover:bg-[#a8451a] hover:text-white transition-all shadow-xs"
           >
             Send Another Message
           </button>
@@ -42,47 +46,51 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="relative rounded-[2rem] border border-gold-400/10 bg-gradient-to-br from-ink-soft/90 via-ink-soft/60 to-ink/80 p-6 shadow-2xl backdrop-blur-md md:p-10 hover:border-gold-400/20 transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,163,89,0.04)]">
-      {/* Background soft ambient light */}
-      <div className="pointer-events-none absolute -left-10 top-0 h-48 w-48 rounded-full bg-gold-400/5 blur-3xl" />
+    <div className="relative overflow-hidden rounded-[2.25rem] sm:rounded-[2.75rem] border border-[#a8451a]/25 bg-white/90 p-6 sm:p-10 shadow-lg backdrop-blur-md hover:border-[#a8451a]/40 transition-all duration-300">
+      {/* Top Hairline Accent */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#a8451a]/40 to-transparent" />
 
-      <div className="mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 mb-2">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold-300">
-            <Sparkles className="h-3.5 w-3.5" /> Send a Message
+      {/* Header */}
+      <div className="mb-7">
+        <div className="flex items-center gap-2.5 mb-3 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#a8451a]/20 bg-[#a8451a]/10 px-3.5 py-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a]">
+            <Sparkles className="h-3.5 w-3.5 text-[#a8451a]" /> Message Form
           </span>
-          <span className="flex items-center gap-1.5 text-xs text-gold-300/60 font-light">
-            <ShieldCheck className="h-4 w-4 text-gold-400/80" /> Support Team
+          <span className="text-sm text-[#2b1d12]/80 font-medium">
+            · Usually replies in a few hours
           </span>
         </div>
-        <h3 className="font-display text-2xl sm:text-3xl text-ivory font-light">
-          How can we help you?
+        <h3 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-[#1c1109] leading-tight">
+          How Can We Help?
         </h3>
+        <p className="mt-2 text-base sm:text-lg text-[#2b1d12]/85 leading-relaxed font-normal">
+          Leave your details below and we will get back to you.
+        </p>
       </div>
 
-      <form action={formAction} className="space-y-6">
+      <form action={formAction} className="space-y-5">
         {state.error && (
-          <div className="rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-300 flex items-center gap-2 animate-fadeUp">
-            <span className="h-2 w-2 rounded-full bg-red-400 animate-pulse" />
+          <div className="rounded-2xl border border-red-500/25 bg-red-50 p-4 text-base text-red-700 flex items-center gap-2 animate-fadeUp">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
             {state.error}
           </div>
         )}
 
         {/* Topic Pills */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-ivory/50 mb-3">
-            Select Topic
+          <label className="block text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2b1d12]/85 mb-2.5">
+            What is this about?
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
             {INQUIRY_TOPICS.map((topic) => (
               <button
                 key={topic.id}
                 type="button"
                 onClick={() => setSelectedTopic(topic.id)}
-                className={`rounded-full px-5 py-2.5 text-sm transition-all duration-300 ${
+                className={`rounded-2xl sm:rounded-full px-3 py-2.5 sm:px-5 text-[13px] sm:text-base leading-snug text-center font-medium sm:whitespace-nowrap transition-all duration-300 ${
                   selectedTopic === topic.id
-                    ? "bg-gold-gradient text-ink font-semibold shadow-gold/30 hover:scale-[1.02]"
-                    : "border border-gold-400/10 bg-ink-soft/40 text-ivory/60 hover:border-gold-400/30 hover:text-ivory"
+                    ? "bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] text-white font-semibold shadow-xs sm:scale-[1.02]"
+                    : "border border-[#a8451a]/25 bg-white/80 text-[#2b1d12]/85 hover:border-[#a8451a]/40 hover:text-[#1c1109]"
                 }`}
               >
                 {topic.label}
@@ -96,53 +104,58 @@ export default function ContactForm() {
           />
         </div>
 
-        {/* Inputs */}
+        {/* Input Fields */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-ivory/50 mb-2">
-              Your Name <span className="text-gold-400">*</span>
+            <label className="block text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2b1d12]/85 mb-2">
+              Your Name <span className="text-[#a8451a]">*</span>
             </label>
             <input
               required
               name="name"
               type="text"
-              placeholder="e.g. Amaira Sharma"
-              className="w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-4 py-4 text-base text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-400/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20"
+              placeholder="e.g. Rahul Sharma"
+              className="w-full rounded-2xl border border-[#a8451a]/20 bg-white/80 px-4 sm:px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 hover:border-[#a8451a]/40"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-ivory/50 mb-2">
+              <label className="block text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2b1d12]/85 mb-2">
                 Email Address
               </label>
               <input
                 name="email"
                 type="email"
                 placeholder="name@example.com"
-                className="w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-4 py-4 text-base text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-400/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20"
+                className="w-full rounded-2xl border border-[#a8451a]/20 bg-white/80 px-4 sm:px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 hover:border-[#a8451a]/40"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-ivory/50 mb-2">
-                Phone / WhatsApp
+              <label className="block text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2b1d12]/85 mb-2">
+                Phone or WhatsApp
               </label>
               <input
                 name="phone"
                 type="tel"
-                placeholder="+91 98765 43210"
-                className="w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-4 py-4 text-base text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-400/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20"
+                inputMode="numeric"
+                maxLength={10}
+                pattern={PHONE_PATTERN}
+                title="Enter a valid 10-digit mobile number starting with 6-9"
+                onInput={(e) => (e.currentTarget.value = keepDigits(e.currentTarget.value))}
+                placeholder="10-digit mobile number"
+                className="w-full rounded-2xl border border-[#a8451a]/20 bg-white/80 px-4 sm:px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 hover:border-[#a8451a]/40"
               />
             </div>
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-ivory/50">
-                Your Message <span className="text-gold-400">*</span>
+            <div className="flex items-baseline justify-between gap-3 mb-2">
+              <label className="text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2b1d12]/85">
+                Your Message <span className="text-[#a8451a]">*</span>
               </label>
-              <span className="text-xs text-ivory/30">
-                {message.length} / 500 chars
+              <span className="shrink-0 whitespace-nowrap text-xs sm:text-sm text-[#2b1d12]/70 font-medium">
+                {message.length} / 500
               </span>
             </div>
             <textarea
@@ -153,24 +166,25 @@ export default function ContactForm() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us what you need help with..."
-              className="w-full rounded-2xl border border-gold-400/10 bg-ink/40 px-4 py-4 text-base text-ivory placeholder:text-ivory/20 transition-all duration-500 focus:border-gold-400/50 focus:bg-ink/70 focus:outline-none focus:ring-1 focus:ring-gold-400/20 resize-none hover:border-gold-400/20"
+              className="w-full rounded-2xl border border-[#a8451a]/20 bg-white/80 px-4 sm:px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 resize-none hover:border-[#a8451a]/40"
             />
           </div>
         </div>
 
+        {/* Submit Button - Centered Text, Shimmer Sweep, No Arrows */}
         <button
           type="submit"
           disabled={pending}
-          className="btn-gold group w-full sm:w-fit px-8 py-4 text-sm font-semibold tracking-widest uppercase transition-all duration-500 disabled:opacity-60 shadow-[0_4px_20px_rgba(212,163,89,0.1)] hover:shadow-[0_4px_25px_rgba(212,163,89,0.25)] hover:-translate-y-0.5"
+          className="group relative inline-flex w-full sm:w-auto items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-[#8e3510] via-[#a8451a] to-[#782c0c] px-10 py-4 font-display text-base sm:text-lg font-semibold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60"
         >
+          <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
           {pending ? (
-            <span className="inline-flex items-center gap-2">
-              <span className="h-4 w-4 border-2 border-ink border-t-transparent rounded-full animate-spin" />
-              Sending Message...
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Sending...
             </span>
           ) : (
-            <span className="inline-flex items-center gap-2">
-              <Send className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            <span className="relative z-10 inline-flex items-center">
               Send Message
             </span>
           )}

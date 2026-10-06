@@ -16,3 +16,11 @@ export async function resolveInquiry(id, isResolved) {
   revalidatePath("/admin/inquiries");
   return { success: true };
 }
+
+export async function deleteInquiry(id) {
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("inquiries").delete().eq("id", id);
+  if (error) return { success: false, error: error.message };
+  revalidatePath("/admin/inquiries");
+  return { success: true };
+}

@@ -5,8 +5,8 @@ import { PlusCircle } from "lucide-react";
 import { createCoupon } from "@/actions/admin/coupons";
 
 const inputClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-sm text-ivory placeholder:text-ivory/30 transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-ivory/40";
+  "w-full rounded-xl border border-[#a8451a]/20 bg-white px-4 py-2.5 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/50 transition-colors duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/35";
+const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-[#2b1d12]/70";
 
 export default function CouponForm() {
   const [state, formAction, pending] = useActionState(createCoupon, {});
@@ -14,16 +14,16 @@ export default function CouponForm() {
   return (
     <form
       action={formAction}
-      className="h-fit space-y-4 rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 p-6 backdrop-blur-md"
+      className="h-fit space-y-4 rounded-3xl border border-[#a8451a]/20 bg-white/90 p-5 shadow-sm backdrop-blur-xl sm:p-6"
     >
-      <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-400/10 text-gold-300">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/60 text-[#c04a1c]">
           <PlusCircle className="h-4 w-4" />
         </div>
-        <h2 className="font-display text-base text-ivory">Create Coupon</h2>
+        <h2 className="font-display text-base font-bold text-[#1c1109]">Create Coupon</h2>
       </div>
       {state.error && (
-        <p className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-2.5 text-sm text-red-300">{state.error}</p>
+        <p className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-2.5 text-sm text-red-700">{state.error}</p>
       )}
       <div>
         <label className={labelClass}>Code</label>
@@ -50,7 +50,7 @@ export default function CouponForm() {
         <label className={labelClass}>Expires On (optional)</label>
         <input type="date" name="expires_at" className={inputClass} />
       </div>
-      <button type="submit" disabled={pending} className="btn-gold w-full disabled:opacity-60">
+      <button type="submit" disabled={pending} className="btn-gold w-full py-3 disabled:opacity-60">
         {pending ? "Creating…" : "Create Coupon"}
       </button>
     </form>

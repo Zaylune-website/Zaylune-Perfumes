@@ -9,10 +9,10 @@ import { createHeroSlide, updateHeroSlide, toggleHeroSlide, deleteHeroSlide } fr
 import { updateSiteSetting } from "@/actions/settings";
 
 const inputClass =
-  "w-full rounded-xl border border-gold-400/10 bg-ink/40 px-4 py-2.5 text-sm text-ivory placeholder:text-ivory/30 transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-1 focus:ring-gold-400/20 hover:border-gold-400/20";
-const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-ivory/40";
+  "w-full rounded-xl border border-[#a8451a]/20 bg-white px-4 py-2.5 text-sm text-[#1c1109] placeholder:text-[#2b1d12]/50 transition-colors duration-300 focus:border-[#a8451a] focus:outline-none focus:ring-2 focus:ring-[#a8451a]/20 hover:border-[#a8451a]/35";
+const labelClass = "mb-1.5 block text-sm font-semibold uppercase tracking-wide text-[#2b1d12]/70";
 const panelClass =
-  "rounded-[2rem] border border-gold-400/10 bg-gradient-to-b from-ink-soft/80 to-ink-soft/30 backdrop-blur-md";
+  "rounded-3xl border border-[#a8451a]/20 bg-white/90 shadow-sm backdrop-blur-xl";
 
 const HERO_ENABLED_KEY = "home_hero_enabled";
 
@@ -55,19 +55,19 @@ function HeroSettingsPanel({ settings }) {
   };
 
   return (
-    <div className={`${panelClass} p-6 md:p-8`}>
+    <div className={`${panelClass} p-5 sm:p-6 md:p-8`}>
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-2">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gold-400/10 text-gold-300">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/60 text-[#c04a1c]">
             <Sparkles className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="font-display text-lg text-ivory">Hero Section Settings</h2>
-            <p className="text-sm text-ivory/40">Applies across every slide — badge, rating and stats shown over the banner.</p>
+            <h2 className="font-display text-lg font-bold text-[#1c1109]">Hero Section Settings</h2>
+            <p className="text-sm text-[#2b1d12]/70">Applies across every slide — badge, rating and stats shown over the banner.</p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-1.5 rounded-full border border-gold-400/10 bg-white/[0.02] px-3 py-1 text-xs font-medium text-ivory/60">
+          <label className="flex items-center gap-1.5 rounded-full border border-[#a8451a]/20 bg-white px-3 py-1.5 text-xs font-semibold text-[#2b1d12]/75">
             <input
               type="checkbox"
               checked={heroEnabled}
@@ -90,13 +90,13 @@ function HeroSettingsPanel({ settings }) {
               onChange={(e) => handleChange(field.key, e.target.value)}
               className={inputClass}
             />
-            {field.hint && <p className="mt-1.5 text-sm text-ivory/30">{field.hint}</p>}
+            {field.hint && <p className="mt-1.5 text-sm text-[#2b1d12]/67">{field.hint}</p>}
           </div>
         ))}
       </div>
 
       {saved && (
-        <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-400" : "text-red-400"}`}>
+        <div className={`mt-4 flex items-center gap-2 text-sm ${saved.success ? "text-emerald-700" : "text-red-600"}`}>
           {saved.success ? (
             <>
               <Check className="h-3.5 w-3.5" /> Saved successfully
@@ -134,13 +134,13 @@ function SlideEditForm({ slide, onCancel, onSaved }) {
   };
 
   return (
-    <form onSubmit={handleSave} className="w-full space-y-3 rounded-2xl border border-gold-400/20 bg-white/[0.03] p-4">
+    <form onSubmit={handleSave} className="w-full space-y-3 rounded-2xl border border-[#a8451a]/25 bg-[#fffaf5] p-4 sm:p-5">
       <div>
         <p className={labelClass}>Desktop Image</p>
         <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" />
       </div>
       <div>
-        <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-ivory/30">(optional, shown only on phones)</span></p>
+        <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-[#2b1d12]/67">(optional, shown only on phones)</span></p>
         <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" />
       </div>
       <div>
@@ -151,20 +151,20 @@ function SlideEditForm({ slide, onCancel, onSaved }) {
           rows={3}
           className={`${inputClass} resize-none`}
         />
-        <p className="mt-1.5 text-sm text-ivory/30">Use Enter for line breaks. The last line is highlighted in gold.</p>
+        <p className="mt-1.5 text-sm text-[#2b1d12]/67">Use Enter for line breaks. The last line is highlighted in gold.</p>
       </div>
       <input placeholder="Subtitle" value={form.subtitle} onChange={update("subtitle")} className={inputClass} />
       <input placeholder="Button Text" value={form.button_text} onChange={update("button_text")} className={inputClass} />
       <input placeholder="Button Link (e.g. /shop)" value={form.button_link} onChange={update("button_link")} className={inputClass} />
-      <div className="flex items-center gap-2 pt-1">
-        <button type="submit" disabled={pending || !imageUrl} className="btn-gold flex-1 py-2.5 text-sm disabled:opacity-60">
+      <div className="flex items-center justify-end gap-2 pt-1">
+        <button type="submit" disabled={pending || !imageUrl} className="btn-gold px-7 py-2.5 text-sm disabled:opacity-60">
           {pending ? "Saving…" : "Save Changes"}
         </button>
         <button
           type="button"
           onClick={onCancel}
           disabled={pending}
-          className="rounded-xl border border-gold-400/10 px-4 py-2.5 text-sm text-ivory/60 transition-colors hover:border-gold-400/25 hover:text-ivory"
+          className="rounded-xl border border-[#a8451a]/20 bg-white px-4 py-2.5 text-sm font-semibold text-[#2b1d12]/75 transition-colors hover:border-[#a8451a]/40 hover:text-[#a8451a]"
         >
           Cancel
         </button>
@@ -219,47 +219,47 @@ export default function HeroSlideManager({ slides, settings }) {
       <HeroSettingsPanel settings={settings} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
-      <div className={`${panelClass} min-w-0 p-6 md:p-8`}>
-        <h2 className="mb-4 font-display text-lg text-ivory">Existing Slides</h2>
+      <div className={`${panelClass} min-w-0 p-5 sm:p-6 md:p-8`}>
+        <h2 className="mb-4 font-display text-lg font-bold text-[#1c1109]">Existing Slides</h2>
         {slides.length === 0 ? (
-          <p className="py-8 text-center text-sm text-ivory/40">No slides yet — the homepage will use a default hero.</p>
+          <p className="py-8 text-center text-sm text-[#2b1d12]/70">No slides yet — the homepage will use a default hero.</p>
         ) : (
           <ul className="space-y-3">
             {slides.map((s) =>
               editingId === s.id ? (
-                <li key={s.id} className="rounded-2xl border border-gold-400/10 bg-white/[0.02] p-4">
+                <li key={s.id} className="rounded-2xl border border-[#a8451a]/15 bg-white p-4">
                   <SlideEditForm slide={s} onCancel={() => setEditingId(null)} onSaved={() => { setEditingId(null); router.refresh(); }} />
                 </li>
               ) : (
                 <li
                   key={s.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-gold-400/10 bg-white/[0.02] p-4 sm:flex-row sm:items-center"
+                  className="flex flex-col gap-3 rounded-2xl border border-[#a8451a]/15 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:p-5"
                 >
-                  <div className="relative h-32 w-full shrink-0 overflow-hidden rounded-xl bg-ink sm:h-16 sm:w-24">
-                    <Image src={s.image_url} alt="" fill sizes="96px" className="object-cover" />
+                  <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-xl border border-[#a8451a]/10 bg-[#fde3cf]/40 sm:h-16 sm:w-24">
+                    <Image src={s.image_url} alt="" fill sizes="(max-width: 640px) 100vw, 96px" className="object-cover" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-ivory">
-                      {s.title ? s.title.split("\n")[0] : <em className="text-ivory/30">No title</em>}
+                    <p className="truncate text-[15px] font-semibold text-[#1c1109]">
+                      {s.title ? s.title.split("\n")[0] : <em className="text-[#2b1d12]/67">No title</em>}
                     </p>
-                    <p className="truncate text-sm text-ivory/40">{s.subtitle}</p>
+                    <p className="truncate text-sm text-[#2b1d12]/70">{s.subtitle}</p>
                   </div>
-                  <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-start">
-                    <label className="flex items-center gap-2 text-sm text-ivory/60">
+                  <div className="flex shrink-0 items-center justify-between gap-3 border-t border-[#a8451a]/10 pt-3 sm:justify-start sm:border-t-0 sm:pt-0">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-[#2b1d12]/75">
                       <input type="checkbox" checked={s.is_active} disabled={pending} onChange={(e) => handleToggle(s.id, e.target.checked)} />
                       Active
                     </label>
                     <button
                       onClick={() => setEditingId(s.id)}
                       disabled={pending}
-                      className="rounded-xl p-2 text-ivory/40 transition-colors hover:bg-gold-400/10 hover:text-gold-300"
+                      className="rounded-xl p-2 text-[#2b1d12]/70 transition-colors hover:bg-[#a8451a]/10 hover:text-[#a8451a]"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(s.id)}
                       disabled={pending}
-                      className="rounded-xl p-2 text-ivory/40 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                      className="rounded-xl p-2 text-[#2b1d12]/70 transition-colors hover:bg-red-500/10 hover:text-red-600"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -271,19 +271,19 @@ export default function HeroSlideManager({ slides, settings }) {
         )}
       </div>
 
-      <form onSubmit={handleAdd} className={`${panelClass} h-fit min-w-0 space-y-4 p-6`}>
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-400/10 text-gold-300">
+      <form onSubmit={handleAdd} className={`${panelClass} h-fit min-w-0 space-y-4 p-5 sm:p-6`}>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#a8451a]/20 bg-[#fde3cf]/60 text-[#c04a1c]">
             <ImagePlus className="h-4 w-4" />
           </div>
-          <h2 className="font-display text-base text-ivory">Add Slide</h2>
+          <h2 className="font-display text-base font-bold text-[#1c1109]">Add Slide</h2>
         </div>
         <div>
           <p className={labelClass}>Desktop Image</p>
           <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" />
         </div>
         <div>
-          <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-ivory/30">(optional, shown only on phones)</span></p>
+          <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-[#2b1d12]/67">(optional, shown only on phones)</span></p>
           <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" />
         </div>
         <div>
@@ -294,7 +294,7 @@ export default function HeroSlideManager({ slides, settings }) {
             rows={3}
             className={`${inputClass} resize-none`}
           />
-          <p className="mt-1.5 text-sm text-ivory/30">Use Enter for line breaks. The last line is highlighted in gold.</p>
+          <p className="mt-1.5 text-sm text-[#2b1d12]/67">Use Enter for line breaks. The last line is highlighted in gold.</p>
         </div>
         <input placeholder="Subtitle" value={form.subtitle} onChange={update("subtitle")} className={inputClass} />
         <input placeholder="Button Text" value={form.button_text} onChange={update("button_text")} className={inputClass} />
@@ -302,9 +302,9 @@ export default function HeroSlideManager({ slides, settings }) {
         <button type="submit" disabled={pending || !imageUrl} className="btn-gold w-full disabled:opacity-60">
           {pending ? "Adding…" : "Add Slide"}
         </button>
-        {!imageUrl && <p className="text-center text-sm text-ivory/30">Upload an image to enable this button.</p>}
+        {!imageUrl && <p className="text-center text-sm text-[#2b1d12]/67">Upload an image to enable this button.</p>}
         {addError && (
-          <div className="flex items-center gap-2 text-sm text-red-400">
+          <div className="flex items-center gap-2 text-sm text-red-600">
             <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {addError}
           </div>
         )}
