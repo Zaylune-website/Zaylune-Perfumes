@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
 import { processCheckout, verifyRazorpayPayment, validateCoupon } from "@/actions/checkout";
 import { calculateQuantityDiscount, calculateBundleDiscount, nonBundleCartQuantity } from "@/lib/constants";
+import { fireConfetti } from "@/lib/confetti";
 
 const inputClass =
   "w-full rounded-2xl border border-[#a8451a]/25 bg-white px-5 py-3.5 text-base text-[#1c1109] placeholder:text-[#2b1d12]/40 transition-all duration-300 focus:border-[#a8451a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#a8451a]/15 shadow-2xs hover:border-[#a8451a]/45";
@@ -30,6 +31,11 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
   const [paymentMethod, setPaymentMethod] = useState(codEnabled ? "COD" : razorpayEnabled ? "RAZORPAY" : null);
   const [submitting, setSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+
+  // Celebrate once, when the order is confirmed (COD placed, or Razorpay verified).
+  useEffect(() => {
+    if (confirmedOrder) fireConfetti();
+  }, [confirmedOrder]);
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
@@ -279,7 +285,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             <span>Order Confirmed</span>
           </div>
 
-          <h2 className="font-display text-4xl sm:text-6xl font-extrabold text-[#1c1109]">
+          <h2 className="font-display text-[2.75rem] leading-tight sm:text-6xl font-extrabold text-[#1c1109] whitespace-nowrap">
             {"Thank".split("").map((ch, i) => (
               <span
                 key={`a${i}`}
@@ -290,16 +296,8 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
               </span>
             ))}
             <span className="inline-block" style={{ width: "0.3em" }} />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]">
-              {"You!".split("").map((ch, i) => (
-                <span
-                  key={`b${i}`}
-                  className="inline-block"
-                  style={{ animation: `osLetter 0.6s cubic-bezier(.22,1,.36,1) ${1000 + i * 70}ms both` }}
-                >
-                  {ch}
-                </span>
-              ))}
+            <span>
+              <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-[#7a2812] via-[#c04a1c] to-[#d4651f]" style={{ animation: "osLetter 0.6s cubic-bezier(.22,1,.36,1) 1000ms both" }}>You!</span>
             </span>
           </h2>
           <div
@@ -312,7 +310,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             style={{ animation: "osRise 0.7s cubic-bezier(.22,1,.36,1) 1.4s both" }}
           >
             Your order{" "}
-            <span className="relative inline-block overflow-hidden align-baseline">
+            <span className="relative inline align-baseline">
               <span className="font-bold text-[#c04a1c] select-all">{confirmedOrder.orderNumber}</span>
               <span
                 aria-hidden
@@ -331,18 +329,18 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             </p>
           )}
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8 sm:mt-10 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/shop"
               style={{ animation: "osRise 0.6s cubic-bezier(.22,1,.36,1) 1.8s both" }}
-              className="w-full sm:w-auto rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] px-9 py-4 text-sm sm:text-base font-bold uppercase tracking-wider text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all text-center"
+              className="w-full sm:w-auto whitespace-nowrap rounded-full bg-gradient-to-r from-[#8e3510] via-[#c04a1c] to-[#782c0c] px-6 sm:px-9 py-3.5 sm:py-4 text-xs sm:text-base font-bold uppercase tracking-wider text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all text-center"
             >
               Continue Shopping
             </Link>
             <Link
               href="/account"
               style={{ animation: "osRise 0.6s cubic-bezier(.22,1,.36,1) 1.95s both" }}
-              className="w-full sm:w-auto rounded-full border-2 border-[#a8451a]/30 bg-white/90 px-9 py-4 text-sm sm:text-base font-bold uppercase tracking-wider text-[#a8451a] shadow-xs hover:border-[#a8451a] hover:bg-white active:scale-95 transition-all text-center"
+              className="w-full sm:w-auto whitespace-nowrap rounded-full border-2 border-[#a8451a]/30 bg-white/90 px-6 sm:px-9 py-3.5 sm:py-4 text-xs sm:text-base font-bold uppercase tracking-wider text-[#a8451a] shadow-xs hover:border-[#a8451a] hover:bg-white active:scale-95 transition-all text-center"
             >
               My Orders
             </Link>
