@@ -252,7 +252,17 @@ export default function AccountTabs({ profile, orders }) {
                     </div>
                   )}
 
-                  <div className="mt-4 flex justify-end border-t border-[#a8451a]/15 pt-4">
+                  <div className="mt-4 flex flex-wrap items-center justify-end gap-2.5 border-t border-[#a8451a]/15 pt-4">
+                    {order.awb_code && (
+                      <a
+                        href={`https://shiprocket.co/tracking/${order.awb_code}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#a8451a]/30 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs transition-all hover:border-[#a8451a] hover:bg-[#fff5ee]"
+                      >
+                        <Truck className="h-3.5 w-3.5" /> Track on Shiprocket
+                      </a>
+                    )}
                     <Link
                       href={`/account/orders/${order.id}`}
                       className="group/link inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] hover:text-[#782c0c] transition-colors"

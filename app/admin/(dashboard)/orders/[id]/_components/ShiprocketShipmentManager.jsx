@@ -182,7 +182,10 @@ export default function ShiprocketShipmentManager({ order }) {
       setScans(result.scans || []);
       // Sync can move the order to shipped/delivered. Refresh so the order stepper above matches.
       if (result.orderStatus && result.orderStatus !== order.order_status) router.refresh();
-      if (!silent) setMessage("Status synced from Shiprocket.");
+      if (!silent) {
+        setMessage("Status synced from Shiprocket.");
+        setTimeout(() => setMessage(null), 4000);
+      }
     });
   };
 
@@ -238,11 +241,11 @@ export default function ShiprocketShipmentManager({ order }) {
           type="button"
           onClick={() => handleSync()}
           disabled={isSyncing}
-          aria-label="Refresh status from Shiprocket"
-          title="Fetch the latest status from Shiprocket"
-          className="rounded-full border border-[#a8451a]/25 bg-white p-1.5 text-[#a8451a] transition-colors hover:bg-[#fff5ee] disabled:opacity-50"
+          title="Fetch the latest AWB and status from Shiprocket"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#a8451a]/30 bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#a8451a] transition-colors hover:bg-[#fff5ee] disabled:opacity-50"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+          {isSyncing ? "Syncing…" : "Sync status"}
         </button>
       </div>
 
@@ -262,27 +265,26 @@ export default function ShiprocketShipmentManager({ order }) {
           scans={scans}
         />
       ) : (
-        <div className="space-y-3">
-          <p className="text-sm text-[#2b1d12]/70">
-            Sent to Shiprocket (order <span className="font-mono text-[#1c1109]">{shiprocketOrderId}</span>). No courier assigned yet.
-          </p>
-          <p className="text-xs italic text-[#2b1d12]/65">
-            Click &quot;Ship Now&quot; on this order in Shiprocket. The AWB, courier and tracking will appear here automatically.
+        <div className="space-y-3 rounded-2xl border border-[#a8451a]/15 bg-[#fffaf5] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#2b1d12]/55">Waiting for courier</span>
+            {status && <ShipmentStatusPill status={status} />}
+          </div>
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#2b1d12]/55">Shiprocket order ID</p>
+            <p className="mt-0.5 break-all font-mono text-sm font-bold text-[#1c1109] select-all">{shiprocketOrderId}</p>
+          </div>
+          <p className="text-sm text-[#2b1d12]/75">
+            Next step: open Shiprocket, click <strong>Ship Now</strong> and pick a courier. The AWB and tracking will show here automatically.
           </p>
           <a
             href={SHIPROCKET_NEW_ORDERS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#a8451a]/30 bg-white px-4 py-2.5 text-sm font-semibold text-[#a8451a] shadow-2xs transition-colors hover:bg-[#fff5ee]"
+            className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#8e3510] to-[#c04a1c] px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:shadow-lg"
           >
-            <ExternalLink className="h-3.5 w-3.5" /> Open Shiprocket: Ship Now
+            <ExternalLink className="h-3.5 w-3.5" /> Open Shiprocket
           </a>
-          {status && (
-            <div className="flex items-center justify-between text-sm text-[#2b1d12]/70">
-              <span>Status</span>
-              <ShipmentStatusPill status={status} />
-            </div>
-          )}
         </div>
       )}
     </div>

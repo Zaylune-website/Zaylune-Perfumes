@@ -47,7 +47,7 @@ export default async function CheckoutPage() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg lg:text-xl text-[#2b1d12]/85 font-normal max-w-2xl mx-auto sm:mx-0 leading-relaxed">
-              Complete your details below to place your order — we'll confirm everything with you on WhatsApp.
+              Complete your details below to place your order.
             </p>
           </Reveal>
           <Reveal delay={100}>

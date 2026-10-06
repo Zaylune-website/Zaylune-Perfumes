@@ -376,9 +376,9 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
     <>
       {razorpayEnabled && <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />}
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_400px] items-start">
+      <div className="grid grid-cols-1 gap-6 sm:gap-10 lg:grid-cols-[1fr_400px] items-start">
         {/* Left Form: Shipping Details & Payment */}
-        <form onSubmit={handleSubmit} noValidate className="rounded-3xl border border-[#a8451a]/20 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-sm backdrop-blur-xl space-y-8">
+        <form onSubmit={handleSubmit} noValidate className="rounded-3xl border border-[#a8451a]/20 bg-white/85 p-5 sm:p-8 lg:p-10 shadow-sm backdrop-blur-xl space-y-6 sm:space-y-8">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-[#a8451a]/25 bg-white px-3.5 py-1 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#a8451a] shadow-2xs mb-3">
               <Sparkles className="h-3.5 w-3.5 text-[#c04a1c]" />
@@ -506,7 +506,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {codEnabled && (
                 <label
-                  className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group relative flex cursor-pointer items-start gap-3 sm:gap-4 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 ${
                     paymentMethod === "COD"
                       ? "border-2 border-[#c04a1c] bg-gradient-to-br from-white to-[#fff8f2] shadow-md ring-2 ring-[#c04a1c]/15"
                       : "border border-[#a8451a]/20 bg-white/70 hover:border-[#a8451a]/40 hover:bg-white"
@@ -527,8 +527,8 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
                     <Check className={`h-3 w-3 text-white transition-all duration-300 ${paymentMethod === "COD" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} strokeWidth={3} />
                   </div>
 
-                  <div className="flex min-w-0 flex-1 items-start gap-3.5">
-                    <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
+                  <div className="flex min-w-0 flex-1 items-start gap-3 sm:gap-3.5">
+                    <span className={`flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
                       paymentMethod === "COD"
                         ? "border-transparent bg-gradient-to-br from-[#8e3510] to-[#c04a1c] text-white shadow-md"
                         : "border-[#a8451a]/25 bg-[#fde3cf]/50 text-[#c04a1c]"
@@ -556,7 +556,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
 
               {razorpayEnabled && (
                 <label
-                  className={`group relative flex cursor-pointer items-start gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group relative flex cursor-pointer items-start gap-3 sm:gap-4 rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 ${
                     paymentMethod === "RAZORPAY"
                       ? "border-2 border-[#c04a1c] bg-gradient-to-br from-white to-[#fff8f2] shadow-md ring-2 ring-[#c04a1c]/15"
                       : "border border-[#a8451a]/20 bg-white/70 hover:border-[#a8451a]/40 hover:bg-white"
@@ -613,20 +613,20 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
         </form>
 
         {/* Right Sticky Order Summary */}
-        <div className="relative rounded-3xl border border-[#a8451a]/25 bg-white/85 p-6 sm:p-8 space-y-6 backdrop-blur-xl shadow-lg h-fit lg:sticky lg:top-28">
+        <div className="relative rounded-3xl border border-[#a8451a]/25 bg-white/85 p-5 sm:p-8 space-y-5 sm:space-y-6 backdrop-blur-xl shadow-lg h-fit lg:sticky lg:top-28">
           <div className="flex items-center gap-2 border-b border-[#a8451a]/15 pb-4">
             <ShoppingBag className="h-5 w-5 text-[#c04a1c]" />
-            <h2 className="font-display text-xl sm:text-2xl font-extrabold text-[#1c1109]">
+            <h2 className="min-w-0 whitespace-nowrap font-display text-lg sm:text-2xl font-extrabold text-[#1c1109]">
               Order Summary
             </h2>
-            <span className="ml-auto inline-flex items-center justify-center rounded-full bg-[#a8451a]/10 border border-[#a8451a]/25 px-2.5 py-0.5 text-xs font-bold text-[#a8451a]">
+            <span className="ml-auto shrink-0 whitespace-nowrap inline-flex items-center justify-center rounded-full bg-[#a8451a]/10 border border-[#a8451a]/25 px-2.5 py-0.5 text-[11px] sm:text-xs font-bold text-[#a8451a]">
               {cartCount} {cartCount === 1 ? "item" : "items"}
             </span>
           </div>
 
-          <ul className="space-y-4 max-h-[360px] overflow-y-auto pr-1 scrollbar-thin">
+          <ul className="no-scrollbar space-y-4 max-h-[320px] sm:max-h-[360px] overflow-y-auto pr-1">
             {cart.map((item) => (
-              <li key={item.variantId} className="flex gap-4 items-center pb-4 border-b border-[#a8451a]/10 last:border-b-0 last:pb-0">
+              <li key={item.variantId} className="flex gap-3 sm:gap-4 items-center pb-4 border-b border-[#a8451a]/10 last:border-b-0 last:pb-0">
                 {/* Product Thumbnail */}
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[#a8451a]/20 bg-[#fff8f2] shadow-2xs">
                   {item.image ? (
@@ -646,7 +646,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <h4 className="truncate text-base font-bold text-[#1c1109]">{item.name}</h4>
+                  <h4 className="truncate text-sm sm:text-base font-bold text-[#1c1109]">{item.name}</h4>
                   {item.variantName && (
                     <span className="mt-0.5 inline-block text-xs font-semibold text-[#a8451a]">
                       {item.variantName}
@@ -763,7 +763,7 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
                     key={c.code}
                     type="button"
                     onClick={() => setCouponInput(c.code)}
-                    className="flex items-center gap-1.5 rounded-full border border-[#a8451a]/20 bg-[#fde3cf]/50 px-3 py-1 text-xs text-[#2b1d12]/80 font-medium hover:border-[#a8451a] hover:bg-[#fde3cf] transition-all"
+                    className="flex max-w-full items-center gap-1.5 rounded-2xl sm:rounded-full border border-[#a8451a]/20 bg-[#fde3cf]/50 px-3 py-1.5 text-left text-[11px] sm:text-xs text-[#2b1d12]/80 font-medium hover:border-[#a8451a] hover:bg-[#fde3cf] transition-all"
                   >
                     <span className="font-mono font-bold text-[#a8451a]">{c.code}</span>
                     <span className="text-[#a8451a]/40">·</span>

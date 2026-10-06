@@ -25,6 +25,7 @@ export default function FloatingWhatsApp() {
     pathname?.startsWith("/account") ||
     pathname?.startsWith("/login") ||
     pathname?.startsWith("/register") ||
+    pathname?.startsWith("/checkout") ||
     pathname === "/shop" ||
     pathname?.startsWith("/shop/")
   ) return null;

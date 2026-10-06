@@ -67,42 +67,36 @@ export default function ShiprocketTracking({ awbCode, courierName, status, curre
           )}
         </div>
 
-        {/* Status hero */}
-        <div className="relative flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#a8451a]/15 bg-gradient-to-br from-[#fffaf5] to-[#fde3cf]/30 p-4 sm:p-5">
-          <div className="flex items-center gap-3">
-            {status ? (
-              <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold uppercase tracking-wider ${STATUS_STYLE[tone] || STATUS_STYLE.gold}`}>
-                {isDelivered && <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
-                {status}
-              </span>
-            ) : (
-              <span className="text-sm font-semibold text-[#2b1d12]/60">Status not available yet</span>
+        {/* Status + AWB on one line */}
+        <div className="relative flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-2xl border border-[#a8451a]/15 bg-gradient-to-br from-[#fffaf5] to-[#fde3cf]/30 p-4 sm:p-5">
+          {status ? (
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold uppercase tracking-wider ${STATUS_STYLE[tone] || STATUS_STYLE.gold}`}>
+              {isDelivered && <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+              {status}
+            </span>
+          ) : (
+            <span className="text-sm font-semibold text-[#2b1d12]/60">Status not available yet</span>
+          )}
+
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 text-xs sm:text-sm">
+            <span className="font-bold uppercase tracking-wider text-[#2b1d12]/50">AWB</span>
+            <span className="select-all font-mono font-bold text-[#1c1109]">{awbCode || "Not yet assigned"}</span>
+            {awbCode && courierName && (
+              <>
+                <span className="text-[#2b1d12]/30">·</span>
+                <span className="font-bold text-[#1c1109]">{courierName}</span>
+              </>
             )}
           </div>
-          {currentLocation && (
-            <div className="flex items-center gap-2 text-right">
-              <div>
-                <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#2b1d12]/50">Current location</p>
-                <p className="text-xs sm:text-sm font-bold text-[#1c1109]">{currentLocation}</p>
-              </div>
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#a8451a]/20 bg-white sm:h-9 sm:w-9">
-                <MapPin className="h-3.5 w-3.5 text-[#c04a1c] sm:h-4 sm:w-4" />
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Courier + AWB */}
-        <div className="relative mt-3.5 flex flex-wrap gap-2.5 sm:mt-4 sm:gap-3">
-          <div className="flex-1 min-w-[140px] rounded-xl border border-[#a8451a]/15 bg-[#fffaf5] px-3.5 py-2.5 sm:px-4 sm:py-3">
-            <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#2b1d12]/50">Courier</p>
-            <p className="mt-0.5 text-xs sm:text-sm font-bold text-[#1c1109]">{courierName || "Assigned soon"}</p>
+        {currentLocation && (
+          <div className="relative mt-3 flex items-center gap-2 text-sm">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#c04a1c]" />
+            <span className="text-[#2b1d12]/60">Current location:</span>
+            <span className="font-bold text-[#1c1109]">{currentLocation}</span>
           </div>
-          <div className="flex-1 min-w-[140px] rounded-xl border border-[#a8451a]/15 bg-[#fffaf5] px-3.5 py-2.5 sm:px-4 sm:py-3">
-            <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#2b1d12]/50">AWB Number</p>
-            <p className="mt-0.5 select-all font-mono text-xs sm:text-sm font-bold text-[#1c1109]">{awbCode || "Not yet assigned"}</p>
-          </div>
-        </div>
+        )}
 
         {isLive && (
           <a

@@ -90,6 +90,17 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
     return { success: false, error: "Your cart is empty." };
   }
 
+  // A saved cart can hold a variant that was deleted or regenerated since it was added.
+  // Catch that before creating the order, and name the item so the customer can remove it.
+  const variantIds = [...new Set(items.map((i) => i.variantId).filter(Boolean))];
+  const { data: liveVariants } = await supabase.from("product_variants").select("id").in("id", variantIds);
+  const liveIds = new Set((liveVariants || []).map((v) => v.id));
+  const missing = items.filter((i) => !i.variantId || !liveIds.has(i.variantId));
+  if (missing.length > 0) {
+    const names = [...new Set(missing.map((i) => i.name))].join(", ");
+    return { success: false, error: `Some items in your bag are no longer available (${names}). Please remove them and add them again.` };
+  }
+
   if (paymentMethod === "COD" && !(await isCodEnabled())) {
     return { success: false, error: "Cash on Delivery is currently unavailable. Please pay online instead." };
   }
@@ -209,7 +220,11 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
 
   const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
   if (itemsError) {
-    return { success: false, error: "Failed to save order items." };
+    console.error("[Checkout] order_items insert failed:", itemsError.message, itemsError.details, itemsError.hint);
+    // Don't leave an order behind with no items.
+    const { createAdminClient: adminForCleanup } = await import("@/lib/supabase/admin");
+    await adminForCleanup().from("orders").delete().eq("id", order.id);
+    return { success: false, error: `Failed to save order items: ${itemsError.message}` };
   }
 
   if (paymentMethod === "RAZORPAY") {
