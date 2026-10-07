@@ -63,6 +63,9 @@ export default function Hero({
   const hasShipped = Boolean(shippedText);
   const showRatingRow = hasRating || hasReviews;
   const showSocialProof = showRatingRow || hasShipped;
+  // Only darken the image when there's text/a button sitting on top of it — a
+  // pure image slide (no copy at all) stays untouched.
+  const hasOverlayContent = Boolean(badgeText || titleLines.length > 0 || subtitle || (buttonText && buttonLink));
 
   const goToSlide = (idx) => {
     setCurrentIndex(idx);
@@ -93,18 +96,18 @@ export default function Hero({
   const heroText = (
     <>
       {badgeText && (
-        <span className="inline-flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full border border-gold-400/20 bg-ink-soft/80 text-[9px] sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-gold-200 backdrop-blur-md mb-2 sm:mb-6 w-fit shadow-[0_0_25px_rgba(212,163,89,0.15)]">
+        <span className="inline-flex items-center gap-1.5 sm:gap-3 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full border border-gold-400/20 bg-ink-soft/80 text-[9px] sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#c9742f] backdrop-blur-md mb-2 sm:mb-6 w-fit shadow-[0_0_25px_rgba(212,163,89,0.15)]">
           <Sparkles className="w-2.5 h-2.5 sm:w-4 sm:h-4 text-gold-300 animate-pulse" />
           {badgeText}
         </span>
       )}
 
       {titleLines.length > 0 && (
-        <h1 className="whitespace-pre-line font-display text-2xl sm:text-6xl lg:text-[4.5rem] leading-[1.15] sm:leading-[1.08] text-ivory font-medium">
+        <h1 className="whitespace-pre-line font-display text-2xl sm:text-6xl lg:text-[4.5rem] leading-[1.15] sm:leading-[1.08] text-[#fdf3ea] font-medium drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]">
           {titleLines.map((line, idx) => (
             <span key={idx} className="block">
               {idx === titleLines.length - 1 ? (
-                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400 drop-shadow-[0_2px_15px_rgba(212,175,55,0.25)]">
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#fce4cf] via-[#f0c27a] to-[#d98c3f] drop-shadow-[0_2px_15px_rgba(0,0,0,0.4)]">
                   {line}
                 </span>
               ) : (
@@ -116,7 +119,7 @@ export default function Hero({
       )}
 
       {subtitle && (
-        <p className="hidden sm:block sm:mt-8 max-w-xl text-xl leading-relaxed text-ivory/82 font-normal drop-shadow-md">
+        <p className="hidden sm:block sm:mt-8 max-w-xl text-xl leading-relaxed text-[#fdf3ea]/90 font-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
           {subtitle}
         </p>
       )}
@@ -138,7 +141,7 @@ export default function Hero({
           {showRatingRow && (
             <div className="flex items-center gap-1.5 sm:gap-3">
               {hasRating && <StarRating rating={parsedRating} size={12} />}
-              <span className="text-[11px] sm:text-sm font-semibold uppercase tracking-widest text-gold-300/90">
+              <span className="text-[11px] sm:text-sm font-semibold uppercase tracking-widest text-[#f0c27a] drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
                 {hasRating && parsedRating.toFixed(1)}
                 {hasRating && hasReviews && " · "}
                 {hasReviews && reviewsText}
@@ -147,7 +150,7 @@ export default function Hero({
           )}
           {showRatingRow && hasShipped && <div className="hidden sm:block h-5 w-px bg-gold-400/10" />}
           {hasShipped && (
-            <span className="hidden sm:inline text-[9px] sm:text-sm font-semibold uppercase tracking-widest text-ivory/78">{shippedText}</span>
+            <span className="hidden sm:inline text-[9px] sm:text-sm font-semibold uppercase tracking-widest text-[#fdf3ea]/85 drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">{shippedText}</span>
           )}
         </div>
       )}
@@ -201,6 +204,15 @@ export default function Hero({
         )}
         <div className="absolute inset-x-0 top-0 h-14 sm:h-20 bg-gradient-to-b from-[#fde3cf]/35 to-transparent pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-14 sm:h-20 bg-gradient-to-t from-[#fde3cf]/25 to-transparent pointer-events-none" />
+        {/* Blackish wash behind the text/button so they stay readable over any photo. Only
+            appears when this slide actually has copy — an image-only slide is left untouched. */}
+        {hasOverlayContent && (
+          <>
+            <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent sm:to-black/0 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent pointer-events-none sm:hidden" />
+          </>
+        )}
       </div>
 
       {/* Immersive background glows */}

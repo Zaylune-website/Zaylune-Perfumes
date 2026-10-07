@@ -184,7 +184,7 @@ export default async function ProductDetailPage({ params }) {
 
             {/* Fragrance Story & Olfactory Architecture Showcase — sits below the gallery on desktop, below the purchase panel on mobile */}
             {(product.short_description || notes.length > 0) && (
-              <Reveal className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 mt-2 lg:mt-0 border-t border-[#a8451a]/15 pt-8 sm:pt-10 lg:border-t-0 lg:pt-0">
+              <Reveal className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 mt-8 sm:mt-10 lg:mt-16 border-t border-[#a8451a]/15 pt-8 sm:pt-10 lg:border-t-0 lg:pt-0">
                 <div className="grid grid-cols-1 gap-6 sm:gap-8">
 
                   {/* The Story / Fragrance Profile */}

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Trash2, Pencil, Quote } from "lucide-react";
+import { Trash2, Pencil, Quote, AlertCircle } from "lucide-react";
 import StarRating from "@/components/StarRating";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { createTestimonial, updateTestimonial, toggleTestimonial, deleteTestimonial } from "@/actions/admin/testimonials";
@@ -38,6 +38,7 @@ function RatingPicker({ value, onChange }) {
 
 function TestimonialEditForm({ testimonial, onCancel, onSaved }) {
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState(null);
   const [imageUrl, setImageUrl] = useState(testimonial.image_url);
   const [form, setForm] = useState({
     customer_name: testimonial.customer_name || "",
@@ -50,14 +51,21 @@ function TestimonialEditForm({ testimonial, onCancel, onSaved }) {
 
   const handleSave = (e) => {
     e.preventDefault();
+    setError(null);
     startTransition(async () => {
       const result = await updateTestimonial(testimonial.id, { ...form, image_url: imageUrl });
       if (result.success) onSaved();
+      else setError(result.error || "Failed to save changes. Please try again.");
     });
   };
 
   return (
     <form onSubmit={handleSave} className="w-full space-y-3 rounded-2xl border border-[#a8451a]/25 bg-[#fffaf5] p-4 sm:p-5">
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl border border-red-400/30 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+          <AlertCircle className="h-4 w-4 shrink-0" /> {error}
+        </div>
+      )}
       <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/testimonials" />
       <input placeholder="Customer Name" value={form.customer_name} onChange={update("customer_name")} className={inputClass} required />
       <input placeholder="Location (e.g. Delhi)" value={form.location} onChange={update("location")} className={inputClass} />
@@ -89,17 +97,21 @@ export default function TestimonialManager({ testimonials }) {
   const [imageUrl, setImageUrl] = useState(null);
   const [form, setForm] = useState({ customer_name: "", location: "", review_text: "", rating: 5 });
   const [editingId, setEditingId] = useState(null);
+  const [addError, setAddError] = useState(null);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleAdd = (e) => {
     e.preventDefault();
+    setAddError(null);
     startTransition(async () => {
       const result = await createTestimonial({ ...form, image_url: imageUrl });
       if (result.success) {
         setImageUrl(null);
         setForm({ customer_name: "", location: "", review_text: "", rating: 5 });
         router.refresh();
+      } else {
+        setAddError(result.error || "Failed to add testimonial. Please try again.");
       }
     });
   };
@@ -188,6 +200,11 @@ export default function TestimonialManager({ testimonials }) {
           </div>
           <h2 className="font-display text-base font-bold text-[#1c1109]">Add Testimonial</h2>
         </div>
+        {addError && (
+          <div className="flex items-center gap-2 rounded-xl border border-red-400/30 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" /> {addError}
+          </div>
+        )}
         <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/testimonials" />
         <input placeholder="Customer Name" value={form.customer_name} onChange={update("customer_name")} className={inputClass} required />
         <input placeholder="Location (e.g. Delhi)" value={form.location} onChange={update("location")} className={inputClass} />
@@ -197,7 +214,7 @@ export default function TestimonialManager({ testimonials }) {
           <RatingPicker value={form.rating} onChange={(r) => setForm((f) => ({ ...f, rating: r }))} />
         </div>
         <button type="submit" disabled={pending} className="btn-gold w-full disabled:opacity-60">
-          Add Testimonial
+          {pending ? "Adding…" : "Add Testimonial"}
         </button>
       </form>
     </div>
