@@ -8,17 +8,19 @@ import ShopFilters from "@/components/shop/ShopFilters";
 import SortSelect from "@/components/shop/SortSelect";
 import { getActiveCategories } from "@/actions/categories";
 import { getProducts } from "@/actions/products";
+import { BRAND } from "@/lib/constants";
 
 export const metadata = {
   title: "Shop All Fragrances",
   description:
-    "Browse the full Zaylune collection — attars, extrait-grade oils and eau de parfums, hand-poured in small batches.",
+    "Browse the full Zaylune Fragrances collection — attars, extrait-grade oils and eau de parfums, hand-poured in small batches.",
   alternates: { canonical: "/shop" },
   openGraph: {
     url: "/shop",
-    title: "Shop All Fragrances — Zaylune",
+    siteName: BRAND.name,
+    title: "Shop All Fragrances — Zaylune Fragrances",
     description:
-      "Browse the full Zaylune collection — attars, extrait-grade oils and eau de parfums, hand-poured in small batches.",
+      "Browse the full Zaylune Fragrances collection — attars, extrait-grade oils and eau de parfums, hand-poured in small batches.",
   },
 };
 

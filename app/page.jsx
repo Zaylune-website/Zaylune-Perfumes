@@ -15,6 +15,7 @@ import { getActiveCategories } from "@/actions/categories";
 import { getFeaturedProducts } from "@/actions/products";
 import { getActiveHeroSlides, getActiveTestimonials } from "@/actions/site";
 import { getSiteSettings } from "@/actions/settings";
+import { BRAND } from "@/lib/constants";
 
 export const metadata = {
   title: "Zaylune Fragrances — Luxury Attars & Fine Fragrances",
@@ -23,6 +24,7 @@ export const metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     url: "/",
+    siteName: BRAND.name,
     title: "Zaylune Fragrances — Luxury Attars & Fine Fragrances",
     description:
       "Shop hand-poured attars and fine fragrances from Zaylune Fragrances — extrait-grade oils, alcohol-free options, made in small batches for lasting scent.",

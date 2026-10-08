@@ -37,12 +37,11 @@ function Frame({ children }) {
 export default function AnnouncementTicker({ messages }) {
   const scrollRef = useRef(null);
   const trackRef = useRef(null);
-  const loop = messages.length > 1;
 
   useEffect(() => {
     const el = scrollRef.current;
     const track = trackRef.current;
-    if (!loop || !el || !track) return;
+    if (!el || !track) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const half = () => track.scrollWidth / 2;
@@ -95,19 +94,9 @@ export default function AnnouncementTicker({ messages }) {
       el.removeEventListener("pointerleave", resume);
       el.removeEventListener("mouseenter", pause);
     };
-  }, [loop, messages]);
+  }, [messages]);
 
   if (!messages.length) return null;
-
-  if (!loop) {
-    return (
-      <Frame>
-        <div className="flex justify-center">
-          <Item message={messages[0]} />
-        </div>
-      </Frame>
-    );
-  }
 
   return (
     <Frame>

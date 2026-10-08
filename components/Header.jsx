@@ -157,23 +157,17 @@ export default function Header({
           {/* Brand Logo */}
           <Link
             href="/"
-            className="group relative flex h-11 w-[130px] shrink-0 items-center sm:h-14 sm:w-[185px] lg:w-[210px] transition-transform duration-300 hover:scale-[1.02]"
+            className="relative flex h-12 w-[145px] shrink-0 items-center sm:h-16 sm:w-[205px] lg:w-[230px]"
           >
-            {/* Soft luminous aura behind logo */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#a8451a]/15 blur-xl transition-all duration-500 group-hover:bg-[#a8451a]/25 group-hover:scale-125" />
-            <div className="relative aspect-[3/2] h-[82px] sm:h-32 lg:h-[135px] drop-shadow-[0_2px_12px_rgba(168,69,26,0.18)] transition-all duration-500 group-hover:drop-shadow-[0_4px_22px_rgba(168,69,26,0.35)]">
+            <div className="relative aspect-[3/2] h-[92px] sm:h-36 lg:h-[150px]">
               <Image
                 src="/navbar-logo.png"
                 alt="Zaylune"
                 fill
                 priority
-                sizes="(max-width: 640px) 140px, (max-width: 1024px) 200px, 225px"
+                sizes="(max-width: 640px) 155px, (max-width: 1024px) 220px, 245px"
                 className="object-contain object-left"
               />
-              {/* Subtle diagonal shine sweep on hover */}
-              <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:translate-x-full group-hover:opacity-100" />
-              </div>
             </div>
           </Link>
 
@@ -483,7 +477,7 @@ export default function Header({
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
-              className="relative h-10 w-32 drop-shadow-sm"
+              className="relative h-10 w-32"
             >
               <Image
                 src="/navbar-logo.png"

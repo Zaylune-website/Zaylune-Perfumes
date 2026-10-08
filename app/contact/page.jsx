@@ -4,7 +4,7 @@ import ContactContent from "./_components/ContactContent";
 
 export const metadata = {
   title: "Contact Us",
-  description: "Get in touch with Zaylune for scent recommendations, gifting options, and order support.",
+  description: "Get in touch with Zaylune Fragrances for scent recommendations, gifting options, and order support.",
   alternates: { canonical: "/contact" },
 };
 

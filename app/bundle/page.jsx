@@ -8,7 +8,7 @@ import { getBundleSettings, getBundleEligibleProducts } from "@/actions/bundle";
 
 export const metadata = {
   title: "Build Your Own Bundle — Custom Fragrance Set",
-  description: "Pick your favorite Zaylune fragrances and build a custom set at a special bundle price.",
+  description: "Pick your favorite fragrances and build a custom Zaylune Fragrances gift set at a special bundle price.",
   alternates: { canonical: "/bundle" },
 };
 

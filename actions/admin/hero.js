@@ -3,6 +3,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath, revalidateTag } from "next/cache";
 
+// Blank/whitespace-only input (e.g. a stray space left in the field) should
+// save as empty, not as a non-empty string that still renders a blank line.
+const cleanText = (v) => (typeof v === "string" && v.trim() ? v.trim() : null);
+
 export async function getAllHeroSlides() {
   const supabase = createAdminClient();
   const { data } = await supabase.from("hero_slides").select("*").order("display_order", { ascending: true });
@@ -19,10 +23,10 @@ export async function createHeroSlide(slide) {
   const { error } = await supabase.from("hero_slides").insert({
     image_url: slide.image_url,
     mobile_image_url: slide.mobile_image_url || null,
-    title: slide.title || null,
-    subtitle: slide.subtitle || null,
-    button_text: slide.button_text || null,
-    button_link: slide.button_link || null,
+    title: cleanText(slide.title),
+    subtitle: cleanText(slide.subtitle),
+    button_text: cleanText(slide.button_text),
+    button_link: cleanText(slide.button_link),
     display_order: nextOrder,
   });
 
@@ -42,10 +46,10 @@ export async function updateHeroSlide(id, slide) {
     .update({
       image_url: slide.image_url,
       mobile_image_url: slide.mobile_image_url || null,
-      title: slide.title || null,
-      subtitle: slide.subtitle || null,
-      button_text: slide.button_text || null,
-      button_link: slide.button_link || null,
+      title: cleanText(slide.title),
+      subtitle: cleanText(slide.subtitle),
+      button_text: cleanText(slide.button_text),
+      button_link: cleanText(slide.button_link),
     })
     .eq("id", id);
 

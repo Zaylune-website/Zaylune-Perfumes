@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -107,6 +108,9 @@ export default function AdminSidebar({ adminName = "Admin" }) {
 
         <div className="relative flex h-16 shrink-0 items-center gap-3 border-b border-[#a8451a]/15 px-5">
           <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#c04a1c]/10 blur-3xl" />
+          <div className="relative h-9 w-9 shrink-0">
+            <Image src="/navbar-logo.png" alt="Zaylune" fill sizes="36px" className="object-contain" />
+          </div>
           <div className="relative flex-1 overflow-hidden">
             <p className="truncate font-display text-base font-extrabold tracking-wide text-[#1c1109]">Zaylune</p>
             <p className="truncate text-[10px] uppercase tracking-[0.2em] text-[#a8451a] font-bold">Admin Panel</p>

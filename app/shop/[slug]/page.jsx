@@ -12,6 +12,7 @@ import ReviewForm from "./_components/ReviewForm";
 import ReviewsList from "./_components/ReviewsList";
 import { getProductBySlug, getRelatedProducts } from "@/actions/products";
 import Reveal from "@/components/Reveal";
+import { BRAND } from "@/lib/constants";
 
 // Dedupes the fetch: generateMetadata and the page component both need this
 // product, and without caching each would trigger its own DB round trip.
@@ -23,6 +24,10 @@ export async function generateMetadata({ params }) {
   if (!product) return {};
 
   const titleText = product.seo_title || product.name;
+  // OpenGraph/Twitter tags don't go through the root layout's title template,
+  // so the brand suffix is added here explicitly. A custom seo_title is
+  // trusted as-is (same rule as the <title> tag below) to avoid double-suffixing.
+  const socialTitle = product.seo_title ? titleText : `${titleText} — ${BRAND.name}`;
   const description = product.seo_description || product.short_description || undefined;
   const image = product.featured_image_url || product.images?.[0]?.image_url;
 
@@ -35,14 +40,15 @@ export async function generateMetadata({ params }) {
     alternates: { canonical: `/shop/${slug}` },
     openGraph: {
       url: `/shop/${slug}`,
-      title: titleText,
+      siteName: BRAND.name,
+      title: socialTitle,
       description,
       type: "website",
       images: image ? [{ url: image }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
-      title: titleText,
+      title: socialTitle,
       description,
       images: image ? [image] : undefined,
     },
@@ -80,7 +86,7 @@ export default async function ProductDetailPage({ params }) {
     description: product.short_description || product.description || undefined,
     image: productImages.length > 0 ? productImages : undefined,
     sku: cheapestVariant?.id,
-    brand: { "@type": "Brand", name: "Zaylune" },
+    brand: { "@type": "Brand", name: BRAND.name },
     ...(product.review_count > 0
       ? {
           aggregateRating: {

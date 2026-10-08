@@ -52,11 +52,13 @@ export default function Hero({
   const currentSlide = activeSlides[currentIndex];
   const image = currentSlide?.image_url || null;
   const mobileImage = currentSlide?.mobile_image_url || null;
-  const title = currentSlide?.title || "";
-  const subtitle = currentSlide?.subtitle || "";
-  const buttonText = currentSlide?.button_text || "";
-  const buttonLink = currentSlide?.button_link || "";
-  const titleLines = title ? title.split("\n") : [];
+  // .trim() guards against a stray space-only value saved from the dashboard —
+  // without it, a lone space is truthy and still renders an empty line/overlay.
+  const title = currentSlide?.title?.trim() || "";
+  const subtitle = currentSlide?.subtitle?.trim() || "";
+  const buttonText = currentSlide?.button_text?.trim() || "";
+  const buttonLink = currentSlide?.button_link?.trim() || "";
+  const titleLines = title ? title.split("\n").filter((line) => line.trim()) : [];
   const hasRating = ratingValue !== "" && ratingValue !== null && ratingValue !== undefined;
   const parsedRating = hasRating ? Number.parseFloat(ratingValue) || 0 : 0;
   const hasReviews = Boolean(reviewsText);
