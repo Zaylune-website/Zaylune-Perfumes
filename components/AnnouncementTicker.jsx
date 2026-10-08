@@ -3,9 +3,11 @@
 import { useEffect, useRef } from "react";
 import { Sparkles } from "lucide-react";
 
-const COPIES = 4;
+// High enough that the duplicated track is always wider than even an
+// ultra-wide laptop viewport, however short/few the messages are — otherwise
+// there's no room to scroll and it clamps at the end, looking frozen.
+const COPIES = 16;
 const SPEED_PX = 1;
-const RESUME_DELAY_MS = 1500;
 
 function Item({ message }) {
   return (
@@ -45,11 +47,9 @@ export default function AnnouncementTicker({ messages }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const half = () => track.scrollWidth / 2;
-    let paused = false;
-    let resumeTimer = null;
     let frame = null;
 
-    // Start in the middle copy so the user can swipe both ways.
+    // Start in the middle copy so the wrap-around never shows a seam.
     el.scrollLeft = half();
 
     const wrap = () => {
@@ -58,41 +58,17 @@ export default function AnnouncementTicker({ messages }) {
     };
 
     const tick = () => {
-      if (!paused) {
-        el.scrollLeft += SPEED_PX;
-        wrap();
-      }
+      el.scrollLeft += SPEED_PX;
+      wrap();
       frame = requestAnimationFrame(tick);
     };
 
-    const pause = () => {
-      paused = true;
-      clearTimeout(resumeTimer);
-    };
-    const resume = () => {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => {
-        paused = false;
-      }, RESUME_DELAY_MS);
-    };
-
     el.addEventListener("scroll", wrap, { passive: true });
-    el.addEventListener("pointerdown", pause);
-    el.addEventListener("pointerup", resume);
-    el.addEventListener("pointercancel", resume);
-    el.addEventListener("pointerleave", resume);
-    el.addEventListener("mouseenter", pause);
     frame = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(frame);
-      clearTimeout(resumeTimer);
       el.removeEventListener("scroll", wrap);
-      el.removeEventListener("pointerdown", pause);
-      el.removeEventListener("pointerup", resume);
-      el.removeEventListener("pointercancel", resume);
-      el.removeEventListener("pointerleave", resume);
-      el.removeEventListener("mouseenter", pause);
     };
   }, [messages]);
 
