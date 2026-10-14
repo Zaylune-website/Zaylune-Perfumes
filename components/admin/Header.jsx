@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, ExternalLink, LogOut } from "lucide-react";
 import { useAdminSidebar } from "@/context/AdminSidebarContext";
 import { adminLogout } from "@/actions/auth";
@@ -11,9 +12,14 @@ export default function AdminHeader({ adminName }) {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-[#a8451a]/20 bg-white/80 px-4 backdrop-blur-xl md:px-6">
-      <button onClick={() => setMobileOpen(true)} className="p-1.5 text-[#2b1d12]/75 hover:text-[#a8451a] lg:hidden">
-        <Menu className="h-5 w-5" />
-      </button>
+      <div className="flex items-center gap-3 lg:hidden">
+        <button onClick={() => setMobileOpen(true)} className="p-1.5 text-[#2b1d12]/75 hover:text-[#a8451a]">
+          <Menu className="h-5 w-5" />
+        </button>
+        <Link href="/" className="relative h-8 w-24">
+          <Image src="/navbar-logo.png" alt="Zaylune" fill className="object-contain object-left" />
+        </Link>
+      </div>
 
       <div className="hidden lg:block">
         <p className="text-lg font-bold text-[#1c1109]">

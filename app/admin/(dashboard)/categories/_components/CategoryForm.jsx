@@ -1,6 +1,7 @@
 ﻿"use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createCategory, updateCategory } from "@/actions/admin/categories";
 import ImageUploader from "@/components/admin/ImageUploader";
@@ -18,10 +19,15 @@ function slugPreview(text) {
 }
 
 export default function CategoryForm({ category }) {
+  const router = useRouter();
   const isEditing = !!category;
   const action = isEditing ? updateCategory : createCategory;
   const [state, formAction, pending] = useActionState(action, {});
   const [imageUrl, setImageUrl] = useState(category?.image_url || null);
+
+  useEffect(() => {
+    if (state?.redirectTo) router.push(state.redirectTo);
+  }, [state, router]);
   const [name, setName] = useState(category?.name || "");
   const [isActive, setIsActive] = useState(category?.is_active ?? true);
 

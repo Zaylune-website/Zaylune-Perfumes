@@ -2,7 +2,6 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { validateVariants } from "@/lib/productValidation";
 
 function slugify(text) {
@@ -145,7 +144,7 @@ export async function createProduct(_prevState, formData) {
 
   revalidatePath("/admin/products");
   revalidatePath("/shop");
-  redirect("/admin/products");
+  return { success: true, redirectTo: "/admin/products" };
 }
 
 export async function updateProduct(_prevState, formData) {
@@ -173,7 +172,7 @@ export async function updateProduct(_prevState, formData) {
 
   revalidatePath("/admin/products");
   revalidatePath("/shop");
-  redirect("/admin/products");
+  return { success: true, redirectTo: "/admin/products" };
 }
 
 export async function deleteProduct(id) {

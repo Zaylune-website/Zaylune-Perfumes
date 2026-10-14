@@ -1,6 +1,7 @@
 ﻿"use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Save } from "lucide-react";
 import { createProduct, updateProduct } from "@/actions/admin/products";
@@ -19,10 +20,15 @@ const panelClass =
 
 
 export default function ProductForm({ product, categories }) {
+  const router = useRouter();
   const isEditing = !!product;
   const action = isEditing ? updateProduct : createProduct;
   const [state, formAction, pending] = useActionState(action, {});
   const [isActive, setIsActive] = useState(product?.is_active ?? true);
+
+  useEffect(() => {
+    if (state?.redirectTo) router.push(state.redirectTo);
+  }, [state, router]);
   const [isFeatured, setIsFeatured] = useState(product?.is_featured ?? false);
 
   const [featuredImage, setFeaturedImage] = useState(product?.featured_image_url || null);

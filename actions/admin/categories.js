@@ -2,7 +2,6 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 
 function slugify(text) {
   return text
@@ -51,7 +50,7 @@ export async function createCategory(_prevState, formData) {
   revalidatePath("/admin/categories");
   revalidatePath("/shop");
   revalidateTag("categories");
-  redirect("/admin/categories");
+  return { success: true, redirectTo: "/admin/categories" };
 }
 
 export async function updateCategory(_prevState, formData) {
@@ -76,7 +75,7 @@ export async function updateCategory(_prevState, formData) {
   revalidatePath("/admin/categories");
   revalidatePath("/shop");
   revalidateTag("categories");
-  redirect("/admin/categories");
+  return { success: true, redirectTo: "/admin/categories" };
 }
 
 export async function deleteCategory(id) {
