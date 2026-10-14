@@ -8,6 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 const DEFAULT_SETTINGS = {
   brand_name: { value: "Zaylune Fragrances", category: "brand", description: "Brand name" },
   tagline: { value: "Perfumes & Attar, Poured With Intention", category: "brand", description: "Brand tagline" },
+  site_logo: { value: "/navbar-logo.png", category: "brand", description: "Site logo (used in header, footer & loading screen)" },
   email: { value: "mailme.ysk007@gmail.com", category: "contact", description: "Business email" },
   whatsapp_number: { value: "917019237106", category: "contact", description: "WhatsApp number (with country code, no spaces)" },
   whatsapp_display: { value: "+91 70192 37106", category: "contact", description: "WhatsApp display format" },
@@ -174,6 +175,11 @@ const getSiteSettingsCached = unstable_cache(
 
 export async function getSiteSettings() {
   return getSiteSettingsCached();
+}
+
+export async function getSiteLogo() {
+  const settings = await getSiteSettings();
+  return settings.site_logo?.value || "/navbar-logo.png";
 }
 
 export async function isCodEnabled() {

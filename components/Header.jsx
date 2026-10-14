@@ -51,6 +51,7 @@ export default function Header({
   announcements = [],
   isLoggedIn = false,
   bundleEnabled = false,
+  logoUrl = "/navbar-logo.png",
   showcase,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -151,24 +152,22 @@ export default function Header({
         {/* Main Navbar Row */}
         <div
           className={`mx-auto flex max-w-wrap items-center justify-between gap-4 px-4 transition-all duration-500 sm:px-6 md:px-10 lg:px-12 ${
-            scrolled ? "py-1 sm:py-1.5" : "py-2 sm:py-2.5"
+            scrolled ? "py-0.5" : "py-1 sm:py-1.5"
           }`}
         >
           {/* Brand Logo */}
           <Link
             href="/"
-            className="relative flex h-12 w-[145px] shrink-0 items-center sm:h-16 sm:w-[205px] lg:w-[230px]"
+            className="relative h-12 w-[150px] shrink-0 sm:h-14 sm:w-[190px] lg:h-16 lg:w-[220px]"
           >
-            <div className="relative aspect-[3/2] h-[92px] sm:h-36 lg:h-[150px]">
-              <Image
-                src="/navbar-logo.png"
-                alt="Zaylune"
-                fill
-                priority
-                sizes="(max-width: 640px) 155px, (max-width: 1024px) 220px, 245px"
-                className="object-contain object-left"
-              />
-            </div>
+            <Image
+              src={logoUrl}
+              alt="Zaylune"
+              fill
+              priority
+              sizes="(max-width: 640px) 155px, (max-width: 1024px) 220px, 245px"
+              className="object-contain object-left"
+            />
           </Link>
 
           {/* Center Navigation Dock (Desktop Luxury Capsule) */}
@@ -480,7 +479,7 @@ export default function Header({
               className="relative h-10 w-32"
             >
               <Image
-                src="/navbar-logo.png"
+                src={logoUrl}
                 alt="Zaylune"
                 fill
                 className="object-contain object-left"

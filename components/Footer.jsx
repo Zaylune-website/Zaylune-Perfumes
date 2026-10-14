@@ -40,6 +40,7 @@ function SocialLink({ href, label, Icon }) {
 export default async function Footer() {
   const dbSettings = (await getSiteSettings()) || {};
   const brandInfo = settingsToBrand(dbSettings);
+  const logoUrl = dbSettings.site_logo?.value || "/navbar-logo.png";
   const hasSocial = [brandInfo.instagram, brandInfo.facebook, brandInfo.youtube].some((u) => u && u !== "#");
 
   return (
@@ -59,7 +60,7 @@ export default async function Footer() {
           <div className="col-span-2 lg:col-span-4">
             <Link href="/" className="inline-block transition-transform duration-300 hover:scale-[1.02]">
               <Image
-                src="/navbar-logo.png"
+                src={logoUrl}
                 alt={brandInfo.name || "Zaylune"}
                 width={220}
                 height={130}

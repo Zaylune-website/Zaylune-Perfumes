@@ -1,11 +1,13 @@
 import { Sparkles } from "lucide-react";
 import { getSiteSettings } from "@/actions/settings";
 import SettingsForm from "./_components/SettingsForm";
+import LogoSettingsSection from "./_components/LogoSettingsSection";
 
 export const metadata = { title: "Site Settings" };
 
 export default async function SettingsPage() {
   const settings = await getSiteSettings();
+  const logoUrl = settings.site_logo?.value || "/navbar-logo.png";
 
   return (
     <div>
@@ -24,7 +26,10 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <SettingsForm initialSettings={settings} />
+      <div className="space-y-6">
+        <LogoSettingsSection initialLogoUrl={logoUrl} />
+        <SettingsForm initialSettings={settings} />
+      </div>
     </div>
   );
 }
