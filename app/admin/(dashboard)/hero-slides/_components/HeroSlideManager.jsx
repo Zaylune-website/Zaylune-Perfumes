@@ -136,12 +136,12 @@ function SlideEditForm({ slide, onCancel, onSaved }) {
   return (
     <form onSubmit={handleSave} className="w-full space-y-3 rounded-2xl border border-[#a8451a]/25 bg-[#fffaf5] p-4 sm:p-5">
       <div>
-        <p className={labelClass}>Desktop Image</p>
-        <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" />
+        <p className={labelClass}>Desktop Image <span className="normal-case tracking-normal text-[#2b1d12]/67">(16:7 ratio)</span></p>
+        <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" previewClassName="w-full aspect-[16/7]" />
       </div>
       <div>
-        <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-[#2b1d12]/67">(optional, shown only on phones)</span></p>
-        <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" />
+        <p className={labelClass}>Mobile Image <span className="normal-case tracking-normal text-[#2b1d12]/67">— 4:5 ratio (optional, shown only on phones)</span></p>
+        <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" previewClassName="w-36 aspect-[4/5]" />
       </div>
       <div>
         <textarea
@@ -279,12 +279,12 @@ export default function HeroSlideManager({ slides, settings }) {
           <h2 className="font-display text-base font-bold text-[#1c1109]">Add Slide</h2>
         </div>
         <div>
-          <p className={labelClass}>Desktop Image</p>
-          <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" />
+          <p className={labelClass}>Desktop Image <span className="normal-case tracking-normal text-[#2b1d12]/67">(16:7 ratio)</span></p>
+          <ImageUploader value={imageUrl} onChange={setImageUrl} folder="zaylune/hero" previewClassName="w-full aspect-[16/7]" />
         </div>
         <div>
-          <p className={labelClass}>Mobile Image — 4:5 ratio <span className="normal-case tracking-normal text-[#2b1d12]/67">(optional, shown only on phones)</span></p>
-          <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" />
+          <p className={labelClass}>Mobile Image <span className="normal-case tracking-normal text-[#2b1d12]/67">— 4:5 ratio (optional, shown only on phones)</span></p>
+          <ImageUploader value={mobileImageUrl} onChange={setMobileImageUrl} folder="zaylune/hero" previewClassName="w-36 aspect-[4/5]" />
         </div>
         <div>
           <textarea

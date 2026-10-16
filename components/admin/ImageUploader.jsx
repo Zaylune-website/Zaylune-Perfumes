@@ -65,7 +65,7 @@ export default function ImageUploader({
               idx === 0 && showCover ? "border-[#a8451a]/60" : "border-[#a8451a]/15"
             } ${previewClassName}`}
           >
-            <Image src={url} alt="" fill sizes="(max-width: 640px) 100vw, 448px" className="object-cover" />
+            <Image src={url} alt="" fill sizes="(max-width: 640px) 100vw, 448px" className="object-contain" />
             <button
               type="button"
               onClick={() => removeAt(idx)}

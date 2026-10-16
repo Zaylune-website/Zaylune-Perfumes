@@ -163,11 +163,11 @@ export default async function AboutPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                     {/* Bottom floating workshop badge */}
-                    <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl border border-white/20 bg-white/90 p-4 shadow-lg backdrop-blur-md">
-                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a8451a]">
-                        Hand-Made In KGF
+                    <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl border border-white/20 bg-white/90 px-3 py-2.5 sm:p-4 shadow-lg backdrop-blur-md">
+                      <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#a8451a] leading-snug">
+                        Crafted From Premium Highly<br className="sm:hidden" /> Concentrated Fragrance Oil
                       </p>
-                      <p className="font-display text-sm sm:text-base text-[#1c1109] font-bold mt-0.5 truncate">
+                      <p className="font-display text-xs sm:text-base text-[#1c1109] font-bold mt-0.5 truncate">
                         {brand.name}
                       </p>
                     </div>

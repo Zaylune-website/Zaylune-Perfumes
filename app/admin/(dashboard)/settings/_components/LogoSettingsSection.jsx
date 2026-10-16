@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import { ImageIcon, Check, AlertCircle } from "lucide-react";
 import { updateSiteSetting } from "@/actions/settings";
 import ImageUploader from "@/components/admin/ImageUploader";
@@ -48,36 +47,16 @@ export default function LogoSettingsSection({ initialLogoUrl }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:items-start">
-        <div>
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#a8451a]">Upload New Logo</p>
-          <ImageUploader value={logoUrl} onChange={setLogoUrl} folder="zaylune/branding" />
-          <div className="mt-3 space-y-1.5 rounded-2xl border border-amber-400/30 bg-amber-50 px-4 py-3">
-            <p className="text-xs font-bold text-amber-800">Tips for best result:</p>
-            <ul className="space-y-1 text-xs text-amber-700">
-              <li>• <span className="font-semibold">Transparent background (PNG)</span> — no white or colored box behind the logo</li>
-              <li>• <span className="font-semibold">Recommended ratio: 3:2</span> — e.g. 600×400 px or 900×600 px</li>
-              <li>• Min width 400px for sharp display on all screens</li>
-            </ul>
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#a8451a]">Preview</p>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3 rounded-2xl border border-[#a8451a]/15 bg-[#fde3cf]/30 px-4 py-3">
-              <div className="relative h-10 w-32 shrink-0">
-                <Image src={logoUrl} alt="Logo preview" fill className="object-contain object-left" />
-              </div>
-              <span className="text-xs text-[#2b1d12]/50">Navbar size</span>
-            </div>
-            <div className="flex items-center gap-3 rounded-2xl border border-[#a8451a]/15 bg-[#fde3cf]/30 px-4 py-3">
-              <div className="relative h-16 w-40 shrink-0">
-                <Image src={logoUrl} alt="Logo preview" fill className="object-contain object-left" />
-              </div>
-              <span className="text-xs text-[#2b1d12]/50">Footer size</span>
-            </div>
-          </div>
+      <div>
+        <p className="mb-2 text-xs font-bold uppercase tracking-widest text-[#a8451a]">Upload New Logo</p>
+        <ImageUploader value={logoUrl} onChange={setLogoUrl} folder="zaylune/branding" previewClassName="w-48 aspect-[3/2]" />
+        <div className="mt-3 space-y-1.5 rounded-2xl border border-amber-400/30 bg-amber-50 px-4 py-3">
+          <p className="text-xs font-bold text-amber-800">Tips for best result:</p>
+          <ul className="space-y-1 text-xs text-amber-700">
+            <li>• <span className="font-semibold">Transparent background (PNG)</span> — no white or colored box behind the logo</li>
+            <li>• <span className="font-semibold">Recommended ratio: 3:2</span> — e.g. 600×400 px or 900×600 px</li>
+            <li>• Min width 400px for sharp display on all screens</li>
+          </ul>
         </div>
       </div>
 
